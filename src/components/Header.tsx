@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { LogoMark, Wordmark } from "./ui";
+import { Link, useLocation } from "react-router-dom";
+import { LogoMark, Wordmark, scrollToId } from "./ui";
 
-const LINKS = [
-  { id: "home", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "platform", label: "Platform" },
-  { id: "security", label: "Security" },
+const PAGE_LINKS = [
+  { to: "/", label: "Home" },
+  { to: "/b2b", label: "For Institutions" },
+  { to: "/b2c", label: "For Customers" },
+];
+
+const ANCHOR_LINKS = [
   { id: "waitlist", label: "Waitlist" },
   { id: "contact", label: "Contact" },
 ];
 
 export default function Header() {
+  const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("home");
   const [open, setOpen] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
 
@@ -41,46 +44,36 @@ export default function Header() {
     };
   }, []);
 
-  /* scroll-spy */
-  useEffect(() => {
-    const sections = LINKS.map((l) => document.getElementById(l.id)).filter(
-      (el): el is HTMLElement => Boolean(el)
-    );
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
-      { rootMargin: "-38% 0px -55% 0px" }
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
-  }, []);
+  const close = () => setOpen(false);
 
   return (
     <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
       <div className="container header-inner">
-        <a href="#home" className="brand" aria-label="Finous — home" onClick={() => setOpen(false)}>
+        <Link to="/" className="brand" aria-label="Finous — home" onClick={close}>
           <LogoMark />
           <Wordmark />
-        </a>
+        </Link>
 
         <nav className="nav-links" aria-label="Primary">
-          {LINKS.map((l) => (
-            <a
-              key={l.id}
-              href={`#${l.id}`}
-              className={`nav-link ${active === l.id ? "active" : ""}`}
+          {PAGE_LINKS.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className={`nav-link ${pathname === l.to ? "active" : ""}`}
             >
               {l.label}
-            </a>
+            </Link>
+          ))}
+          {ANCHOR_LINKS.map((l) => (
+            <button key={l.id} className="nav-link nav-btn" onClick={() => scrollToId(l.id)}>
+              {l.label}
+            </button>
           ))}
         </nav>
 
-        <a href="#waitlist" className="btn btn-gold header-cta">
+        <button className="btn btn-gold header-cta" onClick={() => scrollToId("waitlist")}>
           Join Waitlist
-        </a>
+        </button>
 
         <button
           className={`hamburger ${open ? "open" : ""}`}
@@ -100,14 +93,37 @@ export default function Header() {
 
       <div className={`mobile-menu ${open ? "open" : ""}`}>
         <nav aria-label="Mobile">
-          {LINKS.map((l) => (
-            <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)}>
+          {PAGE_LINKS.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className={`mobile-link ${pathname === l.to ? "active" : ""}`}
+              onClick={close}
+            >
               {l.label}
-            </a>
+            </Link>
           ))}
-          <a href="#waitlist" className="btn btn-gold" onClick={() => setOpen(false)}>
+          {ANCHOR_LINKS.map((l) => (
+            <button
+              key={l.id}
+              className="mobile-link mobile-btn"
+              onClick={() => {
+                close();
+                window.setTimeout(() => scrollToId(l.id), 60);
+              }}
+            >
+              {l.label}
+            </button>
+          ))}
+          <button
+            className="btn btn-gold"
+            onClick={() => {
+              close();
+              window.setTimeout(() => scrollToId("waitlist"), 60);
+            }}
+          >
             Join Waitlist
-          </a>
+          </button>
         </nav>
       </div>
     </header>

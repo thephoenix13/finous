@@ -1,11 +1,37 @@
-import { useState, type FormEvent } from "react";
-import { IconArrow, IconCheck, IconLock, Reveal } from "./ui";
+import { useState, type FormEvent, type ReactNode } from "react";
+import { IconArrow, IconCheck, IconLock } from "./ui";
 
 type State = "idle" | "sending" | "done";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export default function Waitlist() {
+const DEFAULT_POINTS = (
+  <>
+    <li><IconCheck /> Early access for founding institutions</li>
+    <li><IconCheck /> No spam — one email when the doors open</li>
+    <li><IconCheck /> Email only. No name, no phone.</li>
+  </>
+);
+
+export default function Waitlist({
+  eyebrow = "Early Access",
+  title = "Be the first to know",
+  lede = "We're building the future of financial intelligence. Join the waitlist for early access.",
+  points = DEFAULT_POINTS,
+  cardTitle = "Reserve your spot",
+  cardSub = "Founding institutions get priority onboarding and pricing.",
+  ctaLabel = "Join Waitlist",
+  showInstNote = true,
+}: {
+  eyebrow?: string;
+  title?: ReactNode;
+  lede?: ReactNode;
+  points?: ReactNode;
+  cardTitle?: ReactNode;
+  cardSub?: ReactNode;
+  ctaLabel?: string;
+  showInstNote?: boolean;
+}) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
@@ -31,23 +57,16 @@ export default function Waitlist() {
   return (
     <section id="waitlist" className="waitlist">
       <div className="container waitlist-grid">
-        <Reveal>
+        <div className="reveal">
           <div>
-            <span className="eyebrow on-dark">Early Access</span>
-            <h2>Be the first to know</h2>
-            <p className="sec-lede">
-              We&rsquo;re building the future of financial intelligence. Join
-              the waitlist for early access.
-            </p>
-            <ul className="wl-points">
-              <li><IconCheck /> Early access for founding institutions</li>
-              <li><IconCheck /> No spam — one email when the doors open</li>
-              <li><IconCheck /> Email only. No name, no phone.</li>
-            </ul>
+            <span className="eyebrow on-dark">{eyebrow}</span>
+            <h2>{title}</h2>
+            <p className="sec-lede">{lede}</p>
+            <ul className="wl-points">{points}</ul>
           </div>
-        </Reveal>
+        </div>
 
-        <Reveal delay={160}>
+        <div className="reveal" style={{ ["--d" as string]: "160ms" }}>
           <div className="wl-card">
             {state === "done" ? (
               <div className="wl-success" role="status" aria-live="polite">
@@ -75,16 +94,17 @@ export default function Waitlist() {
               </div>
             ) : (
               <>
-                <h3>Reserve your spot</h3>
-                <p>Founding institutions get priority onboarding and pricing.</p>
+                <h3>{cardTitle}</h3>
+                <p className="wl-card-sub">{cardSub}</p>
                 <form className="wl-form" onSubmit={submit} noValidate>
                   <label className="wl-label" htmlFor="wl-email">
-                    Email address
+                    Work or personal email
                   </label>
                   <input
                     id="wl-email"
                     className={`wl-input ${error ? "invalid" : ""}`}
                     type="email"
+                    inputMode="email"
                     autoComplete="email"
                     placeholder="Enter your email address"
                     value={email}
@@ -92,38 +112,38 @@ export default function Waitlist() {
                       setEmail(e.target.value);
                       if (error) setError("");
                     }}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={error ? "wl-error" : undefined}
+                    disabled={state === "sending"}
                   />
                   {error && (
-                    <p className="wl-error" id="wl-error" role="alert">
-                      <IconLock size={13} /> {error}
+                    <p className="wl-error" role="alert">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M7 4v3.4M7 9.6v.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                      {error}
                     </p>
                   )}
-                  <button
-                    type="submit"
-                    className="btn btn-gold"
-                    disabled={state === "sending"}
-                    style={{ width: "100%" }}
-                  >
-                    {state === "sending" ? "Joining…" : "Join Waitlist"}
+                  <button className="btn btn-gold" type="submit" disabled={state === "sending"}>
+                    {state === "sending" ? "Reserving your spot…" : ctaLabel}
                     {state !== "sending" && <IconArrow size={15} />}
                   </button>
                   <p className="wl-note">
                     <IconLock size={13} /> No name, no phone — just your email.
                     Unsubscribe anytime.
                   </p>
-                  <p className="wl-inst">
-                    Representing a bank or NBFC? Write to{" "}
-                    <a href="mailto:founder@finous.site">founder@finous.site</a>{" "}
-                    for a pilot conversation — early access opens in cohorts,
-                    institutions first.
-                  </p>
+                  {showInstNote && (
+                    <p className="wl-inst">
+                      Representing a bank or NBFC? Write to{" "}
+                      <a href="mailto:founder@finous.site">founder@finous.site</a>{" "}
+                      for a pilot conversation — early access opens in cohorts,
+                      institutions first.
+                    </p>
+                  )}
                 </form>
               </>
             )}
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

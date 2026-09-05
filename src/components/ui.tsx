@@ -192,3 +192,49 @@ export function IconArrow({ size = 16 }: { size?: number }) {
     </svg>
   );
 }
+
+export function IconCard({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <rect x="2" y="4.5" width="16" height="11" rx="2.2" {...iconProps} />
+      <path d="M2 8.5h16" {...iconProps} />
+      <path d="M5 12.5h4" {...iconProps} opacity="0.6" />
+    </svg>
+  );
+}
+
+export function IconTrend({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M2.5 15.5l4.5-5 3.5 3 6-7" {...iconProps} />
+      <path d="M12.5 6.5h4v4" {...iconProps} />
+    </svg>
+  );
+}
+
+export function IconBell({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M10 3a4.8 4.8 0 00-4.8 4.8c0 4.4-1.4 5.7-1.4 5.7h12.4s-1.4-1.3-1.4-5.7A4.8 4.8 0 0010 3z" {...iconProps} />
+      <path d="M8.2 16.5a1.9 1.9 0 003.6 0" {...iconProps} />
+    </svg>
+  );
+}
+
+export function IconLinkConsent({ size = 17 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M8.5 11.5l3-3" {...iconProps} />
+      <path d="M7 9L4.8 11.2a3 3 0 004.2 4.2L11.2 13" {...iconProps} />
+      <path d="M13 11l2.2-2.2a3 3 0 00-4.2-4.2L8.8 6.8" {...iconProps} />
+    </svg>
+  );
+}
+
+/* Smooth-scroll helper for in-page anchors (HashRouter-safe) */
+export function scrollToId(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+}

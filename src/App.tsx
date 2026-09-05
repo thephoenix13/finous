@@ -1,19 +1,33 @@
 import { useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Header from "./components/Header";
-import Hero, { Ticker } from "./components/Hero";
-import About from "./components/About";
-import Platform from "./components/Platform";
-import Moat from "./components/Moat";
-import Security from "./components/Security";
-import Faq from "./components/Faq";
-import Engagement from "./components/Engagement";
-import Waitlist from "./components/Waitlist";
 import Footer from "./components/Footer";
+import Landing from "./pages/Landing";
+import B2B from "./pages/B2B";
+import B2C from "./pages/B2C";
 
-export default function App() {
-  /* single IntersectionObserver powers every .reveal on the page */
+const TITLES: Record<string, string> = {
+  "/": "Finous — The AI layer that helps banks understand their customers",
+  "/b2b": "Finous for Institutions — White-labelled financial intelligence for Banks & NBFCs",
+  "/b2c": "Finous for Customers — Your whole financial life in one place, free",
+};
+
+function Shell() {
+  const { pathname } = useLocation();
+
+  /* scroll to top on route change */
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll(".reveal"));
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
+  /* per-route document title */
+  useEffect(() => {
+    document.title = TITLES[pathname] ?? TITLES["/"];
+  }, [pathname]);
+
+  /* reveal-on-scroll observer, re-armed for every page */
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal:not(.is-in)"));
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced || !("IntersectionObserver" in window)) {
       els.forEach((el) => el.classList.add("is-in"));
@@ -28,27 +42,28 @@ export default function App() {
           }
         });
       },
-      { threshold: 0.14, rootMargin: "0px 0px -46px 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [pathname]);
 
   return (
     <>
       <Header />
       <main>
-        <Hero />
-        <Ticker />
-        <About />
-        <Platform />
-        <Moat />
-        <Security />
-        <Faq />
-        <Engagement />
-        <Waitlist />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/b2b" element={<B2B />} />
+          <Route path="/b2c" element={<B2C />} />
+          <Route path="*" element={<Landing />} />
+        </Routes>
       </main>
       <Footer />
     </>
   );
+}
+
+export default function App() {
+  return <Shell />;
 }

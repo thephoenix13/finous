@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Reveal, IconCheck, IconShield, IconSpark, IconArrow } from "./ui";
+import { IconSpark } from "./ui";
 
-const SCRIPT = [
+export const ADVISOR_SCRIPT = [
   {
     hi: "आपका इमरजेंसी फंड 7.2 महीने का है — लक्ष्य से बेहतर।",
     en: "Emergency fund covers 7.2 months — above the 6-month target.",
@@ -30,7 +30,7 @@ const ACCOUNTS = [
   { name: "Home Loan", bank: "Urban NBFC", amt: "₹24.1L" },
 ];
 
-const TICKER = [
+export const TICKER_ITEMS = [
   "White-label deployment",
   "RBI-regulated partners",
   "AA consent architecture",
@@ -41,22 +41,19 @@ const TICKER = [
   "Proprietary India-finance model",
 ];
 
-function useReducedMotion() {
+export function useReducedMotion() {
   const [reduced] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
   return reduced;
 }
 
-function Console() {
+/* ---------- cycling advisor chat (shared by console + phone mock) ---------- */
+export function AdvisorChat({ compact = false }: { compact?: boolean }) {
   const reduced = useReducedMotion();
   const [msgIdx, setMsgIdx] = useState(0);
   const [typing, setTyping] = useState(!reduced);
-  const [savings, setSavings] = useState(48210);
-  const [tick, setTick] = useState(false);
-  const [recIdx, setRecIdx] = useState(0);
 
-  /* advisor message loop */
   useEffect(() => {
     if (reduced) return;
     let t: number;
@@ -64,14 +61,48 @@ function Console() {
       t = window.setTimeout(() => setTyping(false), 1150);
     } else {
       t = window.setTimeout(() => {
-        setMsgIdx((i) => (i + 1) % SCRIPT.length);
+        setMsgIdx((i) => (i + 1) % ADVISOR_SCRIPT.length);
         setTyping(true);
       }, 3400);
     }
     return () => clearTimeout(t);
   }, [typing, reduced]);
 
-  /* live balance tick */
+  const prev = ADVISOR_SCRIPT[(msgIdx + ADVISOR_SCRIPT.length - 1) % ADVISOR_SCRIPT.length];
+  const curr = ADVISOR_SCRIPT[msgIdx];
+
+  return (
+    <div className={`advisor-card ${compact ? "compact" : ""}`}>
+      <div className="advisor-head">
+        <IconSpark size={13} /> Finous Advisor · हिंदी + English
+      </div>
+      {!reduced && msgIdx > 0 && (
+        <div className="msg" style={{ opacity: 0.55 }}>
+          <div className="msg-hi">{prev.hi}</div>
+          <div className="msg-en">{prev.en}</div>
+        </div>
+      )}
+      {typing ? (
+        <div className="msg typing" aria-label="Advisor is typing">
+          <i /><i /><i />
+        </div>
+      ) : (
+        <div className="msg" key={msgIdx}>
+          <div className="msg-hi">{curr.hi}</div>
+          <div className="msg-en">{curr.en}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- full institutional intelligence console ---------- */
+export function HeroConsole() {
+  const reduced = useReducedMotion();
+  const [savings, setSavings] = useState(48210);
+  const [tick, setTick] = useState(false);
+  const [recIdx, setRecIdx] = useState(0);
+
   useEffect(() => {
     if (reduced) return;
     const id = window.setInterval(() => {
@@ -82,15 +113,11 @@ function Console() {
     return () => clearInterval(id);
   }, [reduced]);
 
-  /* recommendation rotation */
   useEffect(() => {
     if (reduced) return;
     const id = window.setInterval(() => setRecIdx((i) => (i + 1) % RECS.length), 4200);
     return () => clearInterval(id);
   }, [reduced]);
-
-  const prev = SCRIPT[(msgIdx + SCRIPT.length - 1) % SCRIPT.length];
-  const curr = SCRIPT[msgIdx];
 
   return (
     <div className="console-wrap">
@@ -133,30 +160,11 @@ function Console() {
             ))}
           </div>
 
-          <div className="advisor-card">
-            <div className="advisor-head">
-              <IconSpark size={13} /> Finous Advisor · हिंदी + English
-            </div>
-            {!reduced && msgIdx > 0 && (
-              <div className="msg" style={{ opacity: 0.55 }}>
-                <div className="msg-hi">{prev.hi}</div>
-                <div className="msg-en">{prev.en}</div>
-              </div>
-            )}
-            {typing ? (
-              <div className="msg typing" aria-label="Advisor is typing">
-                <i /><i /><i />
-              </div>
-            ) : (
-              <div className="msg" key={msgIdx}>
-                <div className="msg-hi">{curr.hi}</div>
-                <div className="msg-en">{curr.en}</div>
-              </div>
-            )}
-            <div className="rec-card" key={`rec-${recIdx}`}>
-              <span className="rec-tag">PROACTIVE</span>
-              <span className="rec-text">{RECS[recIdx]}</span>
-            </div>
+          <AdvisorChat />
+
+          <div className="rec-card" key={`rec-${recIdx}`}>
+            <span className="rec-tag">PROACTIVE</span>
+            <span className="rec-text">{RECS[recIdx]}</span>
           </div>
         </div>
 
@@ -169,66 +177,10 @@ function Console() {
   );
 }
 
-export default function Hero() {
+/* ---------- marquee ticker ---------- */
+export function Ticker({ items = TICKER_ITEMS, label }: { items?: string[]; label?: string }) {
   return (
-    <section id="home" className="hero">
-      <div className="container hero-grid">
-        <Reveal>
-          <div>
-            <span className="badge-pill">
-              <span className="pulse-dot" />
-              Now onboarding founding institutions
-            </span>
-            <h1 className="hero-title">
-              The AI layer that helps banks{" "}
-              <span className="u-gold">
-                understand
-                <svg viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
-                  <path
-                    d="M4 10.5C48 4.5 150 3.5 216 7"
-                    fill="none"
-                    stroke="#c9a227"
-                    strokeWidth="5.5"
-                    strokeLinecap="round"
-                    opacity="0.85"
-                  />
-                </svg>
-              </span>{" "}
-              their customers
-            </h1>
-            <p className="hero-sub">
-              Finous unifies every account a customer holds — deposits, loans,
-              investments, cards — into one intelligence layer, and puts an AI
-              advisor inside your bank&rsquo;s own app. Customers get clarity.
-              You get growth.
-            </p>
-            <div className="cta-row">
-              <a href="#waitlist" className="btn btn-gold">
-                Join the Waitlist <IconArrow size={15} />
-              </a>
-              <a href="#about" className="btn btn-ghost">
-                Learn More
-              </a>
-            </div>
-            <div className="trust-row">
-              <span className="trust-item"><IconShield size={15} /> RBI-regulated ready</span>
-              <span className="trust-item"><IconCheck size={16} /> Consent-first architecture</span>
-              <span className="trust-item"><IconCheck size={16} /> White-label · your brand</span>
-            </div>
-          </div>
-        </Reveal>
-
-        <Reveal delay={160}>
-          <Console />
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-export function Ticker() {
-  return (
-    <div className="ticker" aria-label="Finous capabilities">
+    <div className="ticker" aria-label={label ?? "Finous capabilities"}>
       <div className="ticker-track">
         {[0, 1].map((dup) => (
           <div
@@ -236,7 +188,7 @@ export function Ticker() {
             aria-hidden={dup === 1}
             style={{ display: "flex", alignItems: "center", gap: 44, paddingRight: 44 }}
           >
-            {TICKER.map((t) => (
+            {items.map((t) => (
               <span className="ticker-item" key={t}>{t}</span>
             ))}
           </div>

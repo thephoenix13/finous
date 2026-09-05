@@ -1,13 +1,5 @@
-import { IconLock, IconMail, LogoMark, Wordmark } from "./ui";
-
-const NAV = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#platform", label: "Platform" },
-  { href: "#security", label: "Security" },
-  { href: "#pilot", label: "Pilot Program" },
-  { href: "#waitlist", label: "Waitlist" },
-];
+import { Link } from "react-router-dom";
+import { IconLock, IconMail, LogoMark, Wordmark, scrollToId } from "./ui";
 
 export default function Footer() {
   return (
@@ -15,14 +7,13 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <a href="#home" className="brand" aria-label="Finous — back to top">
+            <Link to="/" className="brand" aria-label="Finous — back to top">
               <LogoMark />
               <Wordmark />
-            </a>
+            </Link>
             <p>
-              The AI layer that helps banks understand their customers.
-              Financial intelligence for institutions — and a complete
-              financial picture for the people they serve.
+              The AI layer that helps banks understand their customers —
+              and helps customers understand their money.
             </p>
             <span className="footer-nidhi">by Nidhiverse Pvt Ltd</span>
           </div>
@@ -30,11 +21,14 @@ export default function Footer() {
           <div>
             <h5>Navigate</h5>
             <ul className="footer-links">
-              {NAV.map((n) => (
-                <li key={n.href}>
-                  <a href={n.href}>{n.label}</a>
-                </li>
-              ))}
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/b2b">For Institutions</Link></li>
+              <li><Link to="/b2c">For Customers</Link></li>
+              <li>
+                <button className="footer-btn" onClick={() => scrollToId("waitlist")}>
+                  Join the Waitlist
+                </button>
+              </li>
             </ul>
           </div>
 
