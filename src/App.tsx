@@ -6,6 +6,7 @@ import Platform from "./components/Platform";
 import Moat from "./components/Moat";
 import Security from "./components/Security";
 import Faq from "./components/Faq";
+import Engagement from "./components/Engagement";
 import Waitlist from "./components/Waitlist";
 import Footer from "./components/Footer";
 
@@ -44,6 +45,7 @@ export default function App() {
         <Moat />
         <Security />
         <Faq />
+        <Engagement />
         <Waitlist />
       </main>
       <Footer />

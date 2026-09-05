@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LogoMark, Wordmark } from "./ui";
 
 const LINKS = [
@@ -14,12 +14,31 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("home");
   const [open, setOpen] = useState(false);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 14);
-    onScroll();
+    let frame = 0;
+    const update = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const p = max > 0 ? Math.min(doc.scrollTop / max, 1) : 0;
+      setScrolled(doc.scrollTop > 14);
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${p})`;
+      }
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   /* scroll-spy */
@@ -73,6 +92,10 @@ export default function Header() {
           <span />
           <span />
         </button>
+      </div>
+
+      <div className="scroll-progress" aria-hidden="true">
+        <div ref={progressRef} />
       </div>
 
       <div className={`mobile-menu ${open ? "open" : ""}`}>

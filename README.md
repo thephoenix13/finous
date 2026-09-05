@@ -2,7 +2,7 @@
 
 Marketing site for **Finous**, a B2B + B2C financial intelligence platform for RBI-regulated banks and NBFCs. Built by **Nidhiverse Pvt Ltd**.
 
-Live sections: Hero with a live intelligence console · About (B2B/B2C) with market stats · Platform architecture · The Moat · Security & Governance · Institution FAQ · Waitlist.
+Live sections: Hero with a live intelligence console · About (B2B/B2C) with market stats · Platform architecture · The Moat · Security & Governance · Institution FAQ · Pilot Program / Engagement Model · Waitlist.
 
 ## Tech stack
 

@@ -2271,6 +2271,250 @@ p {
   border-color: var(--gold-deep);
 }
 
+/* scroll-progress indicator */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2.5px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.scroll-progress > div {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ============================================================
+   ENGAGEMENT MODEL / PILOT PROGRAM
+   ============================================================ */
+.engage {
+  padding: 104px 0 108px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+.engage .sec-lede {
+  max-width: 620px;
+}
+.engage-grid {
+  display: grid;
+  gap: 46px;
+  margin-top: 56px;
+}
+@media (min-width: 980px) {
+  .engage-grid {
+    grid-template-columns: 7fr 5fr;
+    gap: 64px;
+    align-items: start;
+  }
+}
+/* phase timeline */
+.phases {
+  display: grid;
+}
+.phase {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 22px;
+  position: relative;
+  padding-bottom: 34px;
+}
+.phase:last-child {
+  padding-bottom: 0;
+}
+.phase::before {
+  content: "";
+  position: absolute;
+  left: 45px;
+  top: 74px;
+  bottom: 4px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold), rgba(201, 162, 39, 0.12));
+}
+.phase:last-child::before {
+  display: none;
+}
+.phase-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+.phase-num {
+  display: grid;
+  place-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--navy);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  border: 1.5px solid rgba(201, 162, 39, 0.45);
+  box-shadow: 0 14px 28px -16px rgba(15, 31, 61, 0.55);
+  transition: background-color 0.3s ease, transform 0.3s var(--ease);
+}
+.phase:hover .phase-num {
+  background: var(--gold);
+  color: var(--navy);
+  transform: rotate(-4deg) scale(1.05);
+}
+.phase-weeks {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  text-align: center;
+}
+.phase-body {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: clamp(20px, 2.8vw, 28px);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s var(--ease), border-color 0.3s ease, box-shadow 0.3s var(--ease);
+}
+.phase:hover .phase-body {
+  transform: translateX(6px);
+  border-color: rgba(201, 162, 39, 0.5);
+  box-shadow: var(--shadow-lift);
+}
+.phase-body h3 {
+  font-size: 1.22rem;
+}
+.phase-body p {
+  margin-top: 9px;
+  font-size: 14.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.phase-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.phase-chip {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--gold-soft);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 7px;
+  padding: 5px 10px;
+}
+@media (max-width: 620px) {
+  .phase {
+    grid-template-columns: 64px 1fr;
+    gap: 14px;
+  }
+  .phase-num {
+    width: 46px;
+    height: 46px;
+    font-size: 16px;
+  }
+  .phase::before {
+    left: 31px;
+    top: 62px;
+  }
+  .phase-weeks {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+}
+/* design-partner terms panel */
+.terms-card {
+  position: relative;
+  background:
+    radial-gradient(380px 220px at 100% 0%, rgba(201, 162, 39, 0.16), transparent 58%),
+    linear-gradient(150deg, var(--navy-2), var(--navy) 60%, var(--navy-3));
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  border-radius: 18px;
+  padding: clamp(26px, 3vw, 36px);
+  color: #dfe7f5;
+  box-shadow: var(--shadow-lift);
+}
+.terms-card::before {
+  content: "";
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: 14px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--gold), rgba(201, 162, 39, 0.1));
+}
+.terms-kicker {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.terms-card h3 {
+  margin-top: 8px;
+  color: #fff;
+  font-size: 1.4rem;
+}
+.terms-list {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 13px;
+}
+.terms-list li {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #d5dcec;
+}
+.terms-list svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--gold);
+}
+.terms-note {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(223, 231, 245, 0.18);
+  font-size: 12.5px;
+  color: #a9b6cf;
+  line-height: 1.6;
+}
+.terms-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 20px;
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--gold);
+  border-bottom: 1.5px solid rgba(201, 162, 39, 0.55);
+  padding-bottom: 2px;
+  transition: gap 0.25s var(--ease), border-color 0.2s ease;
+}
+.terms-cta:hover {
+  gap: 13px;
+  border-color: var(--gold);
+}
+.terms-cta svg {
+  transition: transform 0.25s var(--ease);
+}
+.terms-cta:hover svg {
+  transform: translateX(2px);
+}
+
 /* ============================================================
    REDUCED MOTION
    ============================================================ */
