@@ -4,6 +4,8 @@ import { LogoMark, Wordmark } from "./ui";
 const LINKS = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
+  { id: "platform", label: "Platform" },
+  { id: "security", label: "Security" },
   { id: "waitlist", label: "Waitlist" },
   { id: "contact", label: "Contact" },
 ];

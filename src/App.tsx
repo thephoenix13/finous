@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import Header from "./components/Header";
 import Hero, { Ticker } from "./components/Hero";
 import About from "./components/About";
+import Platform from "./components/Platform";
 import Moat from "./components/Moat";
+import Security from "./components/Security";
+import Faq from "./components/Faq";
 import Waitlist from "./components/Waitlist";
 import Footer from "./components/Footer";
 
@@ -37,7 +40,10 @@ export default function App() {
         <Hero />
         <Ticker />
         <About />
+        <Platform />
         <Moat />
+        <Security />
+        <Faq />
         <Waitlist />
       </main>
       <Footer />

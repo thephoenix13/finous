@@ -1,5 +1,42 @@
 import { CountUp, IconCheck, IconVault, IconWallet, Reveal } from "./ui";
 
+/* ---------- segment icons (custom, geometric) ---------- */
+function IconPillar() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3.5 9L12 3.5 20.5 9z" />
+      <path d="M5.5 9.5v7M10 9.5v7M14 9.5v7M18.5 9.5v7" />
+      <path d="M4 17h16M3 20.5h18" />
+    </svg>
+  );
+}
+function IconCoins() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <ellipse cx="12" cy="6" rx="7" ry="2.8" />
+      <path d="M5 6v5.5c0 1.55 3.13 2.8 7 2.8s7-1.25 7-2.8V6" />
+      <path d="M5 11.5V17c0 1.55 3.13 2.8 7 2.8s7-1.25 7-2.8v-5.5" />
+    </svg>
+  );
+}
+function IconLeaf() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M19.5 4.5c-8 0-13 4.5-13 10.5 0 2.5 1.5 4.5 4 4.5 6.5 0 9-7 9-15z" />
+      <path d="M4.5 19.5c4-5.5 8-8.5 12-10.5" />
+    </svg>
+  );
+}
+function IconSprout() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 20.5v-7" />
+      <path d="M12 13.5C12 9 9 7 4.5 7c0 4.5 3 6.5 7.5 6.5z" />
+      <path d="M12 11c0-3.5 2.5-5.5 7.5-5.5 0 4.5-3 6.5-7.5 6" />
+    </svg>
+  );
+}
+
 const STATS = [
   {
     value: <CountUp to={1500} suffix="+" />,
@@ -120,6 +157,31 @@ export default function About() {
             </svg>
           </div>
         </div>
+
+        <Reveal delay={100}>
+          <div className="seg-strip" aria-label="Institution segments Finous is built for">
+            <div className="seg-cell">
+              <IconPillar />
+              <h4>Urban Co-operative Banks</h4>
+              <p>Retail-deposit intelligence for 1,500+ RBI-regulated UCBs.</p>
+            </div>
+            <div className="seg-cell">
+              <IconCoins />
+              <h4>NBFCs</h4>
+              <p>Cross-sell and collections IQ across 9,000+ lenders.</p>
+            </div>
+            <div className="seg-cell">
+              <IconLeaf />
+              <h4>Regional Rural Banks</h4>
+              <p>Vernacular, low-bandwidth journeys for last-mile credit.</p>
+            </div>
+            <div className="seg-cell">
+              <IconSprout />
+              <h4>Small Finance Banks</h4>
+              <p>Inclusion-first onboarding and household cash-flow views.</p>
+            </div>
+          </div>
+        </Reveal>
 
         <Reveal delay={120}>
           <div className="stats-band">

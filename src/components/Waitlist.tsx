@@ -113,6 +113,12 @@ export default function Waitlist() {
                     <IconLock size={13} /> No name, no phone — just your email.
                     Unsubscribe anytime.
                   </p>
+                  <p className="wl-inst">
+                    Representing a bank or NBFC? Write to{" "}
+                    <a href="mailto:founder@finous.site">founder@finous.site</a>{" "}
+                    for a pilot conversation — early access opens in cohorts,
+                    institutions first.
+                  </p>
                 </form>
               </>
             )}

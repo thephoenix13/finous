@@ -31,12 +31,14 @@ const ACCOUNTS = [
 ];
 
 const TICKER = [
-  "Unified dashboard",
+  "White-label deployment",
+  "RBI-regulated partners",
+  "AA consent architecture",
   "AI advisor · हिंदी + English",
-  "Account Aggregator native",
-  "White-label in 6–8 weeks",
-  "Proactive recommendations",
-  "Built for RBI-regulated institutions",
+  "6–8 week go-live",
+  "DPDP Act, 2023 ready",
+  "Data stays in your boundary",
+  "Proprietary India-finance model",
 ];
 
 function useReducedMotion() {

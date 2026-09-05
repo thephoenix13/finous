@@ -3,8 +3,9 @@ import { IconLock, IconMail, LogoMark, Wordmark } from "./ui";
 const NAV = [
   { href: "#home", label: "Home" },
   { href: "#about", label: "About" },
+  { href: "#platform", label: "Platform" },
+  { href: "#security", label: "Security" },
   { href: "#waitlist", label: "Waitlist" },
-  { href: "#contact", label: "Contact" },
 ];
 
 export default function Footer() {
