@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Resources | Finous</title>
+  <meta name="description" content="Guides, explainers and insights on personal finance, investing, and smart money habits.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #0f1f3d;
+      --gold: #c9a227;
+      --gold-light: rgba(201, 162, 39, 0.12);
+      --bg: #fafafc;
+      --ink: #1a1a2e;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --shadow-sm: 0 2px 8px rgba(15, 31, 61, 0.06);
+      --shadow-md: 0 8px 24px rgba(15, 31, 61, 0.08);
+      --shadow-lg: 0 16px 48px rgba(15, 31, 61, 0.12);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(15, 31, 61, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: var(--gold);
+    }
+
+    .waitlist-btn {
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .waitlist-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 140px 0 60px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Section */
+    section {
+      padding: 60px 0;
+    }
+
+    .section-label {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 40px;
+      max-width: 600px;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: var(--card);
+      color: var(--ink);
+      border: 2px solid transparent;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+      background: var(--gold);
+      color: white;
+      border-color: var(--gold);
+    }
+
+    /* Articles Grid */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .article-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .article-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .article-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--bg) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .article-content {
+      padding: 24px;
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .article-category {
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .article-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+
+    .article-excerpt {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .article-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid rgba(15, 31, 61, 0.1);
+    }
+
+    .article-author {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .article-read-time {
+      font-size: 13px;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* Newsletter */
+    .newsletter {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 48px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      margin: 60px 0;
+    }
+
+    .newsletter h3 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .newsletter p {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 12px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 14px 20px;
+      border: 2px solid rgba(15, 31, 61, 0.1);
+      border-radius: var(--radius);
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+    }
+
+    .newsletter-form input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .newsletter-form button {
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .newsletter-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--navy);
+      color: white;
+      padding: 40px 0;
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .divider {
+      height: 20px;
+      width: 2px;
+      background: var(--gold);
+      margin: 0 16px;
+    }
+
+    .linkedin-link {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .section-title {
+        font-size: 28px;
+      }
+
+      .articles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .newsletter {
+        padding: 32px 24px;
+      }
+
+      .newsletter-form {
+        flex-direction: column;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* Animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="logo">Finous</div>
+          <a href="/app/" class="back-link">← Back to Tools</a>
+        </div>
+        <button class="waitlist-btn" onclick="scrollToWaitlist()">Join Waitlist</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="fade-up">Reading Resources</h1>
+      <p class="fade-up">Guides, explainers and insights on personal finance, investing, and smart money habits.</p>
+    </div>
+  </section>
+
+  <!-- Articles Section -->
+  <section id="articles">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 40px;">
+        <p class="section-label fade-up">Library</p>
+        <h2 class="section-title fade-up">Latest Articles</h2>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters fade-up">
+        <button class="filter-btn active" onclick="filterArticles('all', this)">All</button>
+        <button class="filter-btn" onclick="filterArticles('investing', this)">Investing</button>
+        <button class="filter-btn" onclick="filterArticles('credit', this)">Credit</button>
+        <button class="filter-btn" onclick="filterArticles('budgeting', this)">Budgeting</button>
+        <button class="filter-btn" onclick="filterArticles('tax', this)">Tax</button>
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="articles-grid" id="articlesGrid">
+        <!-- Articles will be rendered here by JavaScript -->
+      </div>
+
+      <!-- Newsletter -->
+      <div class="newsletter fade-up" id="waitlist">
+        <h3>Get weekly financial tips</h3>
+        <p>Join our newsletter for practical money management insights delivered to your inbox.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-info">
+          <span>Finous</span>
+          <div class="divider"></div>
+          <span>by Nidhiverse Pvt Ltd</span>
+        </div>
+        <div>
+          <span>founder@finous.site</span>
+        </div>
+        <a href="https://www.linkedin.com/company/finous" class="linkedin-link" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div style="text-align: center; margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.6);">
+        Confidential · Not for distribution
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== CMS Integration Point =====
+    // This is where your CMS data will be injected
+    // Replace this with actual API call or CMS data
+    const ARTICLES_DATA = [
+      {
+        id: 1,
+        category: 'investing',
+        title: 'How to start investing with ₹500/month',
+        excerpt: 'You don\'t need lakhs to start building wealth. Learn how small, consistent SIPs can grow into a substantial corpus over time.',
+        author: 'Finous Team',
+        date: '2026-01-15',
+        readTime: '5 min read',
+        icon: '📈'
+      },
+      {
+        id: 2,
+        category: 'credit',
+        title: '5 ways to improve your credit score in 90 days',
+        excerpt: 'Your CIBIL score affects loan approvals and interest rates. Here\'s a practical roadmap to boost it quickly.',
+        author: 'Finous Team',
+        date: '2026-01-10',
+        readTime: '4 min read',
+        icon: '💳'
+      },
+      {
+        id: 3,
+        category: 'budgeting',
+        title: 'The 50/30/20 rule explained for Indian salaries',
+        excerpt: 'A simple framework to divide your income between needs, wants, and savings — adapted for Indian cost of living.',
+        author: 'Finous Team',
+        date: '2026-01-05',
+        readTime: '6 min read',
+        icon: '💰'
+      },
+      {
+        id: 4,
+        category: 'tax',
+        title: 'Old vs New tax regime: Which saves you more?',
+        excerpt: 'A detailed comparison to help you choose the right tax regime based on your income and deductions.',
+        author: 'Finous Team',
+        date: '2025-12-28',
+        readTime: '7 min read',
+        icon: '📊'
+      },
+      {
+        id: 5,
+        category: 'investing',
+        title: 'Index funds vs Active funds: The great debate',
+        excerpt: 'Should you go passive or active? We break down the pros, cons, and real-world performance data.',
+        author: 'Finous Team',
+        date: '2025-12-20',
+        readTime: '8 min read',
+        icon: '📈'
+      },
+      {
+        id: 6,
+        category: 'credit',
+        title: 'Understanding credit card interest: How to avoid the trap',
+        excerpt: 'Credit card debt can spiral quickly. Learn how interest is calculated and strategies to stay debt-free.',
+        author: 'Finous Team',
+        date: '2025-12-15',
+        readTime: '5 min read',
+        icon: '💳'
+      },
+      {
+        id: 7,
+        category: 'budgeting',
+        title: 'Emergency fund: How much is enough?',
+        excerpt: 'Financial experts recommend 6 months of expenses. Here\'s how to calculate yours and build it systematically.',
+        author: 'Finous Team',
+        date: '2025-12-10',
+        readTime: '4 min read',
+        icon: '💰'
+      },
+      {
+        id: 8,
+        category: 'tax',
+        title: 'Section 80C deductions you might be missing',
+        excerpt: 'Beyond ELSS and PPF — discover lesser-known deductions that can save you up to ₹46,800 in taxes.',
+        author: 'Finous Team',
+        date: '2025-12-05',
+        readTime: '6 min read',
+        icon: '📊'
+      }
+    ];
+
+    // ===== Render Articles =====
+    function renderArticles(articles) {
+      const grid = document.getElementById('articlesGrid');
+      grid.innerHTML = articles.map(article => `
+        <div class="article-card fade-up" data-category="${article.category}">
+          <div class="article-image">${article.icon}</div>
+          <div class="article-content">
+            <div class="article-meta">
+              <span class="article-category">${article.category}</span>
+              <span>·</span>
+              <span>${article.readTime}</span>
+            </div>
+            <h3 class="article-title">${article.title}</h3>
+            <p class="article-excerpt">${article.excerpt}</p>
+            <div class="article-footer">
+              <span class="article-author">By ${article.author}</span>
+              <span class="article-read-time">${formatDate(article.date)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Trigger animations
+      setTimeout(() => {
+        document.querySelectorAll('.article-card.fade-up').forEach(el => {
+          el.classList.add('visible');
+        });
+      }, 100);
+    }
+
+    // ===== Filter Articles =====
+    function filterArticles(category, btn) {
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Filter articles
+      const filtered = category === 'all' 
+        ? ARTICLES_DATA 
+        : ARTICLES_DATA.filter(a => a.category === category);
+      
+      renderArticles(filtered);
+    }
+
+    // ===== Format Date =====
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-IN', { 
+        day: 'numeric', 
+        month: 'short', 
+        year: 'numeric' 
+      });
+    }
+
+    // ===== Newsletter Submit =====
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const email = e.target.querySelector('input').value;
+      // TODO: Integrate with your email service (Mailchimp, SendGrid, etc.)
+      alert(`Thanks for subscribing! We'll send updates to ${email}`);
+      e.target.reset();
+    }
+
+    // ===== Scroll to Waitlist =====
+    function scrollToWaitlist() {
+      document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ===== Initialize =====
+    document.addEventListener('DOMContentLoaded', () => {
+      renderArticles(ARTICLES_DATA);
+
+      // Intersection Observer for animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    });
+
+    // ===== CMS Integration Guide =====
+    /*
+    To integrate with a CMS (Sanity, Contentful, Strapi, etc.):
+    
+    1. Replace ARTICLES_DATA with an API call:
+       
+       async function fetchArticles() {
+         const response = await fetch('https://your-cms-api.com/articles');
+         const data = await response.json();
+         return data.articles;
+       }
+    
+    2. Update renderArticles() to handle your CMS data structure
+    
+    3. For newsletter, integrate with:
+       - Mailchimp: https://mailchimp.com/developer/
+       - SendGrid: https://sendgrid.com/docs/api-reference/
+       - ConvertKit: https://developers.convertkit.com/
+    
+    4. Consider adding:
+       - Article detail pages (/reading-resources/[slug])
+       - Search functionality
+       - Related articles
+       - Social sharing
+    */
+  </script>
+</body>
+</html>

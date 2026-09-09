@@ -713,12 +713,12 @@
           <span class="tool-link">Try it now →</span>
         </div>
 
-        <div class="tool-card fade-up" data-tool="blog">
+        <a href="/app/reading-resources/" class="tool-card fade-up" style="text-decoration:none; color:inherit;">
           <div class="tool-icon">📝</div>
-          <h3>Blog</h3>
-          <p>Read insights on personal finance, investing, and smart money habits.</p>
-          <span class="tool-link">Read more →</span>
-        </div>
+          <h3>Reading Resources</h3>
+          <p>Guides, explainers and insights on personal finance, investing, and smart money habits.</p>
+          <span class="tool-link">Browse library →</span>
+        </a>
 
         <div class="tool-card fade-up" style="opacity: 0.6; cursor: not-allowed;">
           <div class="tool-icon">🎯</div>
@@ -1188,80 +1188,6 @@
           </div>
         `
       },
-      blog: {
-        title: 'Financial Insights',
-        html: `
-          <div style="margin-bottom:20px;">
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#c9a227; color:white; font-size:13px;" onclick="filterBlog('all')">All</button>
-              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('investing')">Investing</button>
-              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('credit')">Credit</button>
-              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('budgeting')">Budgeting</button>
-              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('tax')">Tax</button>
-            </div>
-          </div>
-          
-          <div id="blogGrid" class="placeholder-grid">
-            <div class="placeholder-item blog-item" data-category="investing">
-              <span class="placeholder-tag">Investing · 5 min read</span>
-              <h5>How to start investing with ₹500/month</h5>
-              <p>You don't need lakhs to start building wealth. Learn how small, consistent SIPs can grow into a substantial corpus over time.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Jan 15, 2026</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="credit">
-              <span class="placeholder-tag">Credit · 4 min read</span>
-              <h5>5 ways to improve your credit score in 90 days</h5>
-              <p>Your CIBIL score affects loan approvals and interest rates. Here's a practical roadmap to boost it quickly.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Jan 10, 2026</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="budgeting">
-              <span class="placeholder-tag">Budgeting · 6 min read</span>
-              <h5>The 50/30/20 rule explained for Indian salaries</h5>
-              <p>A simple framework to divide your income between needs, wants, and savings — adapted for Indian cost of living.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Jan 5, 2026</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="tax">
-              <span class="placeholder-tag">Tax · 7 min read</span>
-              <h5>Old vs New tax regime: Which saves you more?</h5>
-              <p>A detailed comparison to help you choose the right tax regime based on your income and deductions.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 28, 2025</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="investing">
-              <span class="placeholder-tag">Investing · 8 min read</span>
-              <h5>Index funds vs Active funds: The great debate</h5>
-              <p>Should you go passive or active? We break down the pros, cons, and real-world performance data.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 20, 2025</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="credit">
-              <span class="placeholder-tag">Credit · 5 min read</span>
-              <h5>Understanding credit card interest: How to avoid the trap</h5>
-              <p>Credit card debt can spiral quickly. Learn how interest is calculated and strategies to stay debt-free.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 15, 2025</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="budgeting">
-              <span class="placeholder-tag">Budgeting · 4 min read</span>
-              <h5>Emergency fund: How much is enough?</h5>
-              <p>Financial experts recommend 6 months of expenses. Here's how to calculate yours and build it systematically.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 10, 2025</div>
-            </div>
-            <div class="placeholder-item blog-item" data-category="tax">
-              <span class="placeholder-tag">Tax · 6 min read</span>
-              <h5>Section 80C deductions you might be missing</h5>
-              <p>Beyond ELSS and PPF — discover lesser-known deductions that can save you up to ₹46,800 in taxes.</p>
-              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 5, 2025</div>
-            </div>
-          </div>
-          
-          <div style="margin-top:24px; padding:20px; background:#f8f9fa; border-radius:10px; text-align:center;">
-            <div style="font-size:14px; font-weight:600; margin-bottom:8px; color:#0f1f3d;">Get weekly financial tips</div>
-            <div style="font-size:13px; color:#6b7280; margin-bottom:12px;">Join our newsletter for practical money management insights.</div>
-            <div style="display:flex; gap:8px; max-width:400px; margin:0 auto;">
-              <input type="email" placeholder="Enter your email" style="flex:1; padding:10px 14px; border:1px solid #e5e7eb; border-radius:8px; font-size:14px;" />
-              <button class="calc-btn" style="flex:none; padding:10px 20px; margin:0;">Subscribe</button>
-            </div>
-          </div>
-        `
-      },
       cards: {
         title: 'Credit Card Recommendations',
         html: `
@@ -1656,29 +1582,6 @@
       document.getElementById('catSavings').textContent = formatINR(categories.savings);
 
       document.getElementById('budgetResult').style.display = 'block';
-    }
-
-    // Blog filtering
-    function filterBlog(category) {
-      const items = document.querySelectorAll('.blog-item');
-      const buttons = document.querySelectorAll('#blogGrid').parentElement.querySelectorAll('button');
-      
-      // Update button styles
-      buttons.forEach(btn => {
-        btn.style.background = '#f8f9fa';
-        btn.style.color = '#0f1f3d';
-      });
-      event.target.style.background = '#c9a227';
-      event.target.style.color = 'white';
-      
-      // Filter items
-      items.forEach(item => {
-        if (category === 'all' || item.dataset.category === category) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
-      });
     }
 
     // Credit card filtering
