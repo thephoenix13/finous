@@ -854,45 +854,168 @@
         title: 'EMI Calculator',
         html: `
           <div class="calc-group">
+            <label>Loan Type</label>
+            <select id="emiType" onchange="updateEMIPresets()">
+              <option value="home">Home Loan</option>
+              <option value="car">Car Loan</option>
+              <option value="personal">Personal Loan</option>
+              <option value="education">Education Loan</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="calc-group">
             <label>Loan Amount (₹)</label>
-            <input type="number" id="emiAmount" value="1000000" min="10000" />
+            <input type="number" id="emiAmount" value="5000000" min="10000" />
           </div>
           <div class="calc-group">
             <label>Interest Rate (% p.a.)</label>
             <input type="number" id="emiRate" value="8.5" step="0.1" min="0.1" />
           </div>
           <div class="calc-group">
-            <label>Tenure (months)</label>
-            <input type="number" id="emiTenure" value="60" min="1" />
+            <label>Tenure (years)</label>
+            <input type="number" id="emiTenure" value="20" min="1" max="30" />
           </div>
           <button class="calc-btn" onclick="calcEMI()">Calculate EMI</button>
-          <div class="calc-result" id="emiResult" style="display:none;">
-            <div class="calc-result-label">Monthly EMI</div>
-            <div class="calc-result-value" id="emiValue"></div>
-            <div class="calc-result-sub" id="emiSub"></div>
+          
+          <div id="emiResult" style="display:none; margin-top:24px;">
+            <div class="calc-result">
+              <div class="calc-result-label">Monthly EMI</div>
+              <div class="calc-result-value" id="emiValue"></div>
+              <div class="calc-result-sub" id="emiSub"></div>
+            </div>
+            
+            <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Total Interest</div>
+                <div style="font-size:18px; font-weight:600; color:#0f1f3d;" id="emiInterest"></div>
+              </div>
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Total Payment</div>
+                <div style="font-size:18px; font-weight:600; color:#0f1f3d;" id="emiTotal"></div>
+              </div>
+            </div>
+            
+            <div style="margin-top:24px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Payment Breakdown</div>
+              <div style="display:flex; gap:8px; height:24px; border-radius:12px; overflow:hidden;">
+                <div id="principalBar" style="background:#c9a227; transition:width 0.3s;"></div>
+                <div id="interestBar" style="background:#0f1f3d; transition:width 0.3s;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:#6b7280;">
+                <span>■ Principal: <span id="principalPct"></span></span>
+                <span>■ Interest: <span id="interestPct"></span></span>
+              </div>
+            </div>
+            
+            <div style="margin-top:24px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Amortization Schedule</div>
+              <div style="max-height:300px; overflow-y:auto; border:1px solid #e5e7eb; border-radius:10px;">
+                <table style="width:100%; font-size:13px;">
+                  <thead style="position:sticky; top:0; background:#f8f9fa;">
+                    <tr>
+                      <th style="padding:10px; text-align:left; font-weight:600;">Year</th>
+                      <th style="padding:10px; text-align:right; font-weight:600;">Principal</th>
+                      <th style="padding:10px; text-align:right; font-weight:600;">Interest</th>
+                      <th style="padding:10px; text-align:right; font-weight:600;">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="amortizationBody"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         `
       },
       sip: {
         title: 'SIP Calculator',
         html: `
-          <div class="calc-group">
-            <label>Monthly Investment (₹)</label>
-            <input type="number" id="sipAmount" value="5000" min="500" />
+          <div style="display:flex; gap:8px; margin-bottom:20px;">
+            <button class="calc-btn" style="flex:1; background:#f8f9fa; color:#0f1f3d;" onclick="showSIPTab('regular')" id="sipTabRegular">Regular SIP</button>
+            <button class="calc-btn" style="flex:1; background:#f8f9fa; color:#0f1f3d;" onclick="showSIPTab('stepup')" id="sipTabStepup">Step-up SIP</button>
+            <button class="calc-btn" style="flex:1; background:#f8f9fa; color:#0f1f3d;" onclick="showSIPTab('goal')" id="sipTabGoal">Goal Planner</button>
           </div>
-          <div class="calc-group">
-            <label>Expected Return (% p.a.)</label>
-            <input type="number" id="sipRate" value="12" step="0.5" min="0.1" />
+          
+          <div id="sipRegular">
+            <div class="calc-group">
+              <label>Monthly Investment (₹)</label>
+              <input type="number" id="sipAmount" value="10000" min="500" />
+            </div>
+            <div class="calc-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="sipRate" value="12" step="0.5" min="0.1" />
+            </div>
+            <div class="calc-group">
+              <label>Time Period (years)</label>
+              <input type="number" id="sipYears" value="10" min="1" />
+            </div>
+            <button class="calc-btn" onclick="calcSIP()">Calculate Returns</button>
           </div>
-          <div class="calc-group">
-            <label>Time Period (years)</label>
-            <input type="number" id="sipYears" value="10" min="1" />
+          
+          <div id="sipStepup" style="display:none;">
+            <div class="calc-group">
+              <label>Initial Monthly Investment (₹)</label>
+              <input type="number" id="stepupAmount" value="10000" min="500" />
+            </div>
+            <div class="calc-group">
+              <label>Annual Step-up (%)</label>
+              <input type="number" id="stepupRate" value="10" min="0" max="50" />
+            </div>
+            <div class="calc-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="stepupReturn" value="12" step="0.5" min="0.1" />
+            </div>
+            <div class="calc-group">
+              <label>Time Period (years)</label>
+              <input type="number" id="stepupYears" value="10" min="1" />
+            </div>
+            <button class="calc-btn" onclick="calcStepupSIP()">Calculate Returns</button>
           </div>
-          <button class="calc-btn" onclick="calcSIP()">Calculate Returns</button>
-          <div class="calc-result" id="sipResult" style="display:none;">
-            <div class="calc-result-label">Maturity Value</div>
-            <div class="calc-result-value" id="sipValue"></div>
-            <div class="calc-result-sub" id="sipSub"></div>
+          
+          <div id="sipGoal" style="display:none;">
+            <div class="calc-group">
+              <label>Goal Amount (₹)</label>
+              <input type="number" id="goalAmount" value="10000000" min="100000" />
+            </div>
+            <div class="calc-group">
+              <label>Time Period (years)</label>
+              <input type="number" id="goalYears" value="10" min="1" />
+            </div>
+            <div class="calc-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="goalReturn" value="12" step="0.5" min="0.1" />
+            </div>
+            <button class="calc-btn" onclick="calcGoalSIP()">Calculate Required SIP</button>
+          </div>
+          
+          <div id="sipResult" style="display:none; margin-top:24px;">
+            <div class="calc-result">
+              <div class="calc-result-label" id="sipResultLabel">Maturity Value</div>
+              <div class="calc-result-value" id="sipValue"></div>
+              <div class="calc-result-sub" id="sipSub"></div>
+            </div>
+            
+            <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Total Invested</div>
+                <div style="font-size:18px; font-weight:600; color:#0f1f3d;" id="sipInvested"></div>
+              </div>
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Wealth Gained</div>
+                <div style="font-size:18px; font-weight:600; color:#c9a227;" id="sipGains"></div>
+              </div>
+            </div>
+            
+            <div style="margin-top:24px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Investment Breakdown</div>
+              <div style="display:flex; gap:8px; height:24px; border-radius:12px; overflow:hidden;">
+                <div id="sipInvestedBar" style="background:#c9a227; transition:width 0.3s;"></div>
+                <div id="sipGainsBar" style="background:#0f1f3d; transition:width 0.3s;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:#6b7280;">
+                <span>■ Invested: <span id="sipInvestedPct"></span></span>
+                <span>■ Gains: <span id="sipGainsPct"></span></span>
+              </div>
+            </div>
           </div>
         `
       },
@@ -900,26 +1023,81 @@
         title: 'Loan Eligibility',
         html: `
           <div class="calc-group">
+            <label>Loan Type</label>
+            <select id="eligType" onchange="updateEligibilityPresets()">
+              <option value="home">Home Loan</option>
+              <option value="personal">Personal Loan</option>
+              <option value="car">Car Loan</option>
+              <option value="education">Education Loan</option>
+            </select>
+          </div>
+          <div class="calc-group">
             <label>Monthly Income (₹)</label>
-            <input type="number" id="eligIncome" value="50000" min="10000" />
+            <input type="number" id="eligIncome" value="75000" min="10000" />
+          </div>
+          <div class="calc-group">
+            <label>Co-applicant Income (₹) <span style="font-size:12px; color:#6b7280;">(optional)</span></label>
+            <input type="number" id="eligCoIncome" value="0" min="0" />
           </div>
           <div class="calc-group">
             <label>Existing EMIs (₹/month)</label>
             <input type="number" id="eligEMI" value="0" min="0" />
           </div>
           <div class="calc-group">
+            <label>Credit Score</label>
+            <select id="eligCredit">
+              <option value="excellent">Excellent (750+)</option>
+              <option value="good" selected>Good (700-749)</option>
+              <option value="fair">Fair (650-699)</option>
+              <option value="poor">Poor (below 650)</option>
+            </select>
+          </div>
+          <div class="calc-group">
             <label>Interest Rate (% p.a.)</label>
-            <input type="number" id="eligRate" value="9" step="0.1" min="0.1" />
+            <input type="number" id="eligRate" value="8.5" step="0.1" min="0.1" />
           </div>
           <div class="calc-group">
             <label>Tenure (years)</label>
             <input type="number" id="eligYears" value="20" min="1" max="30" />
           </div>
           <button class="calc-btn" onclick="calcEligibility()">Check Eligibility</button>
-          <div class="calc-result" id="eligResult" style="display:none;">
-            <div class="calc-result-label">You can borrow up to</div>
-            <div class="calc-result-value" id="eligValue"></div>
-            <div class="calc-result-sub" id="eligSub"></div>
+          
+          <div id="eligResult" style="display:none; margin-top:24px;">
+            <div class="calc-result">
+              <div class="calc-result-label">Maximum Loan Amount</div>
+              <div class="calc-result-value" id="eligValue"></div>
+              <div class="calc-result-sub" id="eligSub"></div>
+            </div>
+            
+            <div style="margin-top:24px; background:#f8f9fa; padding:20px; border-radius:10px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:16px; color:#0f1f3d;">Eligibility Breakdown</div>
+              <div style="display:grid; gap:12px; font-size:13px;">
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">Total Monthly Income</span>
+                  <span style="font-weight:600;" id="eligTotalIncome"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">Existing EMIs</span>
+                  <span style="font-weight:600;" id="eligExistingEMI"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">Max EMI Capacity (50% FOIR)</span>
+                  <span style="font-weight:600; color:#c9a227;" id="eligMaxEMI"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:12px; border-top:1px solid #e5e7eb;">
+                  <span style="color:#6b7280;">Available for New EMI</span>
+                  <span style="font-weight:600;" id="eligAvailable"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">FOIR Ratio</span>
+                  <span style="font-weight:600;" id="eligFOIR"></span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top:16px; padding:16px; background:#fff9e6; border-left:3px solid #c9a227; border-radius:8px; font-size:13px; color:#6b7280;">
+              <strong style="color:#0f1f3d;">Note:</strong> This is an indicative calculation. Actual eligibility depends on bank policies, credit history, property value (for home loans), and other factors.
+            </div>
           </div>
         `
       },
@@ -928,60 +1106,263 @@
         html: `
           <div class="calc-group">
             <label>Monthly Income (₹)</label>
-            <input type="number" id="budgetIncome" value="50000" min="10000" />
+            <input type="number" id="budgetIncome" value="60000" min="10000" />
           </div>
           <button class="calc-btn" onclick="calcBudget()">Plan Budget</button>
-          <div class="calc-result" id="budgetResult" style="display:none;">
-            <div class="calc-result-label">Recommended Budget (50/30/20)</div>
-            <div style="text-align:left; margin-top:16px; font-size:14px; line-height:2;">
-              <div>🏠 <strong>Needs (50%):</strong> <span id="budgetNeeds"></span></div>
-              <div>🎉 <strong>Wants (30%):</strong> <span id="budgetWants"></span></div>
-              <div>💰 <strong>Savings (20%):</strong> <span id="budgetSavings"></span></div>
+          
+          <div id="budgetResult" style="display:none; margin-top:24px;">
+            <div style="background:#f8f9fa; padding:20px; border-radius:10px; margin-bottom:20px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:16px; color:#0f1f3d;">Recommended Budget (50/30/20 Rule)</div>
+              <div style="display:grid; gap:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; color:#6b7280;">🏠 Needs (50%)</span>
+                  <span style="font-weight:600; color:#0f1f3d;" id="budgetNeeds"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; color:#6b7280;">🎉 Wants (30%)</span>
+                  <span style="font-weight:600; color:#0f1f3d;" id="budgetWants"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; color:#6b7280;">💰 Savings (20%)</span>
+                  <span style="font-weight:600; color:#c9a227;" id="budgetSavings"></span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Category Breakdown</div>
+            <div style="display:grid; gap:10px; max-height:300px; overflow-y:auto;">
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🏠 Housing & Utilities</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Rent, electricity, water, internet</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catHousing"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🍽️ Food & Groceries</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Groceries, dining out</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catFood"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🚗 Transportation</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Fuel, public transport, maintenance</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catTransport"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🎬 Entertainment</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Movies, subscriptions, hobbies</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catEntertainment"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🏥 Healthcare & Insurance</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Medical, insurance premiums</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catHealth"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">💳 Debt Payments</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">EMIs, credit card bills</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catDebt"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">💰 Investments & Savings</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">SIP, FD, emergency fund</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catSavings"></span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top:16px; padding:16px; background:#fff9e6; border-left:3px solid #c9a227; border-radius:8px; font-size:13px; color:#6b7280;">
+              <strong style="color:#0f1f3d;">Tip:</strong> Track your actual spending for a month to see where your money goes. Adjust categories based on your lifestyle.
             </div>
           </div>
         `
       },
       blog: {
-        title: 'Blog',
+        title: 'Financial Insights',
         html: `
-          <div class="placeholder-grid">
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Investing</span>
+          <div style="margin-bottom:20px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#c9a227; color:white; font-size:13px;" onclick="filterBlog('all')">All</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('investing')">Investing</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('credit')">Credit</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('budgeting')">Budgeting</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterBlog('tax')">Tax</button>
+            </div>
+          </div>
+          
+          <div id="blogGrid" class="placeholder-grid">
+            <div class="placeholder-item blog-item" data-category="investing">
+              <span class="placeholder-tag">Investing · 5 min read</span>
               <h5>How to start investing with ₹500/month</h5>
-              <p>A beginner's guide to SIPs, mutual funds, and building wealth slowly.</p>
+              <p>You don't need lakhs to start building wealth. Learn how small, consistent SIPs can grow into a substantial corpus over time.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Jan 15, 2026</div>
             </div>
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Credit</span>
+            <div class="placeholder-item blog-item" data-category="credit">
+              <span class="placeholder-tag">Credit · 4 min read</span>
               <h5>5 ways to improve your credit score in 90 days</h5>
-              <p>Practical steps to boost your CIBIL score and unlock better loan rates.</p>
+              <p>Your CIBIL score affects loan approvals and interest rates. Here's a practical roadmap to boost it quickly.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Jan 10, 2026</div>
             </div>
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Budgeting</span>
+            <div class="placeholder-item blog-item" data-category="budgeting">
+              <span class="placeholder-tag">Budgeting · 6 min read</span>
               <h5>The 50/30/20 rule explained for Indian salaries</h5>
-              <p>How to divide your income between needs, wants, and savings.</p>
+              <p>A simple framework to divide your income between needs, wants, and savings — adapted for Indian cost of living.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Jan 5, 2026</div>
+            </div>
+            <div class="placeholder-item blog-item" data-category="tax">
+              <span class="placeholder-tag">Tax · 7 min read</span>
+              <h5>Old vs New tax regime: Which saves you more?</h5>
+              <p>A detailed comparison to help you choose the right tax regime based on your income and deductions.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 28, 2025</div>
+            </div>
+            <div class="placeholder-item blog-item" data-category="investing">
+              <span class="placeholder-tag">Investing · 8 min read</span>
+              <h5>Index funds vs Active funds: The great debate</h5>
+              <p>Should you go passive or active? We break down the pros, cons, and real-world performance data.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 20, 2025</div>
+            </div>
+            <div class="placeholder-item blog-item" data-category="credit">
+              <span class="placeholder-tag">Credit · 5 min read</span>
+              <h5>Understanding credit card interest: How to avoid the trap</h5>
+              <p>Credit card debt can spiral quickly. Learn how interest is calculated and strategies to stay debt-free.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 15, 2025</div>
+            </div>
+            <div class="placeholder-item blog-item" data-category="budgeting">
+              <span class="placeholder-tag">Budgeting · 4 min read</span>
+              <h5>Emergency fund: How much is enough?</h5>
+              <p>Financial experts recommend 6 months of expenses. Here's how to calculate yours and build it systematically.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 10, 2025</div>
+            </div>
+            <div class="placeholder-item blog-item" data-category="tax">
+              <span class="placeholder-tag">Tax · 6 min read</span>
+              <h5>Section 80C deductions you might be missing</h5>
+              <p>Beyond ELSS and PPF — discover lesser-known deductions that can save you up to ₹46,800 in taxes.</p>
+              <div style="margin-top:12px; font-size:12px; color:#6b7280;">By Finous Team · Dec 5, 2025</div>
+            </div>
+          </div>
+          
+          <div style="margin-top:24px; padding:20px; background:#f8f9fa; border-radius:10px; text-align:center;">
+            <div style="font-size:14px; font-weight:600; margin-bottom:8px; color:#0f1f3d;">Get weekly financial tips</div>
+            <div style="font-size:13px; color:#6b7280; margin-bottom:12px;">Join our newsletter for practical money management insights.</div>
+            <div style="display:flex; gap:8px; max-width:400px; margin:0 auto;">
+              <input type="email" placeholder="Enter your email" style="flex:1; padding:10px 14px; border:1px solid #e5e7eb; border-radius:8px; font-size:14px;" />
+              <button class="calc-btn" style="flex:none; padding:10px 20px; margin:0;">Subscribe</button>
             </div>
           </div>
         `
       },
       cards: {
-        title: 'Credit Card Picks',
+        title: 'Credit Card Recommendations',
         html: `
-          <div class="placeholder-grid">
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Best for Travel</span>
+          <div style="margin-bottom:20px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#c9a227; color:white; font-size:13px;" onclick="filterCards('all')">All Cards</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('travel')">Travel</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('cashback')">Cashback</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('rewards')">Rewards</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('fuel')">Fuel</button>
+            </div>
+          </div>
+          
+          <div id="cardsGrid" class="placeholder-grid">
+            <div class="placeholder-item card-item" data-category="cashback">
+              <span class="placeholder-tag">Best for Cashback</span>
               <h5>HDFC Millennia</h5>
-              <p>5% cashback on all spends. No fuel surcharge. ₹5,000 annual fee.</p>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹1,000</div>
+                <div><strong>Reward Rate:</strong> 5% cashback on all spends</div>
+                <div><strong>Key Benefits:</strong> No fuel surcharge, 10X rewards on PayZapp</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ No fuel surcharge</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ High cashback</span>
+              </div>
             </div>
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Best for Rewards</span>
+            
+            <div class="placeholder-item card-item" data-category="travel">
+              <span class="placeholder-tag">Best for Travel</span>
               <h5>Axis Magnus</h5>
-              <p>Unlimited reward points. Airport lounge access. Premium benefits.</p>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹12,500</div>
+                <div><strong>Reward Rate:</strong> 12 EDGE Rewards per ₹200</div>
+                <div><strong>Key Benefits:</strong> Unlimited lounge access, concierge service</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Lounge access</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Premium benefits</span>
+              </div>
             </div>
-            <div class="placeholder-item">
+            
+            <div class="placeholder-item card-item" data-category="rewards">
+              <span class="placeholder-tag">Best for Rewards</span>
+              <h5>ICICI Amazon Pay</h5>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹500 (Lifetime free for Prime members)</div>
+                <div><strong>Reward Rate:</strong> 5% cashback on Amazon, 2% on other spends</div>
+                <div><strong>Key Benefits:</strong> Amazon Pay balance, no reward expiry</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Amazon benefits</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Lifetime free</span>
+              </div>
+            </div>
+            
+            <div class="placeholder-item card-item" data-category="fuel">
+              <span class="placeholder-tag">Best for Fuel</span>
+              <h5>SBI BPCL Octane</h5>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹1,499</div>
+                <div><strong>Reward Rate:</strong> 13X reward points on fuel spends</div>
+                <div><strong>Key Benefits:</strong> 1% fuel surcharge waiver, complimentary BPCL loyalty points</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Fuel benefits</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ High reward rate</span>
+              </div>
+            </div>
+            
+            <div class="placeholder-item card-item" data-category="rewards">
               <span class="placeholder-tag">Best for Beginners</span>
               <h5>SBI SimplyCLICK</h5>
-              <p>Low annual fee. Good for online shopping. Easy approval.</p>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹495</div>
+                <div><strong>Reward Rate:</strong> 10X reward points on online spends</div>
+                <div><strong>Key Benefits:</strong> Easy approval, Amazon voucher on joining</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Low fee</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Easy approval</span>
+              </div>
             </div>
+            
+            <div class="placeholder-item card-item" data-category="travel">
+              <span class="placeholder-tag">Best for International Travel</span>
+              <h5>HDFC Diners Club Black</h5>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹3,500</div>
+                <div><strong>Reward Rate:</strong> 5 reward points per ₹150</div>
+                <div><strong>Key Benefits:</strong> Global lounge access, travel insurance, concierge</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Global acceptance</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Travel insurance</span>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top:24px; padding:16px; background:#fff9e6; border-left:3px solid #c9a227; border-radius:8px; font-size:13px; color:#6b7280;">
+            <strong style="color:#0f1f3d;">Tip:</strong> Choose a card that matches your spending pattern. If you spend mostly on fuel, get a fuel card. If you shop online frequently, get a card with good e-commerce rewards.
           </div>
         `
       }
@@ -1023,18 +1404,89 @@
       return '₹' + Math.round(num).toLocaleString('en-IN');
     }
 
+    function updateEMIPresets() {
+      const type = document.getElementById('emiType').value;
+      const presets = {
+        home: { amount: 5000000, rate: 8.5, tenure: 20 },
+        car: { amount: 800000, rate: 9.5, tenure: 7 },
+        personal: { amount: 500000, rate: 12.5, tenure: 5 },
+        education: { amount: 1000000, rate: 8.0, tenure: 10 },
+        custom: { amount: 1000000, rate: 10, tenure: 5 }
+      };
+      const p = presets[type];
+      document.getElementById('emiAmount').value = p.amount;
+      document.getElementById('emiRate').value = p.rate;
+      document.getElementById('emiTenure').value = p.tenure;
+    }
+
     function calcEMI() {
       const P = parseFloat(document.getElementById('emiAmount').value);
-      const r = parseFloat(document.getElementById('emiRate').value) / 12 / 100;
-      const n = parseInt(document.getElementById('emiTenure').value);
+      const annualRate = parseFloat(document.getElementById('emiRate').value);
+      const years = parseInt(document.getElementById('emiTenure').value);
+      const n = years * 12;
+      const r = annualRate / 12 / 100;
+
+      if (!P || !annualRate || !years) {
+        alert('Please fill in all fields');
+        return;
+      }
 
       const emi = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
       const totalPayment = emi * n;
       const totalInterest = totalPayment - P;
 
       document.getElementById('emiValue').textContent = formatINR(emi);
-      document.getElementById('emiSub').textContent = `Total interest: ${formatINR(totalInterest)} · Total payment: ${formatINR(totalPayment)}`;
+      document.getElementById('emiSub').textContent = `Over ${years} years (${n} months)`;
+      document.getElementById('emiInterest').textContent = formatINR(totalInterest);
+      document.getElementById('emiTotal').textContent = formatINR(totalPayment);
+
+      // Payment breakdown bars
+      const principalPct = (P / totalPayment * 100).toFixed(1);
+      const interestPct = (totalInterest / totalPayment * 100).toFixed(1);
+      document.getElementById('principalBar').style.width = principalPct + '%';
+      document.getElementById('interestBar').style.width = interestPct + '%';
+      document.getElementById('principalPct').textContent = principalPct + '%';
+      document.getElementById('interestPct').textContent = interestPct + '%';
+
+      // Amortization schedule (yearly summary)
+      let balance = P;
+      let scheduleHTML = '';
+      for (let year = 1; year <= years; year++) {
+        let yearPrincipal = 0;
+        let yearInterest = 0;
+        for (let month = 0; month < 12; month++) {
+          const monthInterest = balance * r;
+          const monthPrincipal = emi - monthInterest;
+          yearPrincipal += monthPrincipal;
+          yearInterest += monthInterest;
+          balance -= monthPrincipal;
+        }
+        scheduleHTML += `
+          <tr style="border-top:1px solid #f0f0f0;">
+            <td style="padding:10px;">Year ${year}</td>
+            <td style="padding:10px; text-align:right; color:#c9a227; font-weight:500;">${formatINR(yearPrincipal)}</td>
+            <td style="padding:10px; text-align:right; color:#0f1f3d;">${formatINR(yearInterest)}</td>
+            <td style="padding:10px; text-align:right; font-weight:600;">${formatINR(Math.max(0, balance))}</td>
+          </tr>
+        `;
+      }
+      document.getElementById('amortizationBody').innerHTML = scheduleHTML;
       document.getElementById('emiResult').style.display = 'block';
+    }
+
+    function showSIPTab(tab) {
+      document.getElementById('sipRegular').style.display = tab === 'regular' ? 'block' : 'none';
+      document.getElementById('sipStepup').style.display = tab === 'stepup' ? 'block' : 'none';
+      document.getElementById('sipGoal').style.display = tab === 'goal' ? 'block' : 'none';
+      document.getElementById('sipResult').style.display = 'none';
+      
+      // Update button styles
+      document.getElementById('sipTabRegular').style.background = tab === 'regular' ? '#c9a227' : '#f8f9fa';
+      document.getElementById('sipTabRegular').style.color = tab === 'regular' ? 'white' : '#0f1f3d';
+      document.getElementById('sipTabStepup').style.background = tab === 'stepup' ? '#c9a227' : '#f8f9fa';
+      document.getElementById('sipTabStepup').style.color = tab === 'stepup' ? 'white' : '#0f1f3d';
+      document.getElementById('sipTabGoal').style.background = tab === 'goal' ? '#c9a227' : '#f8f9fa';
+      document.getElementById('sipTabGoal').style.color = tab === 'goal' ? 'white' : '#0f1f3d';
     }
 
     function calcSIP() {
@@ -1046,31 +1498,131 @@
       const invested = P * n;
       const gains = fv - invested;
 
+      document.getElementById('sipResultLabel').textContent = 'Maturity Value';
       document.getElementById('sipValue').textContent = formatINR(fv);
-      document.getElementById('sipSub').textContent = `Invested: ${formatINR(invested)} · Gains: ${formatINR(gains)}`;
+      document.getElementById('sipSub').textContent = `Over ${n/12} years`;
+      document.getElementById('sipInvested').textContent = formatINR(invested);
+      document.getElementById('sipGains').textContent = formatINR(gains);
+
+      const investedPct = (invested / fv * 100).toFixed(1);
+      const gainsPct = (gains / fv * 100).toFixed(1);
+      document.getElementById('sipInvestedBar').style.width = investedPct + '%';
+      document.getElementById('sipGainsBar').style.width = gainsPct + '%';
+      document.getElementById('sipInvestedPct').textContent = investedPct + '%';
+      document.getElementById('sipGainsPct').textContent = gainsPct + '%';
+
       document.getElementById('sipResult').style.display = 'block';
+    }
+
+    function calcStepupSIP() {
+      const initialP = parseFloat(document.getElementById('stepupAmount').value);
+      const stepupPct = parseFloat(document.getElementById('stepupRate').value) / 100;
+      const annualReturn = parseFloat(document.getElementById('stepupReturn').value) / 100;
+      const years = parseInt(document.getElementById('stepupYears').value);
+      const r = annualReturn / 12;
+
+      let totalInvested = 0;
+      let fv = 0;
+      let monthlyInvestment = initialP;
+
+      for (let year = 0; year < years; year++) {
+        for (let month = 0; month < 12; month++) {
+          fv = (fv + monthlyInvestment) * (1 + r);
+          totalInvested += monthlyInvestment;
+        }
+        monthlyInvestment *= (1 + stepupPct);
+      }
+
+      const gains = fv - totalInvested;
+
+      document.getElementById('sipResultLabel').textContent = 'Maturity Value (Step-up)';
+      document.getElementById('sipValue').textContent = formatINR(fv);
+      document.getElementById('sipSub').textContent = `Over ${years} years with ${stepupPct*100}% annual step-up`;
+      document.getElementById('sipInvested').textContent = formatINR(totalInvested);
+      document.getElementById('sipGains').textContent = formatINR(gains);
+
+      const investedPct = (totalInvested / fv * 100).toFixed(1);
+      const gainsPct = (gains / fv * 100).toFixed(1);
+      document.getElementById('sipInvestedBar').style.width = investedPct + '%';
+      document.getElementById('sipGainsBar').style.width = gainsPct + '%';
+      document.getElementById('sipInvestedPct').textContent = investedPct + '%';
+      document.getElementById('sipGainsPct').textContent = gainsPct + '%';
+
+      document.getElementById('sipResult').style.display = 'block';
+    }
+
+    function calcGoalSIP() {
+      const goal = parseFloat(document.getElementById('goalAmount').value);
+      const years = parseInt(document.getElementById('goalYears').value);
+      const annualReturn = parseFloat(document.getElementById('goalReturn').value) / 100;
+      const r = annualReturn / 12;
+      const n = years * 12;
+
+      const requiredSIP = goal / (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+      const totalInvested = requiredSIP * n;
+      const gains = goal - totalInvested;
+
+      document.getElementById('sipResultLabel').textContent = 'Required Monthly SIP';
+      document.getElementById('sipValue').textContent = formatINR(requiredSIP);
+      document.getElementById('sipSub').textContent = `To reach ${formatINR(goal)} in ${years} years`;
+      document.getElementById('sipInvested').textContent = formatINR(totalInvested);
+      document.getElementById('sipGains').textContent = formatINR(gains);
+
+      const investedPct = (totalInvested / goal * 100).toFixed(1);
+      const gainsPct = (gains / goal * 100).toFixed(1);
+      document.getElementById('sipInvestedBar').style.width = investedPct + '%';
+      document.getElementById('sipGainsBar').style.width = gainsPct + '%';
+      document.getElementById('sipInvestedPct').textContent = investedPct + '%';
+      document.getElementById('sipGainsPct').textContent = gainsPct + '%';
+
+      document.getElementById('sipResult').style.display = 'block';
+    }
+
+    function updateEligibilityPresets() {
+      const type = document.getElementById('eligType').value;
+      const presets = {
+        home: { rate: 8.5, years: 20 },
+        personal: { rate: 12.5, years: 5 },
+        car: { rate: 9.5, years: 7 },
+        education: { rate: 8.0, years: 10 }
+      };
+      const p = presets[type];
+      document.getElementById('eligRate').value = p.rate;
+      document.getElementById('eligYears').value = p.years;
     }
 
     function calcEligibility() {
       const income = parseFloat(document.getElementById('eligIncome').value);
+      const coIncome = parseFloat(document.getElementById('eligCoIncome').value) || 0;
       const existingEMI = parseFloat(document.getElementById('eligEMI').value);
       const rate = parseFloat(document.getElementById('eligRate').value) / 12 / 100;
       const years = parseInt(document.getElementById('eligYears').value);
       const n = years * 12;
 
-      // FOIR: 50% of income
-      const maxEMI = (income * 0.5) - existingEMI;
-      if (maxEMI <= 0) {
+      const totalIncome = income + coIncome;
+      const maxEMICapacity = totalIncome * 0.5; // 50% FOIR
+      const availableEMI = maxEMICapacity - existingEMI;
+
+      // Display breakdown
+      document.getElementById('eligTotalIncome').textContent = formatINR(totalIncome);
+      document.getElementById('eligExistingEMI').textContent = formatINR(existingEMI);
+      document.getElementById('eligMaxEMI').textContent = formatINR(maxEMICapacity);
+      document.getElementById('eligAvailable').textContent = formatINR(availableEMI);
+      
+      const currentFOIR = ((existingEMI / totalIncome) * 100).toFixed(1);
+      document.getElementById('eligFOIR').textContent = currentFOIR + '%';
+
+      if (availableEMI <= 0) {
         document.getElementById('eligValue').textContent = 'Not eligible';
         document.getElementById('eligSub').textContent = 'Your existing EMIs exceed 50% of income.';
         document.getElementById('eligResult').style.display = 'block';
         return;
       }
 
-      const loanAmount = maxEMI * (Math.pow(1 + rate, n) - 1) / (rate * Math.pow(1 + rate, n));
+      const loanAmount = availableEMI * (Math.pow(1 + rate, n) - 1) / (rate * Math.pow(1 + rate, n));
 
       document.getElementById('eligValue').textContent = formatINR(loanAmount);
-      document.getElementById('eligSub').textContent = `Max EMI: ${formatINR(maxEMI)} · Tenure: ${years} years`;
+      document.getElementById('eligSub').textContent = `Max EMI: ${formatINR(availableEMI)} · Tenure: ${years} years`;
       document.getElementById('eligResult').style.display = 'block';
     }
 
@@ -1083,7 +1635,73 @@
       document.getElementById('budgetNeeds').textContent = formatINR(needs);
       document.getElementById('budgetWants').textContent = formatINR(wants);
       document.getElementById('budgetSavings').textContent = formatINR(savings);
+
+      // Category breakdown (realistic distribution)
+      const categories = {
+        housing: income * 0.25,      // 25% - rent/utilities
+        food: income * 0.12,         // 12% - groceries & dining
+        transport: income * 0.08,    // 8% - transportation
+        entertainment: income * 0.08, // 8% - entertainment
+        health: income * 0.07,       // 7% - healthcare & insurance
+        debt: income * 0.10,         // 10% - debt payments
+        savings: income * 0.20       // 20% - investments & savings
+      };
+
+      document.getElementById('catHousing').textContent = formatINR(categories.housing);
+      document.getElementById('catFood').textContent = formatINR(categories.food);
+      document.getElementById('catTransport').textContent = formatINR(categories.transport);
+      document.getElementById('catEntertainment').textContent = formatINR(categories.entertainment);
+      document.getElementById('catHealth').textContent = formatINR(categories.health);
+      document.getElementById('catDebt').textContent = formatINR(categories.debt);
+      document.getElementById('catSavings').textContent = formatINR(categories.savings);
+
       document.getElementById('budgetResult').style.display = 'block';
+    }
+
+    // Blog filtering
+    function filterBlog(category) {
+      const items = document.querySelectorAll('.blog-item');
+      const buttons = document.querySelectorAll('#blogGrid').parentElement.querySelectorAll('button');
+      
+      // Update button styles
+      buttons.forEach(btn => {
+        btn.style.background = '#f8f9fa';
+        btn.style.color = '#0f1f3d';
+      });
+      event.target.style.background = '#c9a227';
+      event.target.style.color = 'white';
+      
+      // Filter items
+      items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Credit card filtering
+    function filterCards(category) {
+      const items = document.querySelectorAll('.card-item');
+      const buttons = document.querySelectorAll('#cardsGrid').parentElement.querySelectorAll('button');
+      
+      // Update button styles
+      buttons.forEach(btn => {
+        btn.style.background = '#f8f9fa';
+        btn.style.color = '#0f1f3d';
+      });
+      event.target.style.background = '#c9a227';
+      event.target.style.color = 'white';
+      
+      // Filter items
+      items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
     }
   </script>
 

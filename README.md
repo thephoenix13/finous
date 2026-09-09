@@ -7,7 +7,15 @@ Three pages (HashRouter, static-host friendly), each with its own waitlist:
 - **`/` — Landing**: concept introduction ("One layer. Two directions."), live intelligence console, market stats, moat teaser.
 - **`/b2b` — For Institutions**: business case, regulated segments, platform architecture, moat, security & governance, pilot program, institution FAQ.
 - **`/b2c` — For Customers**: live phone mock, unified ledger, Hindi/English AI advisor demo, how it works, privacy promises.
-- **`/app` — Day 0 Tools** (standalone HTML at `public/app/index.html`): Six tools — EMI Calculator, SIP Calculator, Loan Eligibility, Budgeting Tool, Blog, Credit Card Picks — all with working calculator logic. Apple-inspired design, same visual identity as the main site.
+- **`/app` — Day 0 Tools** (standalone HTML at `public/app/index.html`): Six detailed tools with full functionality:
+  - **EMI Calculator**: Loan type presets, amortization schedule, principal vs interest breakdown with visual bars
+  - **SIP Calculator**: Regular SIP, Step-up SIP (annual increase), Goal-based reverse calculator
+  - **Loan Eligibility**: Multiple loan types, co-applicant support, FOIR breakdown, credit score impact
+  - **Budgeting Tool**: 50/30/20 rule with detailed category breakdown (housing, food, transport, etc.)
+  - **Blog**: 8 realistic articles with category filters (Investing, Credit, Budgeting, Tax) and newsletter signup
+  - **Credit Card Picks**: 6 cards with detailed comparisons, category filters (Travel, Cashback, Rewards, Fuel)
+
+  All tools open in modals with working calculation logic. Apple-inspired design, same visual identity as the main site.
 
 ## Tech stack
 
