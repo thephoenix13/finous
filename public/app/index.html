@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="Finous Day 0 tools — EMI Calculator, SIP Calculator, Loan Eligibility, Budgeting Tool, and more. No sign-up needed." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>Finous App — Understand your money. Grow your money.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,7 +30,10 @@
       --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
-    html { scroll-behavior: smooth; }
+    html { 
+      scroll-behavior: smooth;
+      height: 100%;
+    }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -37,106 +42,350 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      height: 100%;
+      position: fixed;
+      width: 100%;
     }
 
     ::selection { background: var(--gold); color: var(--navy); }
 
     a { color: inherit; text-decoration: none; }
 
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 24px;
+    /* ===== App Container ===== */
+    .app-container {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
 
-    /* ===== Header ===== */
-    .header {
-      position: fixed;
+    /* ===== Screen System ===== */
+    .screen {
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+      transform: translateX(20px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+
+    .screen.exit {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    /* ===== App Header ===== */
+    .app-header {
+      position: sticky;
+      top: 0;
       z-index: 100;
-      background: rgba(250, 250, 252, 0.82);
+      background: rgba(250, 250, 252, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(15, 31, 61, 0.06);
-      transition: background 0.3s var(--ease);
-    }
-
-    .header-inner {
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .logo {
+    .app-logo {
       font-weight: 700;
       font-size: 20px;
       color: var(--gold);
       letter-spacing: -0.02em;
     }
 
-    .back-link {
-      font-size: 13px;
+    .app-back {
+      font-size: 14px;
       font-weight: 500;
       color: var(--muted);
       display: flex;
       align-items: center;
-      gap: 4px;
-      transition: color 0.2s ease;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
     }
 
-    .back-link:hover { color: var(--navy); }
+    .app-back:hover {
+      background: rgba(15, 31, 61, 0.05);
+      color: var(--navy);
+    }
 
-    .btn-gold {
+    /* ===== Buttons ===== */
+    .btn-primary {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       background: var(--gold);
       color: var(--navy);
       font-weight: 600;
-      font-size: 14px;
-      padding: 10px 20px;
-      border-radius: 999px;
+      font-size: 16px;
+      padding: 16px 32px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
       transition: all 0.25s var(--ease);
       box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+      width: 100%;
+      max-width: 320px;
     }
 
-    .btn-gold:hover {
-      transform: translateY(-1px);
+    .btn-primary:hover {
+      transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
       background: #d4ad31;
     }
 
-    /* ===== Hero ===== */
-    .hero {
-      padding: 140px 0 80px;
-      text-align: center;
+    .btn-primary:active {
+      transform: translateY(0);
     }
 
-    .hero h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 16px;
+      padding: 16px 32px;
+      border-radius: 12px;
+      border: 2px solid rgba(15, 31, 61, 0.1);
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      background: rgba(201, 162, 39, 0.05);
+    }
+
+    /* ===== Welcome Screen ===== */
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      min-height: 100%;
+    }
+
+    .welcome-logo {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .welcome-title {
+      font-size: 32px;
       font-weight: 700;
       color: var(--navy);
-      letter-spacing: -0.03em;
-      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .welcome-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      max-width: 320px;
+    }
+
+    .welcome-form {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .welcome-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid rgba(15, 31, 61, 0.1);
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      background: var(--card);
+      color: var(--ink);
+      transition: border-color 0.2s ease;
+    }
+
+    .welcome-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .welcome-input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* ===== Greeting Screen ===== */
+    .greeting-screen {
+      padding: 24px 20px;
+    }
+
+    .greeting-header {
+      margin-bottom: 32px;
+    }
+
+    .greeting-text {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .greeting-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .tools-section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
       margin-bottom: 16px;
     }
 
-    .hero p {
-      font-size: clamp(1rem, 2vw, 1.15rem);
+    .tools-section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .tools-section-subtitle {
+      font-size: 14px;
       color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto;
+      margin-bottom: 24px;
+    }
+
+    /* ===== Tools Grid ===== */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 640px) {
+      .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .tool-card {
+      background: var(--card);
+      border: 1px solid rgba(15, 31, 61, 0.06);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      transition: all 0.3s var(--ease);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 160px;
+    }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+      pointer-events: none;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tool-card:hover::before {
+      border-color: var(--gold);
+    }
+
+    .tool-card:active {
+      transform: translateY(-2px);
+    }
+
+    .tool-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: var(--gold-light);
+      border-radius: 12px;
+    }
+
+    .tool-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .tool-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .tool-link {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tool-card.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .tool-card.disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .tool-card.disabled::before {
+      border-color: transparent !important;
     }
 
     /* ===== Section Base ===== */
@@ -260,153 +509,61 @@
 
     .tool-card:hover .tool-link { gap: 8px; }
 
-    /* ===== How It Works ===== */
-    .how-section {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 64px 48px;
-      margin: 0 24px;
-      box-shadow: var(--shadow-sm);
+    /* ===== Tool Screen ===== */
+    .tool-screen {
+      padding: 24px 20px;
     }
 
-    @media (max-width: 600px) {
-      .how-section { padding: 48px 24px; margin: 0 16px; }
-    }
-
-    .steps {
+    .tool-screen-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0;
-      margin-top: 48px;
-    }
-
-    @media (max-width: 700px) {
-      .steps { flex-direction: column; gap: 0; }
-    }
-
-    .step {
-      text-align: center;
-      flex: 1;
-      max-width: 220px;
-    }
-
-    .step-icon {
-      font-size: 36px;
-      margin-bottom: 14px;
-    }
-
-    .step h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 6px;
-    }
-
-    .step p {
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-
-    .step-arrow {
-      color: var(--gold);
-      font-size: 20px;
-      padding: 0 16px;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 700px) {
-      .step-arrow {
-        transform: rotate(90deg);
-        padding: 12px 0;
-      }
-    }
-
-    /* ===== Waitlist ===== */
-    .waitlist {
-      text-align: center;
-    }
-
-    .waitlist-form {
-      display: flex;
       gap: 12px;
-      max-width: 460px;
-      margin: 32px auto 0;
-      flex-wrap: wrap;
-      justify-content: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(15, 31, 61, 0.06);
     }
 
-    .waitlist-form input {
-      flex: 1;
-      min-width: 220px;
-      padding: 14px 20px;
-      border: 1.5px solid rgba(15, 31, 61, 0.12);
-      border-radius: 999px;
-      font-size: 15px;
-      font-family: inherit;
-      background: var(--card);
-      color: var(--ink);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    .tool-screen-icon {
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      background: var(--gold-light);
+      border-radius: 10px;
     }
 
-    .waitlist-form input::placeholder { color: #9ca3af; }
-
-    .waitlist-form input:focus {
-      outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.12);
-    }
-
-    .waitlist-form input.invalid {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
-    }
-
-    .waitlist-note {
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .waitlist-success {
-      display: none;
-      margin-top: 24px;
-      padding: 20px 28px;
-      background: var(--card);
-      border: 1px solid rgba(201, 162, 39, 0.3);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--shadow-md);
-      animation: fadeUp 0.4s var(--ease);
-    }
-
-    .waitlist-success.show { display: block; }
-
-    .waitlist-success h4 {
+    .tool-screen-title {
+      font-size: 20px;
+      font-weight: 700;
       color: var(--navy);
-      font-size: 1rem;
-      margin-bottom: 4px;
+      letter-spacing: -0.01em;
     }
 
-    .waitlist-success p {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .waitlist-error {
-      display: none;
-      margin-top: 12px;
-      font-size: 13px;
-      color: #ef4444;
+    .tool-screen-back {
+      margin-left: auto;
+      font-size: 14px;
       font-weight: 500;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
 
-    .waitlist-error.show { display: block; }
+    .tool-screen-back:hover {
+      background: rgba(15, 31, 61, 0.05);
+      color: var(--navy);
+    }
 
     /* ===== Footer ===== */
-    .footer {
-      border-top: 1px solid rgba(201, 162, 39, 0.2);
-      padding: 40px 0;
+    .app-footer {
+      margin-top: auto;
+      padding: 24px 20px;
       text-align: center;
+      border-top: 1px solid rgba(201, 162, 39, 0.2);
     }
 
     .footer-logo {
@@ -419,16 +576,16 @@
     .footer-nidhi {
       font-size: 12px;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .footer-links {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 24px;
+      gap: 20px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .footer-links a {
@@ -464,75 +621,93 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== Tool Modals ===== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(15, 31, 61, 0.5);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .modal-overlay.open { display: flex; }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
 
-    .modal {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      max-width: 520px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 36px;
-      animation: modalIn 0.3s var(--ease);
+    /* ===== Calculator Styles ===== */
+    .calc-group {
+      margin-bottom: 20px;
     }
 
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(12px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .modal-header h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
+    .calc-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--navy);
+      margin-bottom: 8px;
     }
 
-    .modal-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
+    .calc-group input,
+    .calc-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid rgba(15, 31, 61, 0.1);
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--ink);
       background: var(--bg);
-      color: var(--muted);
-      font-size: 18px;
+      transition: border-color 0.2s ease;
+    }
+
+    .calc-group input:focus,
+    .calc-group select:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .calc-result {
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--navy);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      text-align: center;
+    }
+
+    .calc-result-label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 6px;
+    }
+
+    .calc-result-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .calc-result-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 8px;
+    }
+
+    .calc-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      display: grid;
-      place-items: center;
+      margin-top: 8px;
       transition: all 0.2s ease;
     }
 
-    .modal-close:hover {
-      background: var(--gold-light);
-      color: var(--navy);
+    .calc-btn:hover {
+      background: #d4ad31;
+      transform: translateY(-1px);
+    }
+
+    .calc-btn:active {
+      transform: translateY(0);
     }
 
     .calc-group {
@@ -652,205 +827,243 @@
       border-radius: 4px;
       margin-bottom: 8px;
     }
+
+    /* ===== Desktop Optimization ===== */
+    @media (min-width: 768px) {
+      .welcome-screen {
+        padding: 80px 40px;
+      }
+
+      .welcome-logo {
+        font-size: 64px;
+      }
+
+      .welcome-title {
+        font-size: 48px;
+      }
+
+      .welcome-subtitle {
+        font-size: 18px;
+      }
+
+      .greeting-screen {
+        padding: 40px;
+      }
+
+      .greeting-text {
+        font-size: 48px;
+      }
+
+      .tools-grid {
+        gap: 24px;
+      }
+
+      .tool-card {
+        padding: 32px 28px;
+        min-height: 180px;
+      }
+
+      .tool-screen {
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-inner">
-      <div class="header-left">
-        <span class="logo">Finous</span>
-        <a href="https://www.finous.site/" class="back-link">← Back to Finous</a>
-      </div>
-      <a href="#waitlist" class="btn-gold">Join Waitlist</a>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1 class="fade-up">Six tools. One picture.</h1>
-      <p class="fade-up">Before the full app launches, start here – no sign-up, no licence, just your numbers.</p>
-    </div>
-  </section>
-
-  <!-- Day 0 Tools -->
-  <section id="tools">
-    <div class="container">
-      <div class="section-head fade-up">
-        <p class="section-label">Start Here</p>
-        <h2 class="section-title">Understand your money – before the app even launches.</h2>
-        <p class="section-sub">No sign-up needed. No licence required. Just honest numbers.</p>
-      </div>
-
-      <div class="tools-grid">
-        <div class="tool-card fade-up" data-tool="emi">
-          <div class="tool-icon">📊</div>
-          <h3>EMI Calculator</h3>
-          <p>Calculate your monthly EMI for any loan amount, tenure, and interest rate.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="sip">
-          <div class="tool-icon">💰</div>
-          <h3>SIP Calculator</h3>
-          <p>See how your monthly SIP grows over time with compound returns.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="eligibility">
-          <div class="tool-icon">📈</div>
-          <h3>Loan Eligibility</h3>
-          <p>Find out how much loan you can get based on your income and existing EMIs.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="budget">
-          <div class="tool-icon">💳</div>
-          <h3>Budgeting Tool</h3>
-          <p>Plan your monthly budget with the 50/30/20 rule and track spending.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <a href="/app/reading-resources/" class="tool-card fade-up" style="text-decoration:none; color:inherit;">
-          <div class="tool-icon">📝</div>
-          <h3>Reading Resources</h3>
-          <p>Guides, explainers and insights on personal finance, investing, and smart money habits.</p>
-          <span class="tool-link">Browse library →</span>
-        </a>
-
-        <div class="tool-card fade-up" style="opacity: 0.6; cursor: not-allowed;">
-          <div class="tool-icon">🎯</div>
-          <h3>Credit Card Picks</h3>
-          <p>Compare and find the best credit cards based on your spending patterns.</p>
-          <span class="tool-link" style="color: #9ca3af;">Coming Soon</span>
-        </div>
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Screen 1: Welcome -->
+    <div class="screen active" id="welcomeScreen">
+      <div class="welcome-screen">
+        <div class="welcome-logo">Finous</div>
+        <h1 class="welcome-title">Welcome</h1>
+        <p class="welcome-subtitle">What should we call you?</p>
+        <form class="welcome-form" id="welcomeForm">
+          <input 
+            type="text" 
+            class="welcome-input" 
+            id="nameInput" 
+            placeholder="Enter your name" 
+            required
+            autocomplete="given-name"
+          />
+          <button type="submit" class="btn-primary">Continue</button>
+        </form>
       </div>
     </div>
-  </section>
 
-  <!-- How It Works -->
-  <section>
-    <div class="how-section fade-up">
-      <div class="section-head">
-        <p class="section-label">Simple as 1, 2, 3</p>
-        <h2 class="section-title">From fragmented to unified.</h2>
+    <!-- Screen 2: Greeting + Tools -->
+    <div class="screen" id="greetingScreen">
+      <div class="app-header">
+        <span class="app-logo">Finous</span>
+        <a href="https://www.finous.site/" class="app-back">← Back to Finous</a>
+      </div>
+      
+      <div class="greeting-screen">
+        <div class="greeting-header">
+          <h1 class="greeting-text">Hello, <span id="userName"></span> 👋</h1>
+          <p class="greeting-subtitle">Six tools. One picture. No sign-up needed.</p>
+        </div>
+
+        <p class="tools-section-label">Start Here</p>
+        <h2 class="tools-section-title">Understand your money</h2>
+        <p class="tools-section-subtitle">No licence required. Just honest numbers.</p>
+
+        <div class="tools-grid">
+          <div class="tool-card" data-tool="emi">
+            <div class="tool-icon">📊</div>
+            <h3>EMI Calculator</h3>
+            <p>Calculate monthly EMI for any loan</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <div class="tool-card" data-tool="sip">
+            <div class="tool-icon">💰</div>
+            <h3>SIP Calculator</h3>
+            <p>See your investments grow over time</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <div class="tool-card" data-tool="eligibility">
+            <div class="tool-icon">📈</div>
+            <h3>Loan Eligibility</h3>
+            <p>Find out how much you can borrow</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <div class="tool-card" data-tool="budget">
+            <div class="tool-icon">💳</div>
+            <h3>Budgeting Tool</h3>
+            <p>Plan with the 50/30/20 rule</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <a href="/app/reading-resources/" class="tool-card" style="text-decoration:none; color:inherit;">
+            <div class="tool-icon">📝</div>
+            <h3>Reading Resources</h3>
+            <p>Guides and insights on finance</p>
+            <span class="tool-link">Browse →</span>
+          </a>
+
+          <div class="tool-card disabled">
+            <div class="tool-icon">🎯</div>
+            <h3>Credit Card Picks</h3>
+            <p>Compare and find the best cards</p>
+            <span class="tool-link" style="color: #9ca3af;">Coming Soon</span>
+          </div>
+        </div>
       </div>
 
-      <div class="steps">
-        <div class="step">
-          <div class="step-icon">🤝</div>
-          <h4>One consent tap</h4>
-          <p>Link your accounts securely via Account Aggregator.</p>
+      <div class="app-footer">
+        <div class="footer-logo">Finous</div>
+        <p class="footer-nidhi">by Nidhiverse Pvt Ltd</p>
+        <div class="footer-links">
+          <a href="mailto:founder@finous.site">founder@finous.site</a>
+          <a href="https://www.linkedin.com/company/finous" target="_blank" rel="noopener">LinkedIn</a>
         </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-icon">📊</div>
-          <h4>Everything in one screen</h4>
-          <p>All your balances, loans, and investments — unified.</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-icon">🤖</div>
-          <h4>AI tells you what to do</h4>
-          <p>Personalised advice in Hindi and English.</p>
-        </div>
+        <p class="footer-confidential">Confidential · Not for distribution</p>
       </div>
     </div>
-  </section>
 
-  <!-- Waitlist -->
-  <section id="waitlist" class="waitlist">
-    <div class="container">
-      <div class="fade-up">
-        <p class="section-label">Get Early Access</p>
-        <h2 class="section-title">Be the first to know when we launch.</h2>
-        <p class="section-sub" style="margin: 0 auto;">No spam. Just one email when we're ready.</p>
+    <!-- Screen 3: Tool Interface -->
+    <div class="screen" id="toolScreen">
+      <div class="app-header">
+        <span class="app-logo">Finous</span>
+        <button class="tool-screen-back" onclick="showGreetingScreen()">← Back</button>
       </div>
-
-      <form class="waitlist-form fade-up" id="waitlistForm">
-        <input type="email" id="waitlistEmail" placeholder="Enter your email address" required />
-        <button type="submit" class="btn-gold">Join Waitlist</button>
-      </form>
-
-      <p class="waitlist-error" id="waitlistError">Please enter a valid email address.</p>
-
-      <div class="waitlist-success" id="waitlistSuccess">
-        <h4>You're on the list! We'll reach out soon.</h4>
-        <p>Keep an eye on your inbox — we'll send one email when we're ready.</p>
+      
+      <div class="tool-screen">
+        <div class="tool-screen-header">
+          <div class="tool-screen-icon" id="toolScreenIcon"></div>
+          <h2 class="tool-screen-title" id="toolScreenTitle"></h2>
+        </div>
+        <div id="toolScreenContent"></div>
       </div>
-
-      <p class="waitlist-note fade-up">We'll never share your data. Unsubscribe anytime.</p>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-logo">Finous</div>
-      <p class="footer-nidhi">by Nidhiverse Pvt Ltd</p>
-      <div class="footer-links">
-        <a href="mailto:founder@finous.site">founder@finous.site</a>
-        <a href="https://www.linkedin.com/company/finous" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://www.finous.site/">Main Site</a>
-      </div>
-      <p class="footer-confidential">Confidential · Not for distribution</p>
-    </div>
-  </footer>
-
-  <!-- Modals -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modalContent"></div>
   </div>
 
   <script>
-    // ===== Scroll Animations =====
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+    // ===== App State Management =====
+    const screens = {
+      welcome: document.getElementById('welcomeScreen'),
+      greeting: document.getElementById('greetingScreen'),
+      tool: document.getElementById('toolScreen')
+    };
+
+    // Check if user already has a name saved
+    function initApp() {
+      const savedName = localStorage.getItem('finousUserName');
+      if (savedName) {
+        document.getElementById('userName').textContent = savedName;
+        showScreen('greeting');
+      } else {
+        showScreen('welcome');
+      }
+    }
+
+    // Screen transition
+    function showScreen(screenName) {
+      Object.values(screens).forEach(screen => {
+        screen.classList.remove('active');
+        screen.classList.add('exit');
+      });
+
+      setTimeout(() => {
+        Object.values(screens).forEach(screen => {
+          screen.classList.remove('exit');
+        });
+        screens[screenName].classList.add('active');
+        screens[screenName].scrollTop = 0;
+      }, 50);
+    }
+
+    // Welcome form submission
+    document.getElementById('welcomeForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      if (name) {
+        localStorage.setItem('finousUserName', name);
+        document.getElementById('userName').textContent = name;
+        showScreen('greeting');
+      }
+    });
+
+    // Show greeting screen
+    function showGreetingScreen() {
+      showScreen('greeting');
+    }
+
+    // Tool card clicks
+    document.querySelectorAll('.tool-card:not(.disabled)').forEach(card => {
+      card.addEventListener('click', () => {
+        const toolKey = card.dataset.tool;
+        if (toolKey && tools[toolKey]) {
+          openTool(toolKey);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // ===== Waitlist Form =====
-    const form = document.getElementById('waitlistForm');
-    const emailInput = document.getElementById('waitlistEmail');
-    const errorMsg = document.getElementById('waitlistError');
-    const successMsg = document.getElementById('waitlistSuccess');
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-      if (!emailRegex.test(email)) {
-        emailInput.classList.add('invalid');
-        errorMsg.classList.add('show');
-        return;
-      }
-
-      emailInput.classList.remove('invalid');
-      errorMsg.classList.remove('show');
-      form.style.display = 'none';
-      successMsg.classList.add('show');
     });
 
-    emailInput.addEventListener('input', () => {
-      emailInput.classList.remove('invalid');
-      errorMsg.classList.remove('show');
-    });
+    // Open tool
+    function openTool(toolKey) {
+      const tool = tools[toolKey];
+      if (!tool) return;
 
-    // ===== Tool Modals =====
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalContent = document.getElementById('modalContent');
+      document.getElementById('toolScreenIcon').innerHTML = tool.icon;
+      document.getElementById('toolScreenTitle').textContent = tool.title;
+      document.getElementById('toolScreenContent').innerHTML = tool.html;
+      
+      showScreen('tool');
+    }
 
+    // ===== Tools Data =====
     const tools = {
       emi: {
+        icon: '📊',
         title: 'EMI Calculator',
         html: `
           <div class="calc-group">
@@ -927,6 +1140,7 @@
         `
       },
       sip: {
+        icon: '💰',
         title: 'SIP Calculator',
         html: `
           <div style="display:flex; gap:8px; margin-bottom:20px;">
@@ -1020,6 +1234,7 @@
         `
       },
       eligibility: {
+        icon: '📈',
         title: 'Loan Eligibility',
         html: `
           <div class="calc-group">
@@ -1102,6 +1317,7 @@
         `
       },
       budget: {
+        icon: '💳',
         title: 'Budgeting Tool',
         html: `
           <div class="calc-group">
@@ -1294,36 +1510,7 @@
       }
     };
 
-    document.querySelectorAll('.tool-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const toolKey = card.dataset.tool;
-        const tool = tools[toolKey];
-        if (!tool) return;
-
-        modalContent.innerHTML = `
-          <div class="modal-header">
-            <h3>${tool.title}</h3>
-            <button class="modal-close" onclick="closeModal()">✕</button>
-          </div>
-          ${tool.html}
-        `;
-        modalOverlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      });
-    });
-
-    function closeModal() {
-      modalOverlay.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) closeModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
+    // Tool cards are now handled in the initApp section above
 
     // ===== Calculator Logic =====
     function formatINR(num) {
@@ -1606,6 +1793,9 @@
         }
       });
     }
+
+    // Initialize app on page load
+    initApp();
   </script>
 
 </body>
