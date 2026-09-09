@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="Finous Day 0 tools — EMI Calculator, SIP Calculator, Loan Eligibility, Budgeting Tool, and more. No sign-up needed." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>Finous App — Understand your money. Grow your money.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,7 +30,10 @@
       --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
-    html { scroll-behavior: smooth; }
+    html { 
+      scroll-behavior: smooth;
+      height: 100%;
+    }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -37,106 +42,350 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      height: 100%;
+      position: fixed;
+      width: 100%;
     }
 
     ::selection { background: var(--gold); color: var(--navy); }
 
     a { color: inherit; text-decoration: none; }
 
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 24px;
+    /* ===== App Container ===== */
+    .app-container {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
 
-    /* ===== Header ===== */
-    .header {
-      position: fixed;
+    /* ===== Screen System ===== */
+    .screen {
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+      transform: translateX(20px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+
+    .screen.exit {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    /* ===== App Header ===== */
+    .app-header {
+      position: sticky;
+      top: 0;
       z-index: 100;
-      background: rgba(250, 250, 252, 0.82);
+      background: rgba(250, 250, 252, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(15, 31, 61, 0.06);
-      transition: background 0.3s var(--ease);
-    }
-
-    .header-inner {
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .logo {
+    .app-logo {
       font-weight: 700;
       font-size: 20px;
       color: var(--gold);
       letter-spacing: -0.02em;
     }
 
-    .back-link {
-      font-size: 13px;
+    .app-back {
+      font-size: 14px;
       font-weight: 500;
       color: var(--muted);
       display: flex;
       align-items: center;
-      gap: 4px;
-      transition: color 0.2s ease;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
     }
 
-    .back-link:hover { color: var(--navy); }
+    .app-back:hover {
+      background: rgba(15, 31, 61, 0.05);
+      color: var(--navy);
+    }
 
-    .btn-gold {
+    /* ===== Buttons ===== */
+    .btn-primary {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       background: var(--gold);
       color: var(--navy);
       font-weight: 600;
-      font-size: 14px;
-      padding: 10px 20px;
-      border-radius: 999px;
+      font-size: 16px;
+      padding: 16px 32px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
       transition: all 0.25s var(--ease);
       box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+      width: 100%;
+      max-width: 320px;
     }
 
-    .btn-gold:hover {
-      transform: translateY(-1px);
+    .btn-primary:hover {
+      transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
       background: #d4ad31;
     }
 
-    /* ===== Hero ===== */
-    .hero {
-      padding: 140px 0 80px;
-      text-align: center;
+    .btn-primary:active {
+      transform: translateY(0);
     }
 
-    .hero h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 16px;
+      padding: 16px 32px;
+      border-radius: 12px;
+      border: 2px solid rgba(15, 31, 61, 0.1);
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      background: rgba(201, 162, 39, 0.05);
+    }
+
+    /* ===== Welcome Screen ===== */
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+      min-height: 100%;
+    }
+
+    .welcome-logo {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .welcome-title {
+      font-size: 32px;
       font-weight: 700;
       color: var(--navy);
-      letter-spacing: -0.03em;
-      line-height: 1.1;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .welcome-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      max-width: 320px;
+    }
+
+    .welcome-form {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .welcome-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid rgba(15, 31, 61, 0.1);
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      background: var(--card);
+      color: var(--ink);
+      transition: border-color 0.2s ease;
+    }
+
+    .welcome-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .welcome-input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* ===== Greeting Screen ===== */
+    .greeting-screen {
+      padding: 24px 20px;
+    }
+
+    .greeting-header {
+      margin-bottom: 32px;
+    }
+
+    .greeting-text {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .greeting-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .tools-section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
       margin-bottom: 16px;
     }
 
-    .hero p {
-      font-size: clamp(1rem, 2vw, 1.15rem);
+    .tools-section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .tools-section-subtitle {
+      font-size: 14px;
       color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto;
+      margin-bottom: 24px;
+    }
+
+    /* ===== Tools Grid ===== */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 640px) {
+      .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .tool-card {
+      background: var(--card);
+      border: 1px solid rgba(15, 31, 61, 0.06);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      transition: all 0.3s var(--ease);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 160px;
+    }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+      pointer-events: none;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tool-card:hover::before {
+      border-color: var(--gold);
+    }
+
+    .tool-card:active {
+      transform: translateY(-2px);
+    }
+
+    .tool-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: var(--gold-light);
+      border-radius: 12px;
+    }
+
+    .tool-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .tool-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .tool-link {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tool-card.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .tool-card.disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .tool-card.disabled::before {
+      border-color: transparent !important;
     }
 
     /* ===== Section Base ===== */
@@ -260,153 +509,61 @@
 
     .tool-card:hover .tool-link { gap: 8px; }
 
-    /* ===== How It Works ===== */
-    .how-section {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 64px 48px;
-      margin: 0 24px;
-      box-shadow: var(--shadow-sm);
+    /* ===== Tool Screen ===== */
+    .tool-screen {
+      padding: 24px 20px;
     }
 
-    @media (max-width: 600px) {
-      .how-section { padding: 48px 24px; margin: 0 16px; }
-    }
-
-    .steps {
+    .tool-screen-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0;
-      margin-top: 48px;
-    }
-
-    @media (max-width: 700px) {
-      .steps { flex-direction: column; gap: 0; }
-    }
-
-    .step {
-      text-align: center;
-      flex: 1;
-      max-width: 220px;
-    }
-
-    .step-icon {
-      font-size: 36px;
-      margin-bottom: 14px;
-    }
-
-    .step h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 6px;
-    }
-
-    .step p {
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-
-    .step-arrow {
-      color: var(--gold);
-      font-size: 20px;
-      padding: 0 16px;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 700px) {
-      .step-arrow {
-        transform: rotate(90deg);
-        padding: 12px 0;
-      }
-    }
-
-    /* ===== Waitlist ===== */
-    .waitlist {
-      text-align: center;
-    }
-
-    .waitlist-form {
-      display: flex;
       gap: 12px;
-      max-width: 460px;
-      margin: 32px auto 0;
-      flex-wrap: wrap;
-      justify-content: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(15, 31, 61, 0.06);
     }
 
-    .waitlist-form input {
-      flex: 1;
-      min-width: 220px;
-      padding: 14px 20px;
-      border: 1.5px solid rgba(15, 31, 61, 0.12);
-      border-radius: 999px;
-      font-size: 15px;
-      font-family: inherit;
-      background: var(--card);
-      color: var(--ink);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    .tool-screen-icon {
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      background: var(--gold-light);
+      border-radius: 10px;
     }
 
-    .waitlist-form input::placeholder { color: #9ca3af; }
-
-    .waitlist-form input:focus {
-      outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 4px rgba(201, 162, 39, 0.12);
-    }
-
-    .waitlist-form input.invalid {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
-    }
-
-    .waitlist-note {
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .waitlist-success {
-      display: none;
-      margin-top: 24px;
-      padding: 20px 28px;
-      background: var(--card);
-      border: 1px solid rgba(201, 162, 39, 0.3);
-      border-radius: var(--radius-sm);
-      box-shadow: var(--shadow-md);
-      animation: fadeUp 0.4s var(--ease);
-    }
-
-    .waitlist-success.show { display: block; }
-
-    .waitlist-success h4 {
+    .tool-screen-title {
+      font-size: 20px;
+      font-weight: 700;
       color: var(--navy);
-      font-size: 1rem;
-      margin-bottom: 4px;
+      letter-spacing: -0.01em;
     }
 
-    .waitlist-success p {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .waitlist-error {
-      display: none;
-      margin-top: 12px;
-      font-size: 13px;
-      color: #ef4444;
+    .tool-screen-back {
+      margin-left: auto;
+      font-size: 14px;
       font-weight: 500;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
 
-    .waitlist-error.show { display: block; }
+    .tool-screen-back:hover {
+      background: rgba(15, 31, 61, 0.05);
+      color: var(--navy);
+    }
 
     /* ===== Footer ===== */
-    .footer {
-      border-top: 1px solid rgba(201, 162, 39, 0.2);
-      padding: 40px 0;
+    .app-footer {
+      margin-top: auto;
+      padding: 24px 20px;
       text-align: center;
+      border-top: 1px solid rgba(201, 162, 39, 0.2);
     }
 
     .footer-logo {
@@ -419,16 +576,16 @@
     .footer-nidhi {
       font-size: 12px;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .footer-links {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 24px;
+      gap: 20px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .footer-links a {
@@ -464,75 +621,93 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ===== Tool Modals ===== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(15, 31, 61, 0.5);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .modal-overlay.open { display: flex; }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
 
-    .modal {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      max-width: 520px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 36px;
-      animation: modalIn 0.3s var(--ease);
+    /* ===== Calculator Styles ===== */
+    .calc-group {
+      margin-bottom: 20px;
     }
 
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(12px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .modal-header h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
+    .calc-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--navy);
+      margin-bottom: 8px;
     }
 
-    .modal-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
+    .calc-group input,
+    .calc-group select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid rgba(15, 31, 61, 0.1);
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--ink);
       background: var(--bg);
-      color: var(--muted);
-      font-size: 18px;
+      transition: border-color 0.2s ease;
+    }
+
+    .calc-group input:focus,
+    .calc-group select:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .calc-result {
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--navy);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      text-align: center;
+    }
+
+    .calc-result-label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 6px;
+    }
+
+    .calc-result-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .calc-result-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 8px;
+    }
+
+    .calc-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      display: grid;
-      place-items: center;
+      margin-top: 8px;
       transition: all 0.2s ease;
     }
 
-    .modal-close:hover {
-      background: var(--gold-light);
-      color: var(--navy);
+    .calc-btn:hover {
+      background: #d4ad31;
+      transform: translateY(-1px);
+    }
+
+    .calc-btn:active {
+      transform: translateY(0);
     }
 
     .calc-group {
@@ -652,389 +827,778 @@
       border-radius: 4px;
       margin-bottom: 8px;
     }
+
+    /* ===== Desktop Optimization ===== */
+    @media (min-width: 768px) {
+      .welcome-screen {
+        padding: 80px 40px;
+      }
+
+      .welcome-logo {
+        font-size: 64px;
+      }
+
+      .welcome-title {
+        font-size: 48px;
+      }
+
+      .welcome-subtitle {
+        font-size: 18px;
+      }
+
+      .greeting-screen {
+        padding: 40px;
+      }
+
+      .greeting-text {
+        font-size: 48px;
+      }
+
+      .tools-grid {
+        gap: 24px;
+      }
+
+      .tool-card {
+        padding: 32px 28px;
+        min-height: 180px;
+      }
+
+      .tool-screen {
+        padding: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-inner">
-      <div class="header-left">
-        <span class="logo">Finous</span>
-        <a href="https://www.finous.site/" class="back-link">← Back to Finous</a>
-      </div>
-      <a href="#waitlist" class="btn-gold">Join Waitlist</a>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1 class="fade-up">Six tools. One picture.</h1>
-      <p class="fade-up">Before the full app launches, start here – no sign-up, no licence, just your numbers.</p>
-    </div>
-  </section>
-
-  <!-- Day 0 Tools -->
-  <section id="tools">
-    <div class="container">
-      <div class="section-head fade-up">
-        <p class="section-label">Start Here</p>
-        <h2 class="section-title">Understand your money – before the app even launches.</h2>
-        <p class="section-sub">No sign-up needed. No licence required. Just honest numbers.</p>
-      </div>
-
-      <div class="tools-grid">
-        <div class="tool-card fade-up" data-tool="emi">
-          <div class="tool-icon">📊</div>
-          <h3>EMI Calculator</h3>
-          <p>Calculate your monthly EMI for any loan amount, tenure, and interest rate.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="sip">
-          <div class="tool-icon">💰</div>
-          <h3>SIP Calculator</h3>
-          <p>See how your monthly SIP grows over time with compound returns.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="eligibility">
-          <div class="tool-icon">📈</div>
-          <h3>Loan Eligibility</h3>
-          <p>Find out how much loan you can get based on your income and existing EMIs.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="budget">
-          <div class="tool-icon">💳</div>
-          <h3>Budgeting Tool</h3>
-          <p>Plan your monthly budget with the 50/30/20 rule and track spending.</p>
-          <span class="tool-link">Try it now →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="blog">
-          <div class="tool-icon">📝</div>
-          <h3>Blog</h3>
-          <p>Read insights on personal finance, investing, and smart money habits.</p>
-          <span class="tool-link">Read more →</span>
-        </div>
-
-        <div class="tool-card fade-up" data-tool="cards">
-          <div class="tool-icon">🎯</div>
-          <h3>Credit Card Picks</h3>
-          <p>Compare and find the best credit cards based on your spending patterns.</p>
-          <span class="tool-link">Explore cards →</span>
-        </div>
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Screen 1: Welcome -->
+    <div class="screen active" id="welcomeScreen">
+      <div class="welcome-screen">
+        <div class="welcome-logo">Finous</div>
+        <h1 class="welcome-title">Welcome</h1>
+        <p class="welcome-subtitle">What should we call you?</p>
+        <form class="welcome-form" id="welcomeForm">
+          <input 
+            type="text" 
+            class="welcome-input" 
+            id="nameInput" 
+            placeholder="Enter your name" 
+            required
+            autocomplete="given-name"
+          />
+          <button type="submit" class="btn-primary">Continue</button>
+        </form>
       </div>
     </div>
-  </section>
 
-  <!-- How It Works -->
-  <section>
-    <div class="how-section fade-up">
-      <div class="section-head">
-        <p class="section-label">Simple as 1, 2, 3</p>
-        <h2 class="section-title">From fragmented to unified.</h2>
+    <!-- Screen 2: Greeting + Tools -->
+    <div class="screen" id="greetingScreen">
+      <div class="app-header">
+        <span class="app-logo">Finous</span>
+      </div>
+      
+      <div class="greeting-screen">
+        <div class="greeting-header">
+          <h1 class="greeting-text">Hello, <span id="userName"></span> 👋</h1>
+          <p class="greeting-subtitle">Six tools. One picture. No sign-up needed.</p>
+        </div>
+
+        <p class="tools-section-label">Start Here</p>
+        <h2 class="tools-section-title">Understand your money</h2>
+        <p class="tools-section-subtitle">No licence required. Just honest numbers.</p>
+
+        <div class="tools-grid">
+          <div class="tool-card" data-tool="emi">
+            <div class="tool-icon">📊</div>
+            <h3>EMI Calculator</h3>
+            <p>Calculate monthly EMI for any loan</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <div class="tool-card" data-tool="sip">
+            <div class="tool-icon">💰</div>
+            <h3>SIP Calculator</h3>
+            <p>See your investments grow over time</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <div class="tool-card" data-tool="eligibility">
+            <div class="tool-icon">📈</div>
+            <h3>Loan Eligibility</h3>
+            <p>Find out how much you can borrow</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <div class="tool-card" data-tool="budget">
+            <div class="tool-icon">💳</div>
+            <h3>Budgeting Tool</h3>
+            <p>Plan with the 50/30/20 rule</p>
+            <span class="tool-link">Try it →</span>
+          </div>
+
+          <a href="/app/reading-resources/" class="tool-card" style="text-decoration:none; color:inherit;">
+            <div class="tool-icon">📝</div>
+            <h3>Reading Resources</h3>
+            <p>Guides and insights on finance</p>
+            <span class="tool-link">Browse →</span>
+          </a>
+
+          <div class="tool-card disabled">
+            <div class="tool-icon">🎯</div>
+            <h3>Credit Card Picks</h3>
+            <p>Compare and find the best cards</p>
+            <span class="tool-link" style="color: #9ca3af;">Coming Soon</span>
+          </div>
+        </div>
       </div>
 
-      <div class="steps">
-        <div class="step">
-          <div class="step-icon">🤝</div>
-          <h4>One consent tap</h4>
-          <p>Link your accounts securely via Account Aggregator.</p>
+      <div class="app-footer">
+        <div class="footer-logo">Finous</div>
+        <p class="footer-nidhi">by Nidhiverse Pvt Ltd</p>
+        <div class="footer-links">
+          <a href="mailto:founder@finous.site">founder@finous.site</a>
+          <a href="https://www.linkedin.com/company/finous" target="_blank" rel="noopener">LinkedIn</a>
         </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-icon">📊</div>
-          <h4>Everything in one screen</h4>
-          <p>All your balances, loans, and investments — unified.</p>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-          <div class="step-icon">🤖</div>
-          <h4>AI tells you what to do</h4>
-          <p>Personalised advice in Hindi and English.</p>
-        </div>
+        <p class="footer-confidential">Confidential · Not for distribution</p>
       </div>
     </div>
-  </section>
 
-  <!-- Waitlist -->
-  <section id="waitlist" class="waitlist">
-    <div class="container">
-      <div class="fade-up">
-        <p class="section-label">Get Early Access</p>
-        <h2 class="section-title">Be the first to know when we launch.</h2>
-        <p class="section-sub" style="margin: 0 auto;">No spam. Just one email when we're ready.</p>
+    <!-- Screen 3: Tool Interface -->
+    <div class="screen" id="toolScreen">
+      <div class="app-header">
+        <span class="app-logo">Finous</span>
+        <button class="tool-screen-back" onclick="showGreetingScreen()">← Back</button>
       </div>
-
-      <form class="waitlist-form fade-up" id="waitlistForm">
-        <input type="email" id="waitlistEmail" placeholder="Enter your email address" required />
-        <button type="submit" class="btn-gold">Join Waitlist</button>
-      </form>
-
-      <p class="waitlist-error" id="waitlistError">Please enter a valid email address.</p>
-
-      <div class="waitlist-success" id="waitlistSuccess">
-        <h4>You're on the list! We'll reach out soon.</h4>
-        <p>Keep an eye on your inbox — we'll send one email when we're ready.</p>
+      
+      <div class="tool-screen">
+        <div class="tool-screen-header">
+          <div class="tool-screen-icon" id="toolScreenIcon"></div>
+          <h2 class="tool-screen-title" id="toolScreenTitle"></h2>
+        </div>
+        <div id="toolScreenContent"></div>
       </div>
-
-      <p class="waitlist-note fade-up">We'll never share your data. Unsubscribe anytime.</p>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-logo">Finous</div>
-      <p class="footer-nidhi">by Nidhiverse Pvt Ltd</p>
-      <div class="footer-links">
-        <a href="mailto:founder@finous.site">founder@finous.site</a>
-        <a href="https://www.linkedin.com/company/finous" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://www.finous.site/">Main Site</a>
-      </div>
-      <p class="footer-confidential">Confidential · Not for distribution</p>
-    </div>
-  </footer>
-
-  <!-- Modals -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modalContent"></div>
   </div>
 
   <script>
-    // ===== Scroll Animations =====
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
+    // ===== App State Management =====
+    const screens = {
+      welcome: document.getElementById('welcomeScreen'),
+      greeting: document.getElementById('greetingScreen'),
+      tool: document.getElementById('toolScreen')
+    };
+
+    // Check if user already has a name saved
+    function initApp() {
+      const savedName = localStorage.getItem('finousUserName');
+      if (savedName) {
+        document.getElementById('userName').textContent = savedName;
+        showScreen('greeting');
+      } else {
+        showScreen('welcome');
+      }
+    }
+
+    // Screen transition
+    function showScreen(screenName) {
+      Object.values(screens).forEach(screen => {
+        screen.classList.remove('active');
+        screen.classList.add('exit');
+      });
+
+      setTimeout(() => {
+        Object.values(screens).forEach(screen => {
+          screen.classList.remove('exit');
+        });
+        screens[screenName].classList.add('active');
+        screens[screenName].scrollTop = 0;
+      }, 50);
+    }
+
+    // Welcome form submission
+    document.getElementById('welcomeForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      if (name) {
+        localStorage.setItem('finousUserName', name);
+        document.getElementById('userName').textContent = name;
+        showScreen('greeting');
+      }
+    });
+
+    // Show greeting screen
+    function showGreetingScreen() {
+      showScreen('greeting');
+    }
+
+    // Tool card clicks
+    document.querySelectorAll('.tool-card:not(.disabled)').forEach(card => {
+      card.addEventListener('click', () => {
+        const toolKey = card.dataset.tool;
+        if (toolKey && tools[toolKey]) {
+          openTool(toolKey);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // ===== Waitlist Form =====
-    const form = document.getElementById('waitlistForm');
-    const emailInput = document.getElementById('waitlistEmail');
-    const errorMsg = document.getElementById('waitlistError');
-    const successMsg = document.getElementById('waitlistSuccess');
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-      if (!emailRegex.test(email)) {
-        emailInput.classList.add('invalid');
-        errorMsg.classList.add('show');
-        return;
-      }
-
-      emailInput.classList.remove('invalid');
-      errorMsg.classList.remove('show');
-      form.style.display = 'none';
-      successMsg.classList.add('show');
     });
 
-    emailInput.addEventListener('input', () => {
-      emailInput.classList.remove('invalid');
-      errorMsg.classList.remove('show');
-    });
+    // Open tool
+    function openTool(toolKey) {
+      const tool = tools[toolKey];
+      if (!tool) return;
 
-    // ===== Tool Modals =====
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalContent = document.getElementById('modalContent');
+      document.getElementById('toolScreenIcon').innerHTML = tool.icon;
+      document.getElementById('toolScreenTitle').textContent = tool.title;
+      document.getElementById('toolScreenContent').innerHTML = tool.html;
+      
+      showScreen('tool');
+    }
 
+    // ===== Tools Data =====
     const tools = {
       emi: {
+        icon: '📊',
         title: 'EMI Calculator',
         html: `
           <div class="calc-group">
+            <label>Loan Type</label>
+            <select id="emiType" onchange="updateEMIPresets()">
+              <option value="home">Home Loan</option>
+              <option value="car">Car Loan</option>
+              <option value="personal">Personal Loan</option>
+              <option value="education">Education Loan</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="calc-group">
             <label>Loan Amount (₹)</label>
-            <input type="number" id="emiAmount" value="1000000" min="10000" />
+            <input type="number" id="emiAmount" value="5000000" min="10000" />
           </div>
           <div class="calc-group">
             <label>Interest Rate (% p.a.)</label>
             <input type="number" id="emiRate" value="8.5" step="0.1" min="0.1" />
           </div>
           <div class="calc-group">
-            <label>Tenure (months)</label>
-            <input type="number" id="emiTenure" value="60" min="1" />
+            <label>Tenure (years)</label>
+            <input type="number" id="emiTenure" value="20" min="1" max="30" />
           </div>
           <button class="calc-btn" onclick="calcEMI()">Calculate EMI</button>
-          <div class="calc-result" id="emiResult" style="display:none;">
-            <div class="calc-result-label">Monthly EMI</div>
-            <div class="calc-result-value" id="emiValue"></div>
-            <div class="calc-result-sub" id="emiSub"></div>
+          
+          <div id="emiResult" style="display:none; margin-top:24px;">
+            <div class="calc-result">
+              <div class="calc-result-label">Monthly EMI</div>
+              <div class="calc-result-value" id="emiValue"></div>
+              <div class="calc-result-sub" id="emiSub"></div>
+            </div>
+            
+            <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Total Interest</div>
+                <div style="font-size:18px; font-weight:600; color:#0f1f3d;" id="emiInterest"></div>
+              </div>
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Total Payment</div>
+                <div style="font-size:18px; font-weight:600; color:#0f1f3d;" id="emiTotal"></div>
+              </div>
+            </div>
+            
+            <div style="margin-top:24px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Payment Breakdown</div>
+              <div style="display:flex; gap:8px; height:24px; border-radius:12px; overflow:hidden;">
+                <div id="principalBar" style="background:#c9a227; transition:width 0.3s;"></div>
+                <div id="interestBar" style="background:#0f1f3d; transition:width 0.3s;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:#6b7280;">
+                <span>■ Principal: <span id="principalPct"></span></span>
+                <span>■ Interest: <span id="interestPct"></span></span>
+              </div>
+            </div>
+            
+            <div style="margin-top:24px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Amortization Schedule</div>
+              <div style="max-height:300px; overflow-y:auto; border:1px solid #e5e7eb; border-radius:10px;">
+                <table style="width:100%; font-size:13px;">
+                  <thead style="position:sticky; top:0; background:#f8f9fa;">
+                    <tr>
+                      <th style="padding:10px; text-align:left; font-weight:600;">Year</th>
+                      <th style="padding:10px; text-align:right; font-weight:600;">Principal</th>
+                      <th style="padding:10px; text-align:right; font-weight:600;">Interest</th>
+                      <th style="padding:10px; text-align:right; font-weight:600;">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="amortizationBody"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         `
       },
       sip: {
+        icon: '💰',
         title: 'SIP Calculator',
         html: `
-          <div class="calc-group">
-            <label>Monthly Investment (₹)</label>
-            <input type="number" id="sipAmount" value="5000" min="500" />
+          <div style="display:flex; gap:8px; margin-bottom:20px;">
+            <button class="calc-btn" style="flex:1; background:#f8f9fa; color:#0f1f3d;" onclick="showSIPTab('regular')" id="sipTabRegular">Regular SIP</button>
+            <button class="calc-btn" style="flex:1; background:#f8f9fa; color:#0f1f3d;" onclick="showSIPTab('stepup')" id="sipTabStepup">Step-up SIP</button>
+            <button class="calc-btn" style="flex:1; background:#f8f9fa; color:#0f1f3d;" onclick="showSIPTab('goal')" id="sipTabGoal">Goal Planner</button>
           </div>
-          <div class="calc-group">
-            <label>Expected Return (% p.a.)</label>
-            <input type="number" id="sipRate" value="12" step="0.5" min="0.1" />
+          
+          <div id="sipRegular">
+            <div class="calc-group">
+              <label>Monthly Investment (₹)</label>
+              <input type="number" id="sipAmount" value="10000" min="500" />
+            </div>
+            <div class="calc-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="sipRate" value="12" step="0.5" min="0.1" />
+            </div>
+            <div class="calc-group">
+              <label>Time Period (years)</label>
+              <input type="number" id="sipYears" value="10" min="1" />
+            </div>
+            <button class="calc-btn" onclick="calcSIP()">Calculate Returns</button>
           </div>
-          <div class="calc-group">
-            <label>Time Period (years)</label>
-            <input type="number" id="sipYears" value="10" min="1" />
+          
+          <div id="sipStepup" style="display:none;">
+            <div class="calc-group">
+              <label>Initial Monthly Investment (₹)</label>
+              <input type="number" id="stepupAmount" value="10000" min="500" />
+            </div>
+            <div class="calc-group">
+              <label>Annual Step-up (%)</label>
+              <input type="number" id="stepupRate" value="10" min="0" max="50" />
+            </div>
+            <div class="calc-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="stepupReturn" value="12" step="0.5" min="0.1" />
+            </div>
+            <div class="calc-group">
+              <label>Time Period (years)</label>
+              <input type="number" id="stepupYears" value="10" min="1" />
+            </div>
+            <button class="calc-btn" onclick="calcStepupSIP()">Calculate Returns</button>
           </div>
-          <button class="calc-btn" onclick="calcSIP()">Calculate Returns</button>
-          <div class="calc-result" id="sipResult" style="display:none;">
-            <div class="calc-result-label">Maturity Value</div>
-            <div class="calc-result-value" id="sipValue"></div>
-            <div class="calc-result-sub" id="sipSub"></div>
+          
+          <div id="sipGoal" style="display:none;">
+            <div class="calc-group">
+              <label>Goal Amount (₹)</label>
+              <input type="number" id="goalAmount" value="10000000" min="100000" />
+            </div>
+            <div class="calc-group">
+              <label>Time Period (years)</label>
+              <input type="number" id="goalYears" value="10" min="1" />
+            </div>
+            <div class="calc-group">
+              <label>Expected Return (% p.a.)</label>
+              <input type="number" id="goalReturn" value="12" step="0.5" min="0.1" />
+            </div>
+            <button class="calc-btn" onclick="calcGoalSIP()">Calculate Required SIP</button>
+          </div>
+          
+          <div id="sipResult" style="display:none; margin-top:24px;">
+            <div class="calc-result">
+              <div class="calc-result-label" id="sipResultLabel">Maturity Value</div>
+              <div class="calc-result-value" id="sipValue"></div>
+              <div class="calc-result-sub" id="sipSub"></div>
+            </div>
+            
+            <div style="margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Total Invested</div>
+                <div style="font-size:18px; font-weight:600; color:#0f1f3d;" id="sipInvested"></div>
+              </div>
+              <div style="background:#f8f9fa; padding:16px; border-radius:10px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">Wealth Gained</div>
+                <div style="font-size:18px; font-weight:600; color:#c9a227;" id="sipGains"></div>
+              </div>
+            </div>
+            
+            <div style="margin-top:24px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Investment Breakdown</div>
+              <div style="display:flex; gap:8px; height:24px; border-radius:12px; overflow:hidden;">
+                <div id="sipInvestedBar" style="background:#c9a227; transition:width 0.3s;"></div>
+                <div id="sipGainsBar" style="background:#0f1f3d; transition:width 0.3s;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:#6b7280;">
+                <span>■ Invested: <span id="sipInvestedPct"></span></span>
+                <span>■ Gains: <span id="sipGainsPct"></span></span>
+              </div>
+            </div>
           </div>
         `
       },
       eligibility: {
+        icon: '📈',
         title: 'Loan Eligibility',
         html: `
           <div class="calc-group">
+            <label>Loan Type</label>
+            <select id="eligType" onchange="updateEligibilityPresets()">
+              <option value="home">Home Loan</option>
+              <option value="personal">Personal Loan</option>
+              <option value="car">Car Loan</option>
+              <option value="education">Education Loan</option>
+            </select>
+          </div>
+          <div class="calc-group">
             <label>Monthly Income (₹)</label>
-            <input type="number" id="eligIncome" value="50000" min="10000" />
+            <input type="number" id="eligIncome" value="75000" min="10000" />
+          </div>
+          <div class="calc-group">
+            <label>Co-applicant Income (₹) <span style="font-size:12px; color:#6b7280;">(optional)</span></label>
+            <input type="number" id="eligCoIncome" value="0" min="0" />
           </div>
           <div class="calc-group">
             <label>Existing EMIs (₹/month)</label>
             <input type="number" id="eligEMI" value="0" min="0" />
           </div>
           <div class="calc-group">
+            <label>Credit Score</label>
+            <select id="eligCredit">
+              <option value="excellent">Excellent (750+)</option>
+              <option value="good" selected>Good (700-749)</option>
+              <option value="fair">Fair (650-699)</option>
+              <option value="poor">Poor (below 650)</option>
+            </select>
+          </div>
+          <div class="calc-group">
             <label>Interest Rate (% p.a.)</label>
-            <input type="number" id="eligRate" value="9" step="0.1" min="0.1" />
+            <input type="number" id="eligRate" value="8.5" step="0.1" min="0.1" />
           </div>
           <div class="calc-group">
             <label>Tenure (years)</label>
             <input type="number" id="eligYears" value="20" min="1" max="30" />
           </div>
           <button class="calc-btn" onclick="calcEligibility()">Check Eligibility</button>
-          <div class="calc-result" id="eligResult" style="display:none;">
-            <div class="calc-result-label">You can borrow up to</div>
-            <div class="calc-result-value" id="eligValue"></div>
-            <div class="calc-result-sub" id="eligSub"></div>
+          
+          <div id="eligResult" style="display:none; margin-top:24px;">
+            <div class="calc-result">
+              <div class="calc-result-label">Maximum Loan Amount</div>
+              <div class="calc-result-value" id="eligValue"></div>
+              <div class="calc-result-sub" id="eligSub"></div>
+            </div>
+            
+            <div style="margin-top:24px; background:#f8f9fa; padding:20px; border-radius:10px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:16px; color:#0f1f3d;">Eligibility Breakdown</div>
+              <div style="display:grid; gap:12px; font-size:13px;">
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">Total Monthly Income</span>
+                  <span style="font-weight:600;" id="eligTotalIncome"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">Existing EMIs</span>
+                  <span style="font-weight:600;" id="eligExistingEMI"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">Max EMI Capacity (50% FOIR)</span>
+                  <span style="font-weight:600; color:#c9a227;" id="eligMaxEMI"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:12px; border-top:1px solid #e5e7eb;">
+                  <span style="color:#6b7280;">Available for New EMI</span>
+                  <span style="font-weight:600;" id="eligAvailable"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                  <span style="color:#6b7280;">FOIR Ratio</span>
+                  <span style="font-weight:600;" id="eligFOIR"></span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top:16px; padding:16px; background:#fff9e6; border-left:3px solid #c9a227; border-radius:8px; font-size:13px; color:#6b7280;">
+              <strong style="color:#0f1f3d;">Note:</strong> This is an indicative calculation. Actual eligibility depends on bank policies, credit history, property value (for home loans), and other factors.
+            </div>
           </div>
         `
       },
       budget: {
+        icon: '💳',
         title: 'Budgeting Tool',
         html: `
           <div class="calc-group">
             <label>Monthly Income (₹)</label>
-            <input type="number" id="budgetIncome" value="50000" min="10000" />
+            <input type="number" id="budgetIncome" value="60000" min="10000" />
           </div>
           <button class="calc-btn" onclick="calcBudget()">Plan Budget</button>
-          <div class="calc-result" id="budgetResult" style="display:none;">
-            <div class="calc-result-label">Recommended Budget (50/30/20)</div>
-            <div style="text-align:left; margin-top:16px; font-size:14px; line-height:2;">
-              <div>🏠 <strong>Needs (50%):</strong> <span id="budgetNeeds"></span></div>
-              <div>🎉 <strong>Wants (30%):</strong> <span id="budgetWants"></span></div>
-              <div>💰 <strong>Savings (20%):</strong> <span id="budgetSavings"></span></div>
+          
+          <div id="budgetResult" style="display:none; margin-top:24px;">
+            <div style="background:#f8f9fa; padding:20px; border-radius:10px; margin-bottom:20px;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:16px; color:#0f1f3d;">Recommended Budget (50/30/20 Rule)</div>
+              <div style="display:grid; gap:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; color:#6b7280;">🏠 Needs (50%)</span>
+                  <span style="font-weight:600; color:#0f1f3d;" id="budgetNeeds"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; color:#6b7280;">🎉 Wants (30%)</span>
+                  <span style="font-weight:600; color:#0f1f3d;" id="budgetWants"></span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; color:#6b7280;">💰 Savings (20%)</span>
+                  <span style="font-weight:600; color:#c9a227;" id="budgetSavings"></span>
+                </div>
+              </div>
             </div>
-          </div>
-        `
-      },
-      blog: {
-        title: 'Blog',
-        html: `
-          <div class="placeholder-grid">
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Investing</span>
-              <h5>How to start investing with ₹500/month</h5>
-              <p>A beginner's guide to SIPs, mutual funds, and building wealth slowly.</p>
+            
+            <div style="font-size:14px; font-weight:600; margin-bottom:12px; color:#0f1f3d;">Category Breakdown</div>
+            <div style="display:grid; gap:10px; max-height:300px; overflow-y:auto;">
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🏠 Housing & Utilities</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Rent, electricity, water, internet</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catHousing"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🍽️ Food & Groceries</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Groceries, dining out</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catFood"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🚗 Transportation</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Fuel, public transport, maintenance</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catTransport"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🎬 Entertainment</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Movies, subscriptions, hobbies</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catEntertainment"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">🏥 Healthcare & Insurance</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">Medical, insurance premiums</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catHealth"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">💳 Debt Payments</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">EMIs, credit card bills</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catDebt"></span>
+                </div>
+              </div>
+              <div style="padding:12px; background:#f8f9fa; border-radius:8px;">
+                <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">💰 Investments & Savings</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:13px; font-weight:500;">SIP, FD, emergency fund</span>
+                  <span style="font-weight:600; color:#c9a227;" id="catSavings"></span>
+                </div>
+              </div>
             </div>
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Credit</span>
-              <h5>5 ways to improve your credit score in 90 days</h5>
-              <p>Practical steps to boost your CIBIL score and unlock better loan rates.</p>
-            </div>
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Budgeting</span>
-              <h5>The 50/30/20 rule explained for Indian salaries</h5>
-              <p>How to divide your income between needs, wants, and savings.</p>
+            
+            <div style="margin-top:16px; padding:16px; background:#fff9e6; border-left:3px solid #c9a227; border-radius:8px; font-size:13px; color:#6b7280;">
+              <strong style="color:#0f1f3d;">Tip:</strong> Track your actual spending for a month to see where your money goes. Adjust categories based on your lifestyle.
             </div>
           </div>
         `
       },
       cards: {
-        title: 'Credit Card Picks',
+        title: 'Credit Card Recommendations',
         html: `
-          <div class="placeholder-grid">
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Best for Travel</span>
+          <div style="margin-bottom:20px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#c9a227; color:white; font-size:13px;" onclick="filterCards('all')">All Cards</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('travel')">Travel</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('cashback')">Cashback</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('rewards')">Rewards</button>
+              <button class="calc-btn" style="flex:none; padding:8px 16px; background:#f8f9fa; color:#0f1f3d; font-size:13px;" onclick="filterCards('fuel')">Fuel</button>
+            </div>
+          </div>
+          
+          <div id="cardsGrid" class="placeholder-grid">
+            <div class="placeholder-item card-item" data-category="cashback">
+              <span class="placeholder-tag">Best for Cashback</span>
               <h5>HDFC Millennia</h5>
-              <p>5% cashback on all spends. No fuel surcharge. ₹5,000 annual fee.</p>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹1,000</div>
+                <div><strong>Reward Rate:</strong> 5% cashback on all spends</div>
+                <div><strong>Key Benefits:</strong> No fuel surcharge, 10X rewards on PayZapp</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ No fuel surcharge</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ High cashback</span>
+              </div>
             </div>
-            <div class="placeholder-item">
-              <span class="placeholder-tag">Best for Rewards</span>
+            
+            <div class="placeholder-item card-item" data-category="travel">
+              <span class="placeholder-tag">Best for Travel</span>
               <h5>Axis Magnus</h5>
-              <p>Unlimited reward points. Airport lounge access. Premium benefits.</p>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹12,500</div>
+                <div><strong>Reward Rate:</strong> 12 EDGE Rewards per ₹200</div>
+                <div><strong>Key Benefits:</strong> Unlimited lounge access, concierge service</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Lounge access</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Premium benefits</span>
+              </div>
             </div>
-            <div class="placeholder-item">
+            
+            <div class="placeholder-item card-item" data-category="rewards">
+              <span class="placeholder-tag">Best for Rewards</span>
+              <h5>ICICI Amazon Pay</h5>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹500 (Lifetime free for Prime members)</div>
+                <div><strong>Reward Rate:</strong> 5% cashback on Amazon, 2% on other spends</div>
+                <div><strong>Key Benefits:</strong> Amazon Pay balance, no reward expiry</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Amazon benefits</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Lifetime free</span>
+              </div>
+            </div>
+            
+            <div class="placeholder-item card-item" data-category="fuel">
+              <span class="placeholder-tag">Best for Fuel</span>
+              <h5>SBI BPCL Octane</h5>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹1,499</div>
+                <div><strong>Reward Rate:</strong> 13X reward points on fuel spends</div>
+                <div><strong>Key Benefits:</strong> 1% fuel surcharge waiver, complimentary BPCL loyalty points</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Fuel benefits</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ High reward rate</span>
+              </div>
+            </div>
+            
+            <div class="placeholder-item card-item" data-category="rewards">
               <span class="placeholder-tag">Best for Beginners</span>
               <h5>SBI SimplyCLICK</h5>
-              <p>Low annual fee. Good for online shopping. Easy approval.</p>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹495</div>
+                <div><strong>Reward Rate:</strong> 10X reward points on online spends</div>
+                <div><strong>Key Benefits:</strong> Easy approval, Amazon voucher on joining</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Low fee</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Easy approval</span>
+              </div>
             </div>
+            
+            <div class="placeholder-item card-item" data-category="travel">
+              <span class="placeholder-tag">Best for International Travel</span>
+              <h5>HDFC Diners Club Black</h5>
+              <div style="margin:12px 0; font-size:13px; line-height:1.8;">
+                <div><strong>Annual Fee:</strong> ₹3,500</div>
+                <div><strong>Reward Rate:</strong> 5 reward points per ₹150</div>
+                <div><strong>Key Benefits:</strong> Global lounge access, travel insurance, concierge</div>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:12px;">
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Global acceptance</span>
+                <span style="font-size:11px; padding:4px 8px; background:#e8f5e9; color:#2e7d32; border-radius:4px;">✓ Travel insurance</span>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top:24px; padding:16px; background:#fff9e6; border-left:3px solid #c9a227; border-radius:8px; font-size:13px; color:#6b7280;">
+            <strong style="color:#0f1f3d;">Tip:</strong> Choose a card that matches your spending pattern. If you spend mostly on fuel, get a fuel card. If you shop online frequently, get a card with good e-commerce rewards.
           </div>
         `
       }
     };
 
-    document.querySelectorAll('.tool-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const toolKey = card.dataset.tool;
-        const tool = tools[toolKey];
-        if (!tool) return;
-
-        modalContent.innerHTML = `
-          <div class="modal-header">
-            <h3>${tool.title}</h3>
-            <button class="modal-close" onclick="closeModal()">✕</button>
-          </div>
-          ${tool.html}
-        `;
-        modalOverlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      });
-    });
-
-    function closeModal() {
-      modalOverlay.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) closeModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
+    // Tool cards are now handled in the initApp section above
 
     // ===== Calculator Logic =====
     function formatINR(num) {
       return '₹' + Math.round(num).toLocaleString('en-IN');
     }
 
+    function updateEMIPresets() {
+      const type = document.getElementById('emiType').value;
+      const presets = {
+        home: { amount: 5000000, rate: 8.5, tenure: 20 },
+        car: { amount: 800000, rate: 9.5, tenure: 7 },
+        personal: { amount: 500000, rate: 12.5, tenure: 5 },
+        education: { amount: 1000000, rate: 8.0, tenure: 10 },
+        custom: { amount: 1000000, rate: 10, tenure: 5 }
+      };
+      const p = presets[type];
+      document.getElementById('emiAmount').value = p.amount;
+      document.getElementById('emiRate').value = p.rate;
+      document.getElementById('emiTenure').value = p.tenure;
+    }
+
     function calcEMI() {
       const P = parseFloat(document.getElementById('emiAmount').value);
-      const r = parseFloat(document.getElementById('emiRate').value) / 12 / 100;
-      const n = parseInt(document.getElementById('emiTenure').value);
+      const annualRate = parseFloat(document.getElementById('emiRate').value);
+      const years = parseInt(document.getElementById('emiTenure').value);
+      const n = years * 12;
+      const r = annualRate / 12 / 100;
+
+      if (!P || !annualRate || !years) {
+        alert('Please fill in all fields');
+        return;
+      }
 
       const emi = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
       const totalPayment = emi * n;
       const totalInterest = totalPayment - P;
 
       document.getElementById('emiValue').textContent = formatINR(emi);
-      document.getElementById('emiSub').textContent = `Total interest: ${formatINR(totalInterest)} · Total payment: ${formatINR(totalPayment)}`;
+      document.getElementById('emiSub').textContent = `Over ${years} years (${n} months)`;
+      document.getElementById('emiInterest').textContent = formatINR(totalInterest);
+      document.getElementById('emiTotal').textContent = formatINR(totalPayment);
+
+      // Payment breakdown bars
+      const principalPct = (P / totalPayment * 100).toFixed(1);
+      const interestPct = (totalInterest / totalPayment * 100).toFixed(1);
+      document.getElementById('principalBar').style.width = principalPct + '%';
+      document.getElementById('interestBar').style.width = interestPct + '%';
+      document.getElementById('principalPct').textContent = principalPct + '%';
+      document.getElementById('interestPct').textContent = interestPct + '%';
+
+      // Amortization schedule (yearly summary)
+      let balance = P;
+      let scheduleHTML = '';
+      for (let year = 1; year <= years; year++) {
+        let yearPrincipal = 0;
+        let yearInterest = 0;
+        for (let month = 0; month < 12; month++) {
+          const monthInterest = balance * r;
+          const monthPrincipal = emi - monthInterest;
+          yearPrincipal += monthPrincipal;
+          yearInterest += monthInterest;
+          balance -= monthPrincipal;
+        }
+        scheduleHTML += `
+          <tr style="border-top:1px solid #f0f0f0;">
+            <td style="padding:10px;">Year ${year}</td>
+            <td style="padding:10px; text-align:right; color:#c9a227; font-weight:500;">${formatINR(yearPrincipal)}</td>
+            <td style="padding:10px; text-align:right; color:#0f1f3d;">${formatINR(yearInterest)}</td>
+            <td style="padding:10px; text-align:right; font-weight:600;">${formatINR(Math.max(0, balance))}</td>
+          </tr>
+        `;
+      }
+      document.getElementById('amortizationBody').innerHTML = scheduleHTML;
       document.getElementById('emiResult').style.display = 'block';
+    }
+
+    function showSIPTab(tab) {
+      document.getElementById('sipRegular').style.display = tab === 'regular' ? 'block' : 'none';
+      document.getElementById('sipStepup').style.display = tab === 'stepup' ? 'block' : 'none';
+      document.getElementById('sipGoal').style.display = tab === 'goal' ? 'block' : 'none';
+      document.getElementById('sipResult').style.display = 'none';
+      
+      // Update button styles
+      document.getElementById('sipTabRegular').style.background = tab === 'regular' ? '#c9a227' : '#f8f9fa';
+      document.getElementById('sipTabRegular').style.color = tab === 'regular' ? 'white' : '#0f1f3d';
+      document.getElementById('sipTabStepup').style.background = tab === 'stepup' ? '#c9a227' : '#f8f9fa';
+      document.getElementById('sipTabStepup').style.color = tab === 'stepup' ? 'white' : '#0f1f3d';
+      document.getElementById('sipTabGoal').style.background = tab === 'goal' ? '#c9a227' : '#f8f9fa';
+      document.getElementById('sipTabGoal').style.color = tab === 'goal' ? 'white' : '#0f1f3d';
     }
 
     function calcSIP() {
@@ -1046,31 +1610,131 @@
       const invested = P * n;
       const gains = fv - invested;
 
+      document.getElementById('sipResultLabel').textContent = 'Maturity Value';
       document.getElementById('sipValue').textContent = formatINR(fv);
-      document.getElementById('sipSub').textContent = `Invested: ${formatINR(invested)} · Gains: ${formatINR(gains)}`;
+      document.getElementById('sipSub').textContent = `Over ${n/12} years`;
+      document.getElementById('sipInvested').textContent = formatINR(invested);
+      document.getElementById('sipGains').textContent = formatINR(gains);
+
+      const investedPct = (invested / fv * 100).toFixed(1);
+      const gainsPct = (gains / fv * 100).toFixed(1);
+      document.getElementById('sipInvestedBar').style.width = investedPct + '%';
+      document.getElementById('sipGainsBar').style.width = gainsPct + '%';
+      document.getElementById('sipInvestedPct').textContent = investedPct + '%';
+      document.getElementById('sipGainsPct').textContent = gainsPct + '%';
+
       document.getElementById('sipResult').style.display = 'block';
+    }
+
+    function calcStepupSIP() {
+      const initialP = parseFloat(document.getElementById('stepupAmount').value);
+      const stepupPct = parseFloat(document.getElementById('stepupRate').value) / 100;
+      const annualReturn = parseFloat(document.getElementById('stepupReturn').value) / 100;
+      const years = parseInt(document.getElementById('stepupYears').value);
+      const r = annualReturn / 12;
+
+      let totalInvested = 0;
+      let fv = 0;
+      let monthlyInvestment = initialP;
+
+      for (let year = 0; year < years; year++) {
+        for (let month = 0; month < 12; month++) {
+          fv = (fv + monthlyInvestment) * (1 + r);
+          totalInvested += monthlyInvestment;
+        }
+        monthlyInvestment *= (1 + stepupPct);
+      }
+
+      const gains = fv - totalInvested;
+
+      document.getElementById('sipResultLabel').textContent = 'Maturity Value (Step-up)';
+      document.getElementById('sipValue').textContent = formatINR(fv);
+      document.getElementById('sipSub').textContent = `Over ${years} years with ${stepupPct*100}% annual step-up`;
+      document.getElementById('sipInvested').textContent = formatINR(totalInvested);
+      document.getElementById('sipGains').textContent = formatINR(gains);
+
+      const investedPct = (totalInvested / fv * 100).toFixed(1);
+      const gainsPct = (gains / fv * 100).toFixed(1);
+      document.getElementById('sipInvestedBar').style.width = investedPct + '%';
+      document.getElementById('sipGainsBar').style.width = gainsPct + '%';
+      document.getElementById('sipInvestedPct').textContent = investedPct + '%';
+      document.getElementById('sipGainsPct').textContent = gainsPct + '%';
+
+      document.getElementById('sipResult').style.display = 'block';
+    }
+
+    function calcGoalSIP() {
+      const goal = parseFloat(document.getElementById('goalAmount').value);
+      const years = parseInt(document.getElementById('goalYears').value);
+      const annualReturn = parseFloat(document.getElementById('goalReturn').value) / 100;
+      const r = annualReturn / 12;
+      const n = years * 12;
+
+      const requiredSIP = goal / (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+      const totalInvested = requiredSIP * n;
+      const gains = goal - totalInvested;
+
+      document.getElementById('sipResultLabel').textContent = 'Required Monthly SIP';
+      document.getElementById('sipValue').textContent = formatINR(requiredSIP);
+      document.getElementById('sipSub').textContent = `To reach ${formatINR(goal)} in ${years} years`;
+      document.getElementById('sipInvested').textContent = formatINR(totalInvested);
+      document.getElementById('sipGains').textContent = formatINR(gains);
+
+      const investedPct = (totalInvested / goal * 100).toFixed(1);
+      const gainsPct = (gains / goal * 100).toFixed(1);
+      document.getElementById('sipInvestedBar').style.width = investedPct + '%';
+      document.getElementById('sipGainsBar').style.width = gainsPct + '%';
+      document.getElementById('sipInvestedPct').textContent = investedPct + '%';
+      document.getElementById('sipGainsPct').textContent = gainsPct + '%';
+
+      document.getElementById('sipResult').style.display = 'block';
+    }
+
+    function updateEligibilityPresets() {
+      const type = document.getElementById('eligType').value;
+      const presets = {
+        home: { rate: 8.5, years: 20 },
+        personal: { rate: 12.5, years: 5 },
+        car: { rate: 9.5, years: 7 },
+        education: { rate: 8.0, years: 10 }
+      };
+      const p = presets[type];
+      document.getElementById('eligRate').value = p.rate;
+      document.getElementById('eligYears').value = p.years;
     }
 
     function calcEligibility() {
       const income = parseFloat(document.getElementById('eligIncome').value);
+      const coIncome = parseFloat(document.getElementById('eligCoIncome').value) || 0;
       const existingEMI = parseFloat(document.getElementById('eligEMI').value);
       const rate = parseFloat(document.getElementById('eligRate').value) / 12 / 100;
       const years = parseInt(document.getElementById('eligYears').value);
       const n = years * 12;
 
-      // FOIR: 50% of income
-      const maxEMI = (income * 0.5) - existingEMI;
-      if (maxEMI <= 0) {
+      const totalIncome = income + coIncome;
+      const maxEMICapacity = totalIncome * 0.5; // 50% FOIR
+      const availableEMI = maxEMICapacity - existingEMI;
+
+      // Display breakdown
+      document.getElementById('eligTotalIncome').textContent = formatINR(totalIncome);
+      document.getElementById('eligExistingEMI').textContent = formatINR(existingEMI);
+      document.getElementById('eligMaxEMI').textContent = formatINR(maxEMICapacity);
+      document.getElementById('eligAvailable').textContent = formatINR(availableEMI);
+      
+      const currentFOIR = ((existingEMI / totalIncome) * 100).toFixed(1);
+      document.getElementById('eligFOIR').textContent = currentFOIR + '%';
+
+      if (availableEMI <= 0) {
         document.getElementById('eligValue').textContent = 'Not eligible';
         document.getElementById('eligSub').textContent = 'Your existing EMIs exceed 50% of income.';
         document.getElementById('eligResult').style.display = 'block';
         return;
       }
 
-      const loanAmount = maxEMI * (Math.pow(1 + rate, n) - 1) / (rate * Math.pow(1 + rate, n));
+      const loanAmount = availableEMI * (Math.pow(1 + rate, n) - 1) / (rate * Math.pow(1 + rate, n));
 
       document.getElementById('eligValue').textContent = formatINR(loanAmount);
-      document.getElementById('eligSub').textContent = `Max EMI: ${formatINR(maxEMI)} · Tenure: ${years} years`;
+      document.getElementById('eligSub').textContent = `Max EMI: ${formatINR(availableEMI)} · Tenure: ${years} years`;
       document.getElementById('eligResult').style.display = 'block';
     }
 
@@ -1083,8 +1747,54 @@
       document.getElementById('budgetNeeds').textContent = formatINR(needs);
       document.getElementById('budgetWants').textContent = formatINR(wants);
       document.getElementById('budgetSavings').textContent = formatINR(savings);
+
+      // Category breakdown (realistic distribution)
+      const categories = {
+        housing: income * 0.25,      // 25% - rent/utilities
+        food: income * 0.12,         // 12% - groceries & dining
+        transport: income * 0.08,    // 8% - transportation
+        entertainment: income * 0.08, // 8% - entertainment
+        health: income * 0.07,       // 7% - healthcare & insurance
+        debt: income * 0.10,         // 10% - debt payments
+        savings: income * 0.20       // 20% - investments & savings
+      };
+
+      document.getElementById('catHousing').textContent = formatINR(categories.housing);
+      document.getElementById('catFood').textContent = formatINR(categories.food);
+      document.getElementById('catTransport').textContent = formatINR(categories.transport);
+      document.getElementById('catEntertainment').textContent = formatINR(categories.entertainment);
+      document.getElementById('catHealth').textContent = formatINR(categories.health);
+      document.getElementById('catDebt').textContent = formatINR(categories.debt);
+      document.getElementById('catSavings').textContent = formatINR(categories.savings);
+
       document.getElementById('budgetResult').style.display = 'block';
     }
+
+    // Credit card filtering
+    function filterCards(category) {
+      const items = document.querySelectorAll('.card-item');
+      const buttons = document.querySelectorAll('#cardsGrid').parentElement.querySelectorAll('button');
+      
+      // Update button styles
+      buttons.forEach(btn => {
+        btn.style.background = '#f8f9fa';
+        btn.style.color = '#0f1f3d';
+      });
+      event.target.style.background = '#c9a227';
+      event.target.style.color = 'white';
+      
+      // Filter items
+      items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Initialize app on page load
+    initApp();
   </script>
 
 </body>
