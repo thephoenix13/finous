@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Usage and Sharing Policy | Finous</title>
-  <meta name="description" content="Finous Data Usage and Sharing Policy - How we collect, use, and share your data">
+  <meta name="description" content="Data Usage and Sharing Policy for Finous by Nidhiverse Private Limited">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,41 +21,37 @@
       color: #4a5568;
       line-height: 1.75;
       -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
+      padding: 40px 20px;
     }
 
     .card {
+      max-width: 900px;
+      margin: 0 auto;
       background: #ffffff;
       border-radius: 12px;
       border: 1px solid #e4e9f0;
-      box-shadow: 0 4px 16px rgba(15, 31, 61, 0.06);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       padding: 48px 56px;
     }
 
-    /* Header */
-    .doc-header {
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 32px;
       padding-bottom: 24px;
-      border-bottom: 1px solid #e8ecf2;
+      border-bottom: 2px solid #e8ecf2;
     }
 
-    .doc-header-left {
+    .header-left {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    .logo-mark {
-      width: 48px;
-      height: 48px;
+    .logo {
+      width: 40px;
+      height: 40px;
       background: #c9a227;
       border-radius: 8px;
       display: flex;
@@ -63,28 +59,28 @@
       justify-content: center;
       color: #0f1f3d;
       font-weight: 800;
-      font-size: 24px;
+      font-size: 20px;
     }
 
-    .doc-title-group h1 {
+    .brand-text h1 {
       font-size: 20px;
-      font-weight: 700;
+      font-weight: 800;
       color: #0f1f3d;
       margin: 0;
     }
 
-    .doc-title-group p {
+    .brand-text p {
       font-size: 13px;
       color: #9aa3b3;
-      margin: 4px 0 0 0;
+      margin: 2px 0 0 0;
     }
 
-    .legal-badge {
+    .badge {
       background: #c9a227;
       color: #0f1f3d;
-      padding: 6px 14px;
+      padding: 8px 16px;
       border-radius: 6px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -92,11 +88,11 @@
 
     .back-link {
       display: inline-block;
+      margin-bottom: 24px;
       color: #c9a227;
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
-      margin-bottom: 24px;
     }
 
     .back-link:hover {
@@ -104,17 +100,16 @@
     }
 
     .draft-notice {
-      background: #fff9e6;
+      background: #fffbef;
       border-left: 4px solid #c9a227;
-      padding: 14px 18px;
+      padding: 16px 22px;
       border-radius: 0 8px 8px 0;
       margin-bottom: 32px;
-      font-size: 13px;
+      font-size: 14px;
       color: #4a5568;
     }
 
-    /* Typography */
-    h1 {
+    .doc-title {
       font-size: 28px;
       font-weight: 800;
       color: #0f1f3d;
@@ -122,8 +117,8 @@
       margin-bottom: 8px;
     }
 
-    .effective-date {
-      font-size: 13px;
+    .doc-dates {
+      font-size: 14px;
       color: #9aa3b3;
       margin-bottom: 32px;
     }
@@ -148,7 +143,7 @@
       font-size: 15px;
       line-height: 1.75;
       color: #4a5568;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     ul, ol {
@@ -176,21 +171,39 @@
       text-decoration: underline;
     }
 
-    /* Callouts */
     .callout-gold {
-      border-left: 4px solid #c9a227;
       background: #fffbef;
+      border-left: 4px solid #c9a227;
       padding: 16px 22px;
       border-radius: 0 8px 8px 0;
       margin: 20px 0;
     }
 
     .callout-blue {
-      border-left: 4px solid #1a4fa0;
       background: #f0f4ff;
+      border-left: 4px solid #1a4fa0;
       padding: 16px 22px;
       border-radius: 0 8px 8px 0;
       margin: 20px 0;
+    }
+
+    .contact-box {
+      background: #f8f9fc;
+      border: 1px solid #e8ecf2;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .contact-box p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .contact-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
     }
 
     /* Tables */
@@ -208,7 +221,7 @@
     }
 
     th {
-      padding: 12px 16px;
+      padding: 14px 16px;
       text-align: left;
       font-size: 11px;
       font-weight: 700;
@@ -228,62 +241,41 @@
       background: #fafbfd;
     }
 
-    /* Contact box */
-    .contact-box {
-      background: #f8f9fc;
-      border: 1px solid #e8ecf2;
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin: 24px 0;
+    tbody tr:hover {
+      background: #f5f7fa;
     }
 
-    .contact-box h3 {
-      margin-top: 0;
-    }
-
-    .contact-box p {
-      margin-bottom: 8px;
-    }
-
-    /* Footer */
-    .doc-footer {
+    .footer {
       margin-top: 48px;
       padding-top: 24px;
-      border-top: 1px solid #e8ecf2;
+      border-top: 2px solid #e8ecf2;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 13px;
       color: #9aa3b3;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
-      .container {
-        margin: 20px auto;
+      body {
+        padding: 20px 16px;
       }
 
       .card {
         padding: 28px 20px;
       }
 
-      h1 {
+      .header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .doc-title {
         font-size: 22px;
       }
 
       h2 {
         font-size: 16px;
-      }
-
-      .doc-header {
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .doc-footer {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
       }
 
       table {
@@ -293,268 +285,238 @@
       th, td {
         padding: 10px 12px;
       }
+
+      .footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
     }
 
-    /* Print */
     @media print {
       body {
-        background: #ffffff;
+        background: white;
+        padding: 0;
       }
 
       .card {
         box-shadow: none;
         border: none;
         max-width: 100%;
-        padding: 0;
-      }
-
-      .back-link,
-      .draft-notice {
-        display: none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="card">
     <a href="https://www.finous.site/" class="back-link">← Back to Finous</a>
-    
-    <div class="card">
-      <div class="doc-header">
-        <div class="doc-header-left">
-          <div class="logo-mark">F</div>
-          <div class="doc-title-group">
-            <h1>Finous</h1>
-            <p>by Nidhiverse Private Limited</p>
-          </div>
+
+    <div class="header">
+      <div class="header-left">
+        <div class="logo">F</div>
+        <div class="brand-text">
+          <h1>Finous</h1>
+          <p>by Nidhiverse Private Limited</p>
         </div>
-        <div class="legal-badge">Legal Document</div>
       </div>
+      <div class="badge">Legal Document</div>
+    </div>
 
-      <div class="draft-notice">
-        <strong>⚠️ Draft Notice:</strong> These documents are drafts. A qualified legal professional must review them before publishing.
-      </div>
+    <div class="draft-notice">
+      <strong>Notice:</strong> These documents are drafts. A qualified legal professional must review them before publishing.
+    </div>
 
-      <h1>Data Usage and Sharing Policy</h1>
-      <p class="effective-date">Effective Date: [INSERT DATE] · Last Updated: [INSERT DATE]</p>
+    <h1 class="doc-title">Data Usage and Sharing Policy</h1>
+    <p class="doc-dates">Effective Date: [INSERT DATE] · Last Updated: [INSERT DATE]</p>
 
-      <h2>1. Purpose of This Policy</h2>
-      <p>This Data Usage and Sharing Policy supplements our <a href="/legal/privacy.html">Privacy Policy</a> and <a href="/legal/terms.html">Terms and Conditions</a>. It provides detailed information about how Nidhiverse Private Limited ("Finous", "we", "us", or "our") collects, uses, and shares your data.</p>
-      <p>This policy is designed to comply with:</p>
-      <ul>
-        <li>The Digital Personal Data Protection Act, 2023 (DPDP Act)</li>
-        <li>The Digital Personal Data Protection Rules, 2025 (DPDP Rules)</li>
-        <li>The Reserve Bank of India (RBI) Account Aggregator framework</li>
-        <li>Other applicable Indian laws and regulations</li>
-      </ul>
+    <h2>1. Purpose of This Policy</h2>
+    <p>This Data Usage and Sharing Policy supplements our Privacy Policy and Terms and Conditions. It provides detailed information about how we collect, use, and share your data.</p>
+    <p>This policy complies with:</p>
+    <ul>
+      <li>The Digital Personal Data Protection Act, 2023 (DPDP Act)</li>
+      <li>The Digital Personal Data Protection Rules, 2025</li>
+      <li>The RBI Account Aggregator framework</li>
+    </ul>
 
-      <h2>2. Data We Collect and Why</h2>
-      <p>The following table summarises the categories of data we collect and the purposes for which we collect it:</p>
+    <h2>2. Data We Collect and Why</h2>
+    <p>The following table summarizes the categories of data we collect and the purposes for which we collect it:</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Data Category</th>
-            <th>What We Collect</th>
-            <th>Why We Collect It</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Contact Data</strong></td>
-            <td>Name, email address, phone number</td>
-            <td>Communication, account management, and customer support</td>
-          </tr>
-          <tr>
-            <td><strong>Identity Data</strong></td>
-            <td>PAN, Aadhaar number, date of birth, address</td>
-            <td>eKYC verification and regulatory compliance</td>
-          </tr>
-          <tr>
-            <td><strong>Financial Data</strong></td>
-            <td>Bank balances, transactions, loans, investments, insurance</td>
-            <td>Unified dashboard and AI insights (with consent via Account Aggregator)</td>
-          </tr>
-          <tr>
-            <td><strong>Usage Data</strong></td>
-            <td>Device information, IP address, pages visited, time spent, click patterns</td>
-            <td>Improving Services and personalising your experience</td>
-          </tr>
-          <tr>
-            <td><strong>Communication Data</strong></td>
-            <td>Questions, feedback, support requests, Voice Agent conversations</td>
-            <td>Responding to inquiries and improving AI models</td>
-          </tr>
-        </tbody>
-      </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Data Category</th>
+          <th>What We Collect</th>
+          <th>Why We Collect It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Contact Data</strong></td>
+          <td>Name, email, phone</td>
+          <td>Communication and support</td>
+        </tr>
+        <tr>
+          <td><strong>Identity Data</strong></td>
+          <td>PAN, Aadhaar, DOB, address</td>
+          <td>eKYC verification and regulatory compliance</td>
+        </tr>
+        <tr>
+          <td><strong>Financial Data</strong></td>
+          <td>Bank balances, transactions, loans, investments, insurance</td>
+          <td>Unified dashboard and AI insights (with consent via AA)</td>
+        </tr>
+        <tr>
+          <td><strong>Usage Data</strong></td>
+          <td>Device info, IP, pages visited, time spent</td>
+          <td>Improving Services and personalising experience</td>
+        </tr>
+        <tr>
+          <td><strong>Communication Data</strong></td>
+          <td>Questions, feedback, Voice Agent conversations</td>
+          <td>Responding to inquiries and improving AI models</td>
+        </tr>
+      </tbody>
+    </table>
 
-      <h2>3. How We Use Your Data</h2>
-      <p>We use your data for the following purposes:</p>
-      <ol>
-        <li><strong>Providing Services:</strong> To operate the Finous platform, unified dashboard, AI Advisor, Voice Agent, and other features</li>
-        <li><strong>Personalisation:</strong> To tailor insights, recommendations, and content to your financial situation and preferences</li>
-        <li><strong>Communication:</strong> To respond to your inquiries, send important updates, and provide customer support</li>
-        <li><strong>Improving Services:</strong> To enhance features, fix bugs, develop new functionality, and train AI models</li>
-        <li><strong>Regulatory Compliance:</strong> To meet legal and regulatory obligations under RBI guidelines, DPDP Act, and other applicable laws</li>
-        <li><strong>Security:</strong> To protect against fraud, unauthorised access, cyber threats, and ensure the integrity of our Services</li>
-      </ol>
+    <h2>3. How We Use Your Data</h2>
+    <p>We use your data for the following purposes:</p>
+    <ol>
+      <li><strong>Providing Services:</strong> To deliver the features and functionality you request, including displaying your financial data and providing insights</li>
+      <li><strong>Personalisation:</strong> To tailor recommendations and insights to your specific financial situation and goals</li>
+      <li><strong>Communication:</strong> To respond to your inquiries, send important updates about your account, and provide customer support</li>
+      <li><strong>Improving Services:</strong> To analyze usage patterns, identify areas for improvement, and develop new features</li>
+      <li><strong>Regulatory Compliance:</strong> To meet our legal and regulatory obligations under applicable laws</li>
+      <li><strong>Security:</strong> To protect against fraud, unauthorized access, and other security threats</li>
+    </ol>
 
-      <h2>4. How We Share Your Data</h2>
+    <h2>4. How We Share Your Data</h2>
 
-      <h3>4.1 With Your Consent</h3>
-      <p>We share your data with third parties only with your explicit, informed consent. You can withdraw consent at any time.</p>
+    <h3>4.1 With Your Consent</h3>
+    <p>We share your data only with your explicit, informed consent. You can withdraw consent at any time.</p>
 
-      <h3>4.2 With Service Providers</h3>
-      <p>We share data with trusted service providers who help us operate the Services, including:</p>
-      <ul>
-        <li><strong>Cloud infrastructure providers:</strong> For hosting, storage, and computing resources</li>
-        <li><strong>Account Aggregator entities:</strong> RBI-regulated entities that facilitate data access from Financial Information Providers (FIPs)</li>
-        <li><strong>eKYC verification providers:</strong> For identity verification and KYC compliance</li>
-        <li><strong>AI and machine learning providers:</strong> For processing data and generating insights</li>
-        <li><strong>Analytics providers:</strong> For understanding usage patterns and improving Services</li>
-      </ul>
-      <p>All service providers are contractually bound to protect your data and use it only for the specified purposes.</p>
+    <h3>4.2 With Service Providers</h3>
+    <p>We share data with trusted service providers who help us operate our Services:</p>
+    <ul>
+      <li><strong>Cloud infrastructure providers:</strong> For hosting and storage</li>
+      <li><strong>Account Aggregator providers:</strong> For accessing financial data from Financial Information Providers (FIPs)</li>
+      <li><strong>eKYC providers:</strong> For identity verification</li>
+      <li><strong>AI providers:</strong> For powering our AI Advisor and analytics</li>
+      <li><strong>Analytics providers:</strong> For understanding usage patterns</li>
+    </ul>
+    <p>All service providers are contractually bound to protect your data and use it only for the purposes we specify.</p>
 
-      <h3>4.3 For Legal and Regulatory Reasons</h3>
-      <p>We may disclose data when required by law, regulation, legal process, or government request. This includes compliance with RBI directives, court orders, and other legal obligations.</p>
+    <h3>4.3 For Legal and Regulatory Reasons</h3>
+    <p>We may share data when required by law, regulation, or legal process, or to protect the rights, property, or safety of Nidhiverse Private Limited, our users, or others.</p>
 
-      <h3>4.4 In Anonymised or Aggregated Form</h3>
-      <p>We may share anonymised or aggregated data that cannot identify you for research, analytics, or improving our AI models. This data is stripped of personal identifiers and cannot be used to identify individuals.</p>
+    <h3>4.4 In Anonymised or Aggregated Form</h3>
+    <p>We may share anonymised or aggregated data that cannot identify you for research, analytics, or other purposes.</p>
 
-      <h2>5. Data Sharing Summary</h2>
-      <p>The following table provides a detailed summary of how we share your data:</p>
+    <h2>5. Data Sharing Summary</h2>
+    <p>The following table provides a summary of how we share your data:</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Recipient</th>
-            <th>Data Shared</th>
-            <th>Purpose</th>
-            <th>Consent Required</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Account Aggregator</strong></td>
-            <td>Consent artefact</td>
-            <td>Retrieve financial data from Financial Information Providers (FIPs)</td>
-            <td>Yes — explicit consent</td>
-          </tr>
-          <tr>
-            <td><strong>Banks/NBFCs</strong></td>
-            <td>Financial data</td>
-            <td>Only if you request a product via our platform</td>
-            <td>Yes — explicit consent</td>
-          </tr>
-          <tr>
-            <td><strong>Service Providers</strong></td>
-            <td>Contact, identity, usage data</td>
-            <td>Operate Services (hosting, analytics, eKYC, AI processing)</td>
-            <td>Yes — contractual obligation</td>
-          </tr>
-          <tr>
-            <td><strong>Regulators</strong></td>
-            <td>As required by law</td>
-            <td>Legal and regulatory obligations</td>
-            <td>No — legal requirement</td>
-          </tr>
-          <tr>
-            <td><strong>Anonymised Data</strong></td>
-            <td>Aggregated, non-identifiable data</td>
-            <td>Research and improving AI models</td>
-            <td>No — anonymised</td>
-          </tr>
-        </tbody>
-      </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Recipient</th>
+          <th>Data Shared</th>
+          <th>Purpose</th>
+          <th>Consent Required</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Account Aggregator</strong></td>
+          <td>Consent artefact</td>
+          <td>Retrieve financial data from FIPs</td>
+          <td>Yes — explicit</td>
+        </tr>
+        <tr>
+          <td><strong>Banks/NBFCs</strong></td>
+          <td>Financial data</td>
+          <td>Only if user requests a product via platform</td>
+          <td>Yes — explicit</td>
+        </tr>
+        <tr>
+          <td><strong>Service Providers</strong></td>
+          <td>Contact, identity, usage data</td>
+          <td>Operate Services (hosting, analytics, eKYC, AI)</td>
+          <td>Yes — contractual</td>
+        </tr>
+        <tr>
+          <td><strong>Regulators</strong></td>
+          <td>As required by law</td>
+          <td>Legal and regulatory obligations</td>
+          <td>No — legal requirement</td>
+        </tr>
+        <tr>
+          <td><strong>Anonymised Data</strong></td>
+          <td>Aggregated, non-identifiable</td>
+          <td>Research and improving AI models</td>
+          <td>No — anonymised</td>
+        </tr>
+      </tbody>
+    </table>
 
-      <h2>6. Consent and Withdrawal</h2>
-      
-      <h3>6.1 Obtaining Consent</h3>
-      <p>We obtain your consent in a clear, specific, and informed manner:</p>
-      <ul>
-        <li><strong>Explicit:</strong> You must actively opt-in; we do not use pre-ticked boxes or implied consent</li>
-        <li><strong>Informed:</strong> We clearly explain what data will be collected, why, and how it will be used</li>
-        <li><strong>Specific:</strong> Consent is obtained for specific purposes, not blanket consent</li>
-        <li><strong>Revocable:</strong> You can withdraw consent at any time</li>
-      </ul>
+    <h2>6. Consent and Withdrawal</h2>
+    <div class="callout-blue">
+      <strong>Your Consent Matters:</strong> We obtain explicit, informed, and specific consent before collecting or sharing your data. You have the right to withdraw consent at any time.
+    </div>
+    <p>You can withdraw consent by:</p>
+    <ul>
+      <li>Using the Account Aggregator app to revoke consent</li>
+      <li>Contacting us at <a href="mailto:privacy@finous.site">privacy@finous.site</a></li>
+    </ul>
+    <p>You also have the right to:</p>
+    <ul>
+      <li>Revoke data sharing with specific parties</li>
+      <li>Access your data</li>
+      <li>Correct inaccurate data</li>
+      <li>Request erasure of your data</li>
+    </ul>
 
-      <h3>6.2 Withdrawing Consent</h3>
-      <p>You have the right to withdraw consent at any time:</p>
-      <ul>
-        <li><strong>Via Account Aggregator app:</strong> Use the AA app to manage and revoke consent</li>
-        <li><strong>Via email:</strong> Contact us at <a href="mailto:privacy@finous.site">privacy@finous.site</a></li>
-        <li><strong>Via the Services:</strong> Use the settings or account management features</li>
-      </ul>
-      <p>Withdrawal of consent does not affect the lawfulness of processing based on consent before its withdrawal.</p>
+    <h2>7. Data Security</h2>
+    <p>We implement robust security measures to protect your data:</p>
+    <ul>
+      <li><strong>Encryption:</strong> Data is encrypted in transit and at rest using industry-standard protocols</li>
+      <li><strong>Access controls:</strong> Strict access controls limit who can access your data</li>
+      <li><strong>Regular audits:</strong> We conduct regular Vulnerability Assessment and Penetration Testing (VAPT)</li>
+      <li><strong>Employee training:</strong> Our team is trained on data protection and privacy best practices</li>
+      <li><strong>Incident response:</strong> We have procedures to respond to data breaches</li>
+    </ul>
+    <p>In the event of a data breach, we will notify you and the relevant authorities as required by the DPDP Act and DPDP Rules, 2025.</p>
 
-      <h3>6.3 Your Rights</h3>
-      <p>Under the DPDP Act, you have the following rights:</p>
-      <ul>
-        <li><strong>Right to access:</strong> Request a copy of your personal data</li>
-        <li><strong>Right to correction:</strong> Request correction of inaccurate or incomplete data</li>
-        <li><strong>Right to erasure:</strong> Request deletion of your personal data (subject to legal obligations)</li>
-        <li><strong>Right to withdraw consent:</strong> Withdraw consent at any time</li>
-        <li><strong>Right to nominate:</strong> Nominate a person to exercise your rights on your behalf</li>
-        <li><strong>Right to grievance redressal:</strong> Raise concerns or complaints about data processing</li>
-      </ul>
-      <p>To exercise these rights, contact our Data Protection Officer at <a href="mailto:privacy@finous.site">privacy@finous.site</a>.</p>
+    <h2>8. Data Retention</h2>
+    <p>We retain your data only for as long as necessary to fulfill the purposes for which it was collected, or as required by law.</p>
+    <p>Data collected via the Account Aggregator framework is retained only for the duration specified in your consent artefact. Once consent is withdrawn or expires, we delete the data unless required to retain it for legal reasons.</p>
 
-      <h2>7. Data Security</h2>
-      <p>We implement robust security measures to protect your data:</p>
-      <ul>
-        <li><strong>Encryption:</strong> AES-256 encryption at rest, TLS 1.3 in transit</li>
-        <li><strong>Access controls:</strong> Role-based access, multi-factor authentication, principle of least privilege</li>
-        <li><strong>Regular audits:</strong> Vulnerability Assessment and Penetration Testing (VAPT) by independent security firms</li>
-        <li><strong>Employee training:</strong> Regular security awareness and data protection training</li>
-        <li><strong>Incident response:</strong> Documented procedures for detecting, responding to, and recovering from security incidents</li>
-      </ul>
-      <p>In the event of a data breach, we will notify affected users and regulators in accordance with the DPDP Act and DPDP Rules, 2025.</p>
+    <h2>9. Your Rights (DPDP Act)</h2>
+    <p>Under the Digital Personal Data Protection Act, 2023, you have the following rights:</p>
+    <ul>
+      <li><strong>Right to access:</strong> Request a copy of your personal data</li>
+      <li><strong>Right to correction:</strong> Request correction of inaccurate or incomplete data</li>
+      <li><strong>Right to erasure:</strong> Request deletion of your data</li>
+      <li><strong>Right to withdraw consent:</strong> Withdraw your consent at any time</li>
+      <li><strong>Right to nominate:</strong> Nominate another person to exercise your rights on your behalf in the event of death or incapacity</li>
+      <li><strong>Right to grievance redressal:</strong> Raise concerns about data processing and receive a response</li>
+    </ul>
+    <p>To exercise these rights, contact our Data Protection Officer at <a href="mailto:privacy@finous.site">privacy@finous.site</a>.</p>
 
-      <h2>8. Data Retention</h2>
-      <p>We retain your data only for as long as necessary to fulfill the purposes for which it was collected, or as required by law:</p>
-      <ul>
-        <li><strong>Account data:</strong> Retained while your account is active and for a reasonable period thereafter</li>
-        <li><strong>Financial data via AA:</strong> Retained only for the duration specified in the consent artefact</li>
-        <li><strong>Communication data:</strong> Retained as needed for support and improvement purposes</li>
-        <li><strong>Legal and regulatory data:</strong> Retained as required by applicable laws</li>
-      </ul>
-      <p>Once data is no longer needed, we securely delete or anonymise it.</p>
+    <h2>10. Contact Us</h2>
+    <div class="contact-box">
+      <strong>Data Protection Officer</strong>
+      <p>Nidhiverse Private Limited<br>
+      [INSERT ADDRESS]<br>
+      Pune, Maharashtra, India<br>
+      Email: <a href="mailto:privacy@finous.site">privacy@finous.site</a></p>
+    </div>
 
-      <h2>9. Your Rights (DPDP Act)</h2>
-      <p>Under the Digital Personal Data Protection Act, 2023, you have the following rights regarding your personal data:</p>
-      <ul>
-        <li><strong>Right to access:</strong> Request information about your personal data being processed</li>
-        <li><strong>Right to correction:</strong> Request correction of inaccurate, incomplete, or outdated data</li>
-        <li><strong>Right to erasure:</strong> Request deletion of your personal data (subject to legal obligations)</li>
-        <li><strong>Right to withdraw consent:</strong> Withdraw consent at any time</li>
-        <li><strong>Right to nominate:</strong> Nominate a person to exercise your rights on your behalf in case of death or incapacity</li>
-        <li><strong>Right to grievance redressal:</strong> Raise concerns or complaints about data processing</li>
-      </ul>
-      <p>To exercise these rights, contact our Data Protection Officer at <a href="mailto:privacy@finous.site">privacy@finous.site</a>. We will respond to your request within the timeframes specified by the DPDP Act.</p>
+    <h2>11. Changes to This Policy</h2>
+    <p>We may update this Data Usage and Sharing Policy from time to time. We will notify you of significant changes by posting the updated policy on our website and updating the "Last Updated" date.</p>
+    <p>We encourage you to review this policy periodically to stay informed about how we are protecting your data.</p>
 
-      <h2>10. Contact Us</h2>
-      <div class="contact-box">
-        <h3>Data Protection Officer</h3>
-        <p>For any questions, concerns, or requests regarding your data, please contact our Data Protection Officer:</p>
-        <p><strong>Nidhiverse Private Limited</strong></p>
-        <p>Email: <a href="mailto:privacy@finous.site">privacy@finous.site</a></p>
-        <p>Address: [INSERT ADDRESS], Pune, Maharashtra, India</p>
-      </div>
-
-      <h2>11. Changes to This Policy</h2>
-      <p>We may update this Data Usage and Sharing Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors.</p>
-      <p>We will notify you of significant changes by:</p>
-      <ul>
-        <li>Sending an email to your registered email address</li>
-        <li>Displaying a prominent notice on our website or within the Services</li>
-        <li>Updating the "Last Updated" date at the top of this policy</li>
-      </ul>
-      <p>Your continued use of the Services after changes constitutes acceptance of the updated policy. If you do not agree to the updated policy, you must stop using the Services.</p>
-
-      <div class="doc-footer">
-        <span>Confidential · Finous by Nidhiverse Private Limited · 2026</span>
-        <span>Data Usage and Sharing Policy</span>
-      </div>
+    <div class="footer">
+      <div>Confidential · Finous by Nidhiverse Private Limited · 2026</div>
+      <div>Data Usage and Sharing Policy</div>
     </div>
   </div>
 </body>

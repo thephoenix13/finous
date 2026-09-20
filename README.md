@@ -49,6 +49,29 @@ npm run build      # production build → dist/
 
 The site is fully static. Point any static host (GitHub Pages, Vercel, Netlify, Cloudflare Pages) at the `dist/` output.
 
+### Vercel Configuration
+
+The `vercel.json` file includes rewrites for clean URLs:
+- `/privacy` → `/legal/privacy.html`
+- `/terms` → `/legal/terms.html`
+- `/data-usage` → `/legal/data-usage.html`
+
+## Legal Pages
+
+Three legal document pages are available at:
+- `/legal/privacy.html` - Privacy Policy
+- `/legal/terms.html` - Terms and Conditions
+- `/legal/data-usage.html` - Data Usage and Sharing Policy
+
+These pages are accessible via clean URLs (`/privacy`, `/terms`, `/data-usage`) thanks to Vercel rewrites. All pages include:
+- Finous branding with legal document badge
+- Draft notice for review before publishing
+- Responsive design matching the main site
+- Print-friendly styling
+- Placeholder dates and addresses (to be filled after registration)
+
+**Important:** These are draft documents. A qualified legal professional must review them before publishing.
+
 ## Contact
 
 - Waitlist / partnerships: founder@finous.site
