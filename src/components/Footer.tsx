@@ -32,6 +32,15 @@ export default function Footer() {
             </ul>
           </div>
 
+          <div>
+            <h5>Legal</h5>
+            <ul className="footer-links">
+              <li><a href="/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms &amp; Conditions</a></li>
+              <li><a href="/data-usage">Data Usage Policy</a></li>
+            </ul>
+          </div>
+
           <div className="footer-contact">
             <h5>Contact</h5>
             <a className="mail-btn" href="mailto:founder@finous.site">
