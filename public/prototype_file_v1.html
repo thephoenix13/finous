@@ -1,0 +1,3115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Finous — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════════
+     TOKENS
+     ═══════════════════════════════════════════════════ */
+  :root {
+    --bone: #FBFAF7;
+    --bone-2: #F3F1EC;
+    --ink: #1A1A1A;
+    --ink-2: #666666;
+    --ink-3: #999999;
+    --border: #E8E5DE;
+    --ink-deep: #2A2D34;
+    --burnt: #C05621;
+    --forest: #2F6F4E;
+    --brick: #A02828;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04);
+
+    --r-card: 12px;
+    --r-btn: 10px;
+    --r-pill: 100px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #EDEAE3;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'tnum' 1, 'cv11' 1;
+    letter-spacing: -0.005em;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     STAGE
+     ═══════════════════════════════════════════════════ */
+  .stage {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 20px;
+  }
+
+  .caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    max-width: 400px;
+    text-align: center;
+  }
+  .caption-name {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .caption-desc {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    max-width: 44ch;
+  }
+
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--bone);
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05), 0 0 0 8px #FFFFFF inset;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     APP
+     ═══════════════════════════════════════════════════ */
+  .app {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bone);
+    overflow: hidden;
+  }
+
+  .status-bar {
+    height: 44px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+    z-index: 5;
+    letter-spacing: -0.01em;
+  }
+  .status-bar .sb-r { display: flex; gap: 5px; align-items: center; }
+  .status-bar svg { display: block; }
+
+  .screens { flex: 1; position: relative; overflow: hidden; }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bone);
+    overflow: hidden;
+  }
+
+  .screen-scroll {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .screen-scroll::-webkit-scrollbar { display: none; }
+
+  /* Tab bar */
+  .tabbar {
+    flex-shrink: 0;
+    height: 76px;
+    padding: 8px 8px max(12px, env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--bone);
+    border-top: 1px solid var(--border);
+    z-index: 10;
+  }
+  .tabbar.hidden { display: none; }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--ink-3);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    user-select: none;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 6px 0 0;
+    transition: color 0.15s;
+  }
+  .tab.active { color: var(--ink); }
+  .tab.active svg { stroke-width: 1.8; }
+  .tab svg { stroke: currentColor; }
+
+  /* Transitions */
+  @keyframes pushIn {
+    from { transform: translate3d(100%, 0, 0); }
+    to { transform: translate3d(0, 0, 0); }
+  }
+  @keyframes pushOut {
+    from { transform: translate3d(0, 0, 0); opacity: 1; }
+    to { transform: translate3d(-22%, 0, 0); opacity: 0.6; }
+  }
+  @keyframes popIn {
+    from { transform: translate3d(-22%, 0, 0); opacity: 0.6; }
+    to { transform: translate3d(0, 0, 0); opacity: 1; }
+  }
+  @keyframes popOut {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(100%, 0, 0); }
+  }
+  @keyframes tabLIn {
+    from { transform: translate3d(-14%, 0, 0); opacity: 0; }
+    to { transform: translate3d(0, 0, 0); opacity: 1; }
+  }
+  @keyframes tabRIn {
+    from { transform: translate3d(14%, 0, 0); opacity: 0; }
+    to { transform: translate3d(0, 0, 0); opacity: 1; }
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .screen.push-in { animation: pushIn 260ms cubic-bezier(0.32, 0.72, 0, 1); }
+  .screen.push-out { animation: pushOut 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+  .screen.pop-in { animation: popIn 260ms cubic-bezier(0.32, 0.72, 0, 1); }
+  .screen.pop-out { animation: popOut 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+  .screen.tab-l-in { animation: tabLIn 180ms ease-out; }
+  .screen.tab-r-in { animation: tabRIn 180ms ease-out; }
+  .screen.fade-in { animation: fadeIn 240ms ease-out; }
+
+  /* Typography */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .h-40 { font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; }
+  .h-28 { font-family: 'Instrument Serif', Georgia, serif; font-size: 28px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; }
+  .h-22 { font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.25; }
+  .h-17 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; }
+  .h-15 { font-size: 15px; font-weight: 500; letter-spacing: -0.005em; line-height: 1.4; }
+  .body { font-size: 14px; font-weight: 400; line-height: 1.55; color: var(--ink-2); }
+  .body-ink { font-size: 14px; font-weight: 400; line-height: 1.55; color: var(--ink); }
+  .sm { font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--ink-2); }
+  .xs { font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--ink-3); }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+  .pos { color: var(--forest); }
+  .neg { color: var(--brick); }
+  .burnt { color: var(--burnt); }
+
+  /* Layout helpers */
+  .pad { padding-left: 20px; padding-right: 20px; }
+  .flex { display: flex; }
+  .col { flex-direction: column; }
+  .between { justify-content: space-between; }
+  .center { align-items: center; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+  .gap-5 { gap: 24px; }
+  .grow { flex: 1; }
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .mt-4 { margin-top: 16px; }
+  .mt-5 { margin-top: 24px; }
+  .mt-6 { margin-top: 32px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mb-5 { margin-bottom: 24px; }
+
+  .hr-24 { height: 1px; background: var(--border); margin: 24px 0; }
+
+  /* Buttons */
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 52px;
+    border-radius: var(--r-btn);
+    border: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    padding: 0 20px;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn-primary { background: var(--ink-deep); color: #FFFFFF; }
+  .btn-accent { background: var(--burnt); color: #FFFFFF; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn-quiet { background: var(--bone-2); color: var(--ink); }
+
+  /* Field */
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 52px;
+    background: var(--bone-2);
+    border: 1px solid transparent;
+    border-radius: var(--r-btn);
+    padding: 0 16px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .field .placeholder { color: var(--ink-3); }
+  .field.focus { border-color: var(--ink-deep); background: var(--bone); }
+  .field svg { stroke: var(--ink-3); flex-shrink: 0; }
+
+  /* Card */
+  .card { background: var(--bone); border: 1px solid var(--border); border-radius: var(--r-card); padding: 20px; }
+  .card-flat { background: var(--bone-2); border-radius: var(--r-card); padding: 16px 18px; border: 1px solid transparent; }
+
+  /* Row */
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .row:active { background: var(--bone-2); }
+  .row + .row { border-top: 1px solid var(--border); }
+
+  .row-icon {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bone-2);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .row-icon svg { stroke: var(--ink); }
+
+  .row-title { font-size: 15px; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
+  .row-sub { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  .row-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .row-chev svg { stroke: var(--ink-3); }
+
+  /* Nav */
+  .nav {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 12px 0 8px;
+    flex-shrink: 0;
+  }
+  .nav-back {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  .nav-back:active { background: var(--bone-2); }
+  .nav-back svg { stroke: var(--ink); }
+  .nav-title { font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
+
+  /* Splash */
+  .splash-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    background: var(--bone);
+  }
+  .splash-wordmark {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .splash-loader {
+    width: 40px; height: 1px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+  }
+  .splash-loader::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    width: 40%;
+    background: var(--ink);
+    animation: load 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+  @keyframes load { 0% { left: -40%; } 100% { left: 100%; } }
+
+  /* Welcome */
+  .welcome { flex: 1; display: flex; flex-direction: column; padding: 24px 20px 32px; }
+
+  /* Consent */
+  .consent-line {
+    display: flex;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .consent-line:last-child { border-bottom: none; }
+  .consent-check {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--ink-deep);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .consent-check svg { stroke: #FFFFFF; }
+  .consent-text { flex: 1; }
+  .consent-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+  .consent-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+  /* OTP */
+  .otp-row { display: flex; gap: 10px; margin-top: 28px; }
+  .otp-cell {
+    flex: 1;
+    height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bone-2);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .otp-cell.filled { background: var(--bone); border-color: var(--ink-deep); }
+  .otp-cell.cursor { background: var(--bone); border-color: var(--ink); }
+
+  /* Sync */
+  .sync-ring {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    border-top-color: var(--ink);
+    animation: spin 900ms linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sync-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .sync-item:last-child { border-bottom: none; }
+  .sync-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--forest);
+    flex-shrink: 0;
+  }
+  .sync-item.pending .dot { background: var(--border); }
+  .sync-item.pending { color: var(--ink-3); }
+
+  /* Home */
+  .home-hero { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+  .home-nw-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  .home-nw-value {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .home-nw-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--forest);
+    margin-top: 12px;
+  }
+  .home-nw-delta.neg { color: var(--brick); }
+
+  .kv-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .kv-l { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  .kv-v { font-size: 17px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+  .look-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .look-row:last-child { border-bottom: none; }
+  .look-row:active { background: var(--bone-2); }
+  .look-num {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    min-width: 18px;
+    padding-top: 2px;
+  }
+  .look-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.005em; line-height: 1.4; }
+  .look-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+  /* Chart */
+  .chart-svg { width: 100%; display: block; }
+  .chart-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Slider */
+  .slider-lbl { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .slider-lbl .l { font-size: 13px; color: var(--ink-2); font-weight: 500; }
+  .slider-lbl .v { font-size: 16px; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .slider-track { height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 6px; }
+  .slider-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--ink); border-radius: 2px; }
+  .slider-thumb {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 20px; height: 20px;
+    background: var(--bone);
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+  }
+
+  /* Result */
+  .result-num {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 44px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .result-lbl {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  .result-split {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 20px;
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .result-split-item .k { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  .result-split-item .v { font-size: 15px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* Score */
+  .score-top { padding: 24px 20px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+  .score-num {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 88px;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .score-den { font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; margin-top: 10px; }
+  .score-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 44px;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-row .sl { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .score-row .st { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .score-row .sf { height: 100%; background: var(--ink); border-radius: 2px; }
+  .score-row .sv { font-size: 13px; font-weight: 500; color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Recommendation */
+  .rec-card { display: block; padding: 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .rec-card:last-child { border-bottom: none; }
+  .rec-card:active { background: var(--bone-2); }
+  .rec-rank {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    background: var(--bone-2);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .rec-title { font-size: 16px; font-weight: 500; color: var(--ink); line-height: 1.4; margin-bottom: 6px; letter-spacing: -0.005em; }
+  .rec-reason { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+  .rec-meta { display: flex; gap: 20px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .rec-meta-k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+  .rec-meta-v { font-size: 14px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* Chat */
+  .chat-scroll { flex: 1; overflow-y: auto; padding: 8px 20px 20px; scrollbar-width: none; }
+  .chat-scroll::-webkit-scrollbar { display: none; }
+  .chat-msg { max-width: 84%; margin-bottom: 16px; }
+  .chat-msg.user { margin-left: auto; }
+  .chat-msg .bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+  .chat-msg.user .bubble { background: var(--ink-deep); color: #FFFFFF; border-bottom-right-radius: 4px; }
+  .chat-msg.ai .bubble { background: var(--bone-2); color: var(--ink); border-bottom-left-radius: 4px; }
+  .chat-msg .meta { font-size: 11px; color: var(--ink-3); margin-top: 6px; padding: 0 4px; }
+  .chat-msg.user .meta { text-align: right; }
+
+  .chat-suggestions { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .suggest {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px;
+    background: var(--bone-2);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    text-align: left;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  .suggest:active { background: var(--border); }
+  .suggest svg { stroke: var(--ink-3); flex-shrink: 0; }
+
+  .chat-input { padding: 12px 20px 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+  .chat-field {
+    flex: 1;
+    height: 48px;
+    display: flex; align-items: center;
+    padding: 0 18px;
+    background: var(--bone-2);
+    border-radius: 24px;
+    font-size: 14px;
+    color: var(--ink-3);
+  }
+  .chat-send {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--ink-deep);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: none;
+    cursor: pointer;
+  }
+  .chat-send svg { stroke: #FFFFFF; }
+
+  /* Voice */
+  .voice-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+  .voice-mic {
+    width: 108px; height: 108px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 32px;
+    background: var(--bone);
+  }
+  .voice-mic svg { stroke: var(--ink); }
+  .voice-status { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.005em; }
+  .voice-sub { font-size: 13px; color: var(--ink-2); max-width: 240px; line-height: 1.5; }
+
+  .voice-wave { display: flex; align-items: center; gap: 3px; height: 40px; margin-bottom: 32px; }
+  .vw { width: 2px; background: var(--ink); border-radius: 1px; animation: vw 1s ease-in-out infinite; }
+  .vw:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .vw:nth-child(2) { height: 20px; animation-delay: 0.08s; }
+  .vw:nth-child(3) { height: 30px; animation-delay: 0.16s; }
+  .vw:nth-child(4) { height: 16px; animation-delay: 0.24s; }
+  .vw:nth-child(5) { height: 34px; animation-delay: 0.32s; }
+  .vw:nth-child(6) { height: 24px; animation-delay: 0.4s; }
+  .vw:nth-child(7) { height: 12px; animation-delay: 0.48s; }
+  @keyframes vw {
+    0%, 100% { transform: scaleY(0.4); opacity: 0.35; }
+    50% { transform: scaleY(1); opacity: 1; }
+  }
+
+  /* Sources */
+  .source-row { display: flex; align-items: flex-start; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .source-row:last-child { border-bottom: none; }
+  .source-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink); flex-shrink: 0; margin-top: 8px; }
+  .source-t { font-size: 14px; color: var(--ink); font-weight: 500; margin-bottom: 2px; }
+  .source-d { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+  /* Profile */
+  .profile-hero {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .profile-av {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--bone-2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 24px;
+    color: var(--ink);
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .profile-name { font-size: 17px; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
+  .profile-meta { font-size: 13px; color: var(--ink-3); margin-top: 3px; }
+  .verify-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--forest);
+    margin-top: 8px;
+  }
+  .verify-chip svg { stroke: var(--forest); }
+
+  /* Switch */
+  .switch {
+    width: 40px; height: 24px;
+    background: var(--border);
+    border-radius: 12px;
+    position: relative;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    background: var(--bone);
+    border-radius: 50%;
+    transition: transform 0.15s;
+  }
+  .switch.on { background: var(--ink-deep); }
+  .switch.on::after { transform: translateX(16px); }
+
+  /* Tag */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tag-forest { background: rgba(47,111,78,0.08); color: var(--forest); }
+  .tag-brick { background: rgba(160,40,40,0.06); color: var(--brick); }
+  .tag-burnt { background: rgba(192,86,33,0.08); color: var(--burnt); }
+  .tag-quiet { background: var(--bone-2); color: var(--ink-2); }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .stage { padding: 0; gap: 0; min-height: 100dvh; background: var(--bone); }
+    .caption { display: none; }
+    .phone {
+      width: 100vw;
+      height: 100dvh;
+      border-radius: 0;
+      box-shadow: none;
+      background: var(--bone);
+    }
+    .app { position: relative; inset: auto; height: 100%; }
+  }
+
+  .mono {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="caption" id="caption">
+    <div class="caption-name" id="cap-name">Splash</div>
+    <div class="caption-desc" id="cap-desc">The brand mark. No bottom nav.</div>
+  </div>
+
+  <div class="phone">
+    <div class="app" id="app">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="sb-r">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <rect x="0.75" y="6.25" width="2.5" height="4" rx="0.75"/>
+            <rect x="5.25" y="4.25" width="2.5" height="6" rx="0.75"/>
+            <rect x="9.75" y="2.25" width="2.5" height="8" rx="0.75"/>
+            <rect x="14.25" y="0.25" width="2.5" height="10" rx="0.75" fill="currentColor"/>
+          </svg>
+          <svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M1 4.5C2.8 2.9 5.3 2 8 2s5.2.9 7 2.5"/>
+            <path d="M3 7c1.4-1.2 3.1-1.8 5-1.8s3.6.6 5 1.8"/>
+            <circle cx="8" cy="9.5" r="0.75" fill="currentColor"/>
+          </svg>
+          <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+            <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" stroke-width="1"/>
+            <rect x="2" y="2" width="15" height="8" rx="1.5" fill="currentColor"/>
+            <rect x="23.5" y="3.5" width="1.5" height="5" rx="0.75" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+      <div class="screens" id="screens"></div>
+      <nav class="tabbar hidden" id="tabbar">
+        <button class="tab" data-tab="home">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="tab" data-tab="advisor">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H7l-4 4v-4a8 8 0 0 1 8-8h2a8 8 0 0 1 8 0"/></svg>
+          <span>Advisor</span>
+        </button>
+        <button class="tab" data-tab="plans">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15 9-4 6-2-2 6-4"/></svg>
+          <span>Plans</span>
+        </button>
+        <button class="tab" data-tab="you">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/></svg>
+          <span>You</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   ICONS
+   ═══════════════════════════════════════════════════════════════ */
+const S = (w, h, d) => `<svg width="${w}" height="${h}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const I = {
+  back: (s=22) => S(s,s,'<path d="m15 6-6 6 6 6"/>'),
+  chev: (s=18) => S(s,s,'<path d="m9 6 6 6-6 6"/>'),
+  arrowUp: (s=14) => S(s,s,'<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>'),
+  check: (s=12) => S(s,s,'<path d="m5 12 5 5L20 7"/>'),
+  bank: (s=22) => S(s,s,'<path d="M3 10 12 3l9 7"/><path d="M5 10v10"/><path d="M9 10v10"/><path d="M15 10v10"/><path d="M19 10v10"/><path d="M3 20h18"/>'),
+  card: (s=22) => S(s,s,'<rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/>'),
+  chart: (s=22) => S(s,s,'<path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 6-8"/>'),
+  compass: (s=22) => S(s,s,'<circle cx="12" cy="12" r="9"/><path d="m15 9-4 6-2-2 6-4"/>'),
+  user: (s=22) => S(s,s,'<circle cx="12" cy="8" r="4"/><path d="M5 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/>'),
+  shield: (s=22) => S(s,s,'<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/>'),
+  lock: (s=22) => S(s,s,'<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'),
+  doc: (s=22) => S(s,s,'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>'),
+  link: (s=22) => S(s,s,'<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'),
+  bell: (s=22) => S(s,s,'<path d="M6 8a6 6 0 1 1 12 0c0 6 3 7 3 7H3s3-1 3-7"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
+  globe: (s=22) => S(s,s,'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/>'),
+  download: (s=22) => S(s,s,'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>'),
+  calc: (s=22) => S(s,s,'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8"/><path d="M8 11h.01"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 15h.01"/><path d="M12 15h.01"/><path d="M16 15h4"/>'),
+  trend: (s=22) => S(s,s,'<path d="M3 17 9 11l4 4 8-8"/><path d="M15 7h6v6"/>'),
+  home: (s=22) => S(s,s,'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/>'),
+  wallet: (s=22) => S(s,s,'<path d="M20 12V8H5a2 2 0 1 1 0-4h13v4"/><path d="M3 6v13a2 2 0 0 0 2 2h15v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>'),
+  help: (s=22) => S(s,s,'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-.8.6-1.5 1-1.5 2"/><circle cx="12" cy="17" r=".5" fill="currentColor"/>'),
+  edit: (s=22) => S(s,s,'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>'),
+  mic: (s=36) => S(s,s,'<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/><path d="M8 21h8"/>'),
+  send: (s=18) => S(s,s,'<path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9z"/>'),
+  sparkle: (s=18) => S(s,s,'<path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/>'),
+  refresh: (s=18) => S(s,s,'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>'),
+  wifiOff: (s=36) => S(s,s,'<path d="m2 2 20 20"/><path d="M8.5 8.5a11 11 0 0 1 7 0"/><path d="M5 12a16 16 0 0 1 3-1.8"/><path d="M16 10.2a16 16 0 0 1 3 1.8"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r=".5" fill="currentColor"/>'),
+  plus: (s=20) => S(s,s,'<path d="M12 5v14"/><path d="M5 12h14"/>'),
+  search: (s=20) => S(s,s,'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
+  target: (s=22) => S(s,s,'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'),
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   PERSONA DATA
+   ═══════════════════════════════════════════════════════════════ */
+const D = {
+  user: { name: 'Aarav Mehta', first: 'Aarav', city: 'Bengaluru', email: 'aarav.mehta@gmail.com' },
+  nw: '₹76.4L',
+  nwDelta: '₹1,24,000',
+  income: '₹2,40,000',
+  outflow: '₹1,86,400',
+  saved: '₹53,600',
+  savedDelta: '₹14,400',
+  accounts: [
+    { id: 'hdfc', name: 'HDFC Bank', sub: 'Savings · •4821', balance: '₹2,84,000' },
+    { id: 'sbi', name: 'State Bank of India', sub: 'Savings · •7723', balance: '₹1,36,000' },
+  ],
+  loans: [
+    { id: 'hdfc-home', name: 'HDFC Home Loan', sub: '18 years · since Mar 2021', rate: '8.9%', outstanding: '₹62,00,000', emi: '₹58,400', progress: 38, progressLabel: '38% repaid · 11 years left' },
+  ],
+  cards: [
+    { id: 'icici-cc', name: 'ICICI Amazon Pay', sub: 'On ₹3L limit', outstanding: '₹18,400' },
+  ],
+  investments: [
+    { id: 'groww', name: 'Groww Mutual Funds', sub: '9 active SIPs', value: '₹24,80,000' },
+    { id: 'zerodha', name: 'Zerodha Holdings', sub: '14 stocks', value: '₹8,40,000' },
+    { id: 'ppf', name: 'PPF Account', sub: 'HDFC · opened 2019', value: '₹6,20,000' },
+  ],
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREENS
+   ═══════════════════════════════════════════════════════════════ */
+const SCREENS = {
+
+  /* ─── JOURNEY 1 ─── */
+  splash: {
+    caption: ['Splash', 'Brand mark, loader. 1.2s, then auto-advance.'],
+    body: () => `
+      <div class="splash-wrap">
+        <div class="splash-wordmark">Finous</div>
+        <div class="splash-loader"></div>
+      </div>`,
+  },
+
+  welcome: {
+    caption: ['Welcome', 'The promise in one sentence. One CTA.'],
+    body: () => `
+      <div class="welcome">
+        <div class="pad" style="padding-top: 60px;">
+          <div class="eyebrow mb-4">Welcome</div>
+          <div class="h-40">Every account.<br>One number.</div>
+          <p class="body mt-5" style="max-width: 32ch; color: var(--ink-2);">
+            Finous connects to your banks, loans, cards, and mutual funds through RBI's Account Aggregator. Read-only. Revocable anytime.
+          </p>
+        </div>
+        <div class="grow"></div>
+        <div class="pad">
+          <button class="btn btn-primary" onclick="go('consent','push')">Continue with Aadhaar</button>
+          <div class="xs mt-4" style="text-align: center; color: var(--ink-3);">Takes about 90 seconds</div>
+        </div>
+      </div>`,
+  },
+
+  consent: {
+    caption: ['AA consent', 'Plain language. What data, what duration, what you can do.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="go('welcome','pop')">${I.back()}</button>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 20px;">
+          <div class="eyebrow">Step 1 of 3</div>
+          <div class="h-28 mt-3">What you're sharing</div>
+          <p class="body mt-4" style="color: var(--ink-2);">
+            You're about to connect your financial accounts through RBI's Account Aggregator framework. Read-only. Revocable anytime.
+          </p>
+          <div class="mt-6">
+            <div class="consent-line">
+              <div class="consent-check">${I.check(12)}</div>
+              <div class="consent-text">
+                <div class="consent-title">Balances and transactions</div>
+                <div class="consent-desc">From banks, cards, loans, and mutual funds. We can view, not move.</div>
+              </div>
+            </div>
+            <div class="consent-line">
+              <div class="consent-check">${I.check(12)}</div>
+              <div class="consent-text">
+                <div class="consent-title">Valid for 12 months</div>
+                <div class="consent-desc">You can revoke consent at any time. Data is deleted within 24 hours.</div>
+              </div>
+            </div>
+            <div class="consent-line">
+              <div class="consent-check">${I.check(12)}</div>
+              <div class="consent-text">
+                <div class="consent-title">You stay in control</div>
+                <div class="consent-desc">Every account is added by you. Every consent can be revoked by you.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pad" style="padding-top: 16px; padding-bottom: 24px;">
+        <button class="btn btn-primary" onclick="go('aadhaar','push')">Give consent</button>
+      </div>`,
+  },
+
+  aadhaar: {
+    caption: ['Aadhaar', 'One field, one OTP, one action.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="go('consent','pop')">${I.back()}</button>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 20px;">
+          <div class="eyebrow">Step 2 of 3</div>
+          <div class="h-28 mt-3">Verify with Aadhaar</div>
+          <p class="body mt-4" style="color: var(--ink-2);">
+            We'll send a one-time code to the mobile linked with your Aadhaar.
+          </p>
+          <div class="mt-6">
+            <div class="field">
+              <span class="mono" style="letter-spacing: 0.12em;">XXXX XXXX 4821</span>
+            </div>
+            <div class="otp-row">
+              <div class="otp-cell filled">4</div>
+              <div class="otp-cell filled">9</div>
+              <div class="otp-cell filled">2</div>
+              <div class="otp-cell cursor"></div>
+              <div class="otp-cell"></div>
+              <div class="otp-cell"></div>
+            </div>
+            <div class="xs mt-5" style="text-align: center; color: var(--ink-3);">Code sent to ••••• 48210</div>
+          </div>
+        </div>
+      </div>
+      <div class="pad" style="padding-top: 16px; padding-bottom: 24px;">
+        <button class="btn btn-primary" onclick="go('sync','push')">Verify</button>
+      </div>`,
+  },
+
+  sync: {
+    caption: ['Sync', 'Honest progress. List what\'s being fetched. No fake percentage.'],
+    body: () => `
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 80px;">
+          <div class="sync-ring"></div>
+          <div class="h-22 mt-5" style="text-align: center;">Fetching your accounts</div>
+          <p class="body mt-3" style="text-align: center; color: var(--ink-2);">
+            This takes about 30 seconds. You'll land on your dashboard when it's done.
+          </p>
+          <div class="mt-6">
+            <div class="sync-item"><span class="dot"></span>HDFC Bank</div>
+            <div class="sync-item"><span class="dot"></span>State Bank of India</div>
+            <div class="sync-item"><span class="dot"></span>ICICI Credit Card</div>
+            <div class="sync-item pending"><span class="dot"></span>Groww Mutual Funds</div>
+            <div class="sync-item pending"><span class="dot"></span>Zerodha Holdings</div>
+          </div>
+        </div>
+      </div>
+      <div class="pad" style="padding-top: 16px; padding-bottom: 24px;">
+        <button class="btn btn-quiet" onclick="enterApp()">Skip to dashboard</button>
+      </div>`,
+  },
+
+  /* ─── JOURNEY 2: DAILY GLANCE ─── */
+  home: {
+    tab: 'home',
+    caption: ['Home', 'Net worth, quiet chart, two things to look at.'],
+    body: () => `
+      <div class="nav" style="justify-content: flex-end; padding-right: 12px;">
+        <button class="nav-back" onclick="go('search','push')">
+          ${I.search(20)}
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 0; padding-bottom: 12px;">
+          <div class="eyebrow">Monday, 29 September</div>
+          <div class="h-28 mt-2">Good morning, ${D.user.first}.</div>
+        </div>
+
+        <div class="home-hero">
+          <div class="home-nw-label">Net worth</div>
+          <div class="home-nw-value mono">${D.nw}</div>
+          <div class="home-nw-delta">${I.arrowUp(12)} ${D.nwDelta} this month</div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="chart-wrap">
+            <svg class="chart-svg" viewBox="0 0 320 80" preserveAspectRatio="none" style="height: 80px;">
+              <path d="M0,58 C30,52 50,46 80,44 S140,36 170,30 S240,20 320,12" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+              <circle cx="320" cy="12" r="3" fill="#1A1A1A"/>
+            </svg>
+            <div class="chart-axis">
+              <span>Oct</span><span>Jan</span><span>Apr</span><span>Jul</span><span>Sep</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">This month</div>
+          <div class="kv-split">
+            <div>
+              <div class="kv-l">In</div>
+              <div class="kv-v mono">${D.income}</div>
+            </div>
+            <div>
+              <div class="kv-l">Out</div>
+              <div class="kv-v mono">${D.outflow}</div>
+            </div>
+          </div>
+          <div class="mt-5" style="padding-top: 20px; border-top: 1px solid var(--border);">
+            <div class="kv-l">Saved</div>
+            <div class="kv-v mono">${D.saved}</div>
+            <div class="sm mt-2" style="color: var(--forest);">${D.savedDelta} more than last month</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <button class="btn btn-ghost" onclick="go('recap','push')" style="height: 44px; font-size: 13.5px;">
+            See September recap
+          </button>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <div class="pad mb-3"><div class="eyebrow">Look at this</div></div>
+          <div class="look-row" onclick="go('action','push')">
+            <div class="look-num mono">01</div>
+            <div class="grow">
+              <div class="look-title">Your HDFC home loan rate is above market</div>
+              <div class="look-desc">Current 8.9%. Market offers 8.5%. Refinancing could save ₹1,840/month.</div>
+            </div>
+          </div>
+          <div class="look-row" onclick="go('recommendations','push')">
+            <div class="look-num mono">02</div>
+            <div class="grow">
+              <div class="look-title">₹4.2L sitting idle in savings</div>
+              <div class="look-desc">Moving this to a term deposit could earn ₹13,800 more per year.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  accounts: {
+    tab: 'home',
+    caption: ['Accounts', 'Every connection, grouped. Real balances.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Accounts</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow mb-3">Bank accounts</div>
+          ${D.accounts.map(a => `
+            <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('account-detail','push')">
+              <div class="row-icon">${I.bank()}</div>
+              <div class="grow">
+                <div class="row-title">${a.name}</div>
+                <div class="row-sub">${a.sub}</div>
+              </div>
+              <div class="mono" style="font-size: 15px; font-weight: 500; color: var(--ink);">${a.balance}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Loans</div>
+          ${D.loans.map(l => `
+            <div class="row" style="padding-left: 0; padding-right: 0;">
+              <div class="row-icon">${I.home()}</div>
+              <div class="grow">
+                <div class="row-title">${l.name}</div>
+                <div class="row-sub">${l.sub}</div>
+              </div>
+              <div class="mono" style="font-size: 15px; font-weight: 500; color: var(--ink);">${l.outstanding}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Cards</div>
+          ${D.cards.map(c => `
+            <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('card-detail','push')">
+              <div class="row-icon">${I.card()}</div>
+              <div class="grow">
+                <div class="row-title">${c.name}</div>
+                <div class="row-sub">${c.sub}</div>
+              </div>
+              <div class="mono" style="font-size: 15px; font-weight: 500; color: var(--ink);">${c.outstanding}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Investments</div>
+          ${D.investments.map(i => `
+            <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('investment-detail','push')">
+              <div class="row-icon">${I.trend()}</div>
+              <div class="grow">
+                <div class="row-title">${i.name}</div>
+                <div class="row-sub">${i.sub}</div>
+              </div>
+              <div class="mono" style="font-size: 15px; font-weight: 500; color: var(--ink);">${i.value}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  'account-detail': {
+    tab: 'home',
+    caption: ['Account detail', 'Balance, this month, transactions.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">HDFC Bank</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px; padding-bottom: 24px;">
+          <div class="eyebrow">Savings · •4821</div>
+          <div class="result-num mt-3 mono">₹2,84,000</div>
+          <div class="sm mt-3 pos">↑ ₹18,400 this month</div>
+        </div>
+
+        <div class="pad" style="padding-bottom: 16px;">
+          <div class="eyebrow mb-3">Recent</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
+            <div class="grow">
+              <div class="row-title">Salary credit</div>
+              <div class="row-sub">Today · 10:24 AM</div>
+            </div>
+            <div class="mono pos" style="font-size: 14px; font-weight: 500;">+₹2,40,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
+            <div class="grow">
+              <div class="row-title">Home loan EMI</div>
+              <div class="row-sub">Yesterday · 06:00 AM</div>
+            </div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹58,400</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
+            <div class="grow">
+              <div class="row-title">SIP — Parag Parikh Flexi Cap</div>
+              <div class="row-sub">Yesterday · 07:00 AM</div>
+            </div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹15,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
+            <div class="grow">
+              <div class="row-title">Swiggy</div>
+              <div class="row-sub">Yesterday · 9:12 PM</div>
+            </div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹842</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
+            <div class="grow">
+              <div class="row-title">Blinkit</div>
+              <div class="row-sub">Sun · 7:42 PM</div>
+            </div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹1,240</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  'txn-detail': {
+    tab: 'home',
+    caption: ['Transaction', 'Amount, counterparty, source. Recategorise or report.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Transaction</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Amount</div>
+          <div class="result-num mt-3 mono">₹842</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">Debited from HDFC •4821</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="row" style="padding-left: 0; padding-right: 0; border-top: 1px solid var(--border);">
+            <div class="grow"><div class="row-sub">Counterparty</div><div class="row-title mt-2">Swiggy</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Date</div><div class="row-title mt-2 mono">28 September 2026 · 9:12 PM</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Category</div><div class="row-title mt-2">Food and dining</div></div>
+            <div class="row-chev">${I.edit(18)}</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Reference</div><div class="row-title mt-2 mono">UPI/4291038472</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Similar transactions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Zomato</div><div class="row-sub">26 Sep</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹1,240</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Swiggy</div><div class="row-sub">24 Sep</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹576</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost">Report an issue</button>
+        </div>
+      </div>`,
+  },
+
+  'card-detail': {
+    tab: 'home',
+    caption: ['Card detail', 'Statement cycle, utilisation, auto-pay status.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">ICICI Amazon Pay</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="card" style="padding: 22px;">
+            <div class="flex between center">
+              <div>
+                <div class="eyebrow">ICICI Bank</div>
+                <div class="h-15 mt-2">Amazon Pay</div>
+              </div>
+              <div class="mono" style="font-size: 14px; font-weight: 500; letter-spacing: 0.14em; color: var(--ink-2);">••4419</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Outstanding</div>
+          <div class="result-num mt-3 mono">₹18,400</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">of ₹3,00,000 limit · 6% used</div>
+          <div style="height: 2px; background: var(--border); border-radius: 2px; margin-top: 20px; position: relative;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 6%; background: var(--ink); border-radius: 2px;"></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Cycle</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Statement date</div><div class="row-sub">5th of every month</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">5 Oct</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Payment due</div><div class="row-sub">25th of every month</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">25 Oct</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Minimum due</div><div class="row-sub">10% of outstanding</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹1,840</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Auto-pay</div><div class="row-sub">Not set up</div></div>
+            <span class="tag tag-burnt">Off</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">12-month utilisation</div>
+          <div class="flex" style="gap: 4px; align-items: flex-end; height: 60px;">
+            ${[12, 22, 18, 34, 28, 42, 38, 25, 18, 22, 30, 6].map(h => `
+              <div style="flex: 1; height: ${h}%; background: var(--ink); border-radius: 2px; min-height: 3px;"></div>
+            `).join('')}
+          </div>
+          <div class="chart-axis">
+            <span>Oct</span><span>Jan</span><span>Apr</span><span>Jul</span><span>Sep</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost">${I.plus(18)} Set up auto-pay</button>
+        </div>
+      </div>`,
+  },
+
+  'investment-detail': {
+    tab: 'home',
+    caption: ['Investment detail', 'Invested, current, XIRR, benchmark.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Parag Parikh Flexi Cap</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Current value</div>
+          <div class="result-num mt-3 mono">₹8,42,000</div>
+          <div class="sm mt-3" style="color: var(--forest);">+₹1,82,000 · 27.6% total return</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Invested</div><div class="row-title mt-2 mono">₹6,60,000</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">XIRR · since Mar 2021</div><div class="row-title mt-2 mono">14.2%</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Nifty 500 · same period</div><div class="row-title mt-2 mono" style="color: var(--ink-2);">13.1%</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Expense ratio</div><div class="row-title mt-2 mono">0.62%</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Contributions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Monthly SIP</div><div class="row-sub">Auto-debit on 5th</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹15,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Total instalments</div><div class="row-sub">Since Mar 2021</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">44</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost">Pause SIP</button>
+        </div>
+      </div>`,
+  },
+
+  'net-worth': {
+    tab: 'home',
+    caption: ['Net worth', 'One chart, twelve months, clean breakdown.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Net worth</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow">Net worth</div>
+          <div class="result-num mt-3 mono">₹76.4L</div>
+          <div class="sm mt-3 pos">↑ ₹1,24,000 this month</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <svg class="chart-svg" viewBox="0 0 320 140" preserveAspectRatio="none" style="height: 140px;">
+            <line x1="0" y1="120" x2="320" y2="120" stroke="#E8E5DE" stroke-width="1"/>
+            <path d="M0,100 C30,94 60,80 90,72 S150,50 190,44 S260,30 320,20" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            <circle cx="320" cy="20" r="3" fill="#1A1A1A"/>
+          </svg>
+          <div class="chart-axis">
+            <span>Oct</span><span>Dec</span><span>Feb</span><span>Apr</span><span>Jun</span><span>Sep</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">Breakdown</div>
+          <div class="kv-split">
+            <div>
+              <div class="kv-l">Assets</div>
+              <div class="kv-v mono">₹1,38,60,000</div>
+            </div>
+            <div>
+              <div class="kv-l">Liabilities</div>
+              <div class="kv-v mono">₹62,18,400</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">Allocation</div>
+          <div class="card">
+            <div class="flex center gap-5">
+              <svg width="82" height="82" viewBox="0 0 82 82">
+                <circle cx="41" cy="41" r="30" fill="none" stroke="#E8E5DE" stroke-width="10"/>
+                <circle cx="41" cy="41" r="30" fill="none" stroke="#1A1A1A" stroke-width="10" stroke-dasharray="94 200" stroke-linecap="butt" transform="rotate(-90 41 41)"/>
+                <circle cx="41" cy="41" r="30" fill="none" stroke="#666" stroke-width="10" stroke-dasharray="60 200" stroke-dashoffset="-94" stroke-linecap="butt" transform="rotate(-90 41 41)"/>
+                <circle cx="41" cy="41" r="30" fill="none" stroke="#C05621" stroke-width="10" stroke-dasharray="32 200" stroke-dashoffset="-154" stroke-linecap="butt" transform="rotate(-90 41 41)"/>
+              </svg>
+              <div class="grow">
+                <div class="flex between center" style="padding: 6px 0;">
+                  <div class="flex center gap-2"><span style="width: 8px; height: 8px; border-radius: 2px; background: #1A1A1A;"></span><span style="font-size: 13.5px;">Investments</span></div>
+                  <span class="mono" style="font-size: 13.5px; font-weight: 500;">54%</span>
+                </div>
+                <div class="flex between center" style="padding: 6px 0;">
+                  <div class="flex center gap-2"><span style="width: 8px; height: 8px; border-radius: 2px; background: #666;"></span><span style="font-size: 13.5px;">Savings</span></div>
+                  <span class="mono" style="font-size: 13.5px; font-weight: 500;">34%</span>
+                </div>
+                <div class="flex between center" style="padding: 6px 0;">
+                  <div class="flex center gap-2"><span style="width: 8px; height: 8px; border-radius: 2px; background: #C05621;"></span><span style="font-size: 13.5px;">Other</span></div>
+                  <span class="mono" style="font-size: 13.5px; font-weight: 500;">12%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  cashflow: {
+    tab: 'home',
+    caption: ['Cash flow', 'In, out, categories. One insight.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">This month</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow">Saved</div>
+          <div class="result-num mt-3 mono">₹53,600</div>
+          <div class="sm mt-3" style="color: var(--forest);">₹14,400 more than last month</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="kv-split">
+            <div>
+              <div class="kv-l">In</div>
+              <div class="kv-v mono" style="color: var(--forest);">₹2,40,000</div>
+            </div>
+            <div>
+              <div class="kv-l">Out</div>
+              <div class="kv-v mono">₹1,86,400</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">Where it went</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">EMI</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹58,400</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">SIPs</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹35,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Rent and utilities</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹42,600</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Food and dining</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹18,200</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Other</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹32,200</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">Insight</div>
+            <div class="body-ink">Dining is 22% higher than your 6-month average. Nothing alarming — but worth a look.</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  recap: {
+    tab: 'home',
+    caption: ['September recap', 'What changed, what improved, what regressed.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">September</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow">Saved this month</div>
+          <div class="result-num mt-3 mono">₹53,600</div>
+          <div class="sm mt-3" style="color: var(--forest);">Your best month this year</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="kv-split">
+            <div>
+              <div class="kv-l">In</div>
+              <div class="kv-v mono">₹2,40,000</div>
+            </div>
+            <div>
+              <div class="kv-l">Out</div>
+              <div class="kv-v mono">₹1,86,400</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">What changed</div>
+          <div class="row" style="padding-left: 0; padding-right: 0; align-items: flex-start;">
+            <div style="width: 3px; height: 3px; border-radius: 50%; background: var(--forest); margin-top: 9px; flex-shrink: 0;"></div>
+            <div class="grow" style="margin-left: 12px;">
+              <div class="row-title">Home loan rate reset</div>
+              <div class="row-sub">From 8.6% to 8.9%. EMI unchanged, tenure extended by 3 months.</div>
+            </div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0; align-items: flex-start;">
+            <div style="width: 3px; height: 3px; border-radius: 50%; background: var(--forest); margin-top: 9px; flex-shrink: 0;"></div>
+            <div class="grow" style="margin-left: 12px;">
+              <div class="row-title">Card utilisation dropped to 6%</div>
+              <div class="row-sub">Best it's been in 12 months. ICICI outstanding down to ₹18,400.</div>
+            </div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0; align-items: flex-start;">
+            <div style="width: 3px; height: 3px; border-radius: 50%; background: var(--brick); margin-top: 9px; flex-shrink: 0;"></div>
+            <div class="grow" style="margin-left: 12px;">
+              <div class="row-title">Dining up 22% over 6-month average</div>
+              <div class="row-sub">₹18,200 this month. Nothing alarming.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">Spend by category</div>
+          <div class="flex" style="gap: 3px; align-items: flex-end; height: 48px; margin-bottom: 12px;">
+            <div style="flex: 5; height: 100%; background: var(--ink); border-radius: 2px;"></div>
+            <div style="flex: 3; height: 60%; background: var(--ink); border-radius: 2px; opacity: 0.5;"></div>
+            <div style="flex: 2; height: 40%; background: var(--ink); border-radius: 2px; opacity: 0.4;"></div>
+            <div style="flex: 2; height: 32%; background: var(--ink); border-radius: 2px; opacity: 0.3;"></div>
+            <div style="flex: 3; height: 52%; background: var(--ink); border-radius: 2px; opacity: 0.6;"></div>
+          </div>
+          <div class="xs">EMI · SIPs · Rent · Food · Other</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost" onclick="go('recommendations','push')">See what to do next</button>
+        </div>
+      </div>`,
+  },
+
+  search: {
+    tab: 'home',
+    caption: ['Search', 'Find any transaction across every account.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Search</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="field focus">
+            ${I.search(18)}
+            <span>swiggy</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Recent</div>
+          <div class="flex" style="gap: 8px; flex-wrap: wrap;">
+            <span class="tag tag-quiet">Swiggy</span>
+            <span class="tag tag-quiet">Rent</span>
+            <span class="tag tag-quiet">SIP</span>
+            <span class="tag tag-quiet">Zomato</span>
+          </div>
+        </div>
+
+        <div style="padding-top: 32px;">
+          <div class="pad mb-3"><div class="eyebrow">3 results · Sep 2026</div></div>
+          <div class="row" onclick="go('txn-detail','push')">
+            <div class="grow"><div class="row-title">Swiggy</div><div class="row-sub">28 Sep · HDFC •4821</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹842</div>
+          </div>
+          <div class="row" onclick="go('txn-detail','push')">
+            <div class="grow"><div class="row-title">Swiggy</div><div class="row-sub">24 Sep · ICICI •4419</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹576</div>
+          </div>
+          <div class="row" onclick="go('txn-detail','push')">
+            <div class="grow"><div class="row-title">Swiggy Instamart</div><div class="row-sub">19 Sep · HDFC •4821</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹1,284</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="xs">Searches transactions across all linked accounts and cards. Refreshed 2 hours ago.</div>
+        </div>
+      </div>`,
+  },
+
+  notifications: {
+    tab: 'home',
+    caption: ['Notifications', 'Only what needs action. No feed.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Notifications</div>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding-top: 8px;">
+          <div class="look-row" onclick="go('action','push')">
+            <div class="grow">
+              <div class="eyebrow mb-2">Today</div>
+              <div class="look-title">Your HDFC home loan rate reset</div>
+              <div class="look-desc">Your floating rate is now 8.9%. Market offers 8.5%.</div>
+            </div>
+          </div>
+          <div class="look-row">
+            <div class="grow">
+              <div class="eyebrow mb-2">Yesterday</div>
+              <div class="look-title">ICICI card statement is ready</div>
+              <div class="look-desc">₹18,400 due on 12 October. Auto-pay is off.</div>
+            </div>
+          </div>
+          <div class="look-row">
+            <div class="grow">
+              <div class="eyebrow mb-2">Sat, 27 Sep</div>
+              <div class="look-title">Salary credited</div>
+              <div class="look-desc">₹2,40,000 to HDFC •4821.</div>
+            </div>
+          </div>
+          <div class="look-row">
+            <div class="grow">
+              <div class="eyebrow mb-2">Fri, 26 Sep</div>
+              <div class="look-title">Your PPF contribution is due</div>
+              <div class="look-desc">₹1,50,000 annual limit. ₹42,000 contributed so far.</div>
+            </div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  /* ─── JOURNEY 3: CAN I AFFORD ─── */
+  emi: {
+    tab: 'plans',
+    caption: ['EMI calculator', 'One slider. Live math.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">EMI calculator</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="result-lbl">Monthly EMI</div>
+          <div class="result-num mono">₹58,400</div>
+          <div class="result-split">
+            <div class="result-split-item"><div class="k">Principal</div><div class="v mono">₹62,00,000</div></div>
+            <div class="result-split-item" style="text-align: center;"><div class="k">Interest</div><div class="v mono">₹48,20,000</div></div>
+            <div class="result-split-item" style="text-align: right;"><div class="k">Total</div><div class="v mono">₹1,10,20,000</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="slider-lbl"><span class="l">Loan amount</span><span class="v mono">₹62,00,000</span></div>
+          <div class="slider-track"><div class="slider-fill" style="width: 55%"></div><div class="slider-thumb" style="left: 55%"></div></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="slider-lbl"><span class="l">Interest rate</span><span class="v mono">8.9%</span></div>
+          <div class="slider-track"><div class="slider-fill" style="width: 30%"></div><div class="slider-thumb" style="left: 30%"></div></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="slider-lbl"><span class="l">Tenure</span><span class="v mono">18 years</span></div>
+          <div class="slider-track"><div class="slider-fill" style="width: 45%"></div><div class="slider-thumb" style="left: 45%"></div></div>
+        </div>
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  prepay: {
+    tab: 'plans',
+    caption: ['Prepay', 'What if I pay ₹50K extra today?'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Prepay home loan</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="result-lbl">Interest saved</div>
+          <div class="result-num mono">₹1,40,200</div>
+          <div class="result-split">
+            <div class="result-split-item"><div class="k">Months saved</div><div class="v mono">8</div></div>
+            <div class="result-split-item" style="text-align: right;"><div class="k">New close</div><div class="v mono">Aug 2039</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="slider-lbl"><span class="l">Prepay amount</span><span class="v mono">₹50,000</span></div>
+          <div class="slider-track"><div class="slider-fill" style="width: 42%"></div><div class="slider-thumb" style="left: 42%"></div></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">Where this sits</div>
+            <div class="body-ink">You have ₹4,20,000 in savings across two banks. Using ₹50,000 for prepayment leaves you with an emergency buffer of about 4 months.</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  refinance: {
+    tab: 'plans',
+    caption: ['Refinance check', 'Should I switch my home loan?'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Refinance check</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="result-lbl">Monthly saving</div>
+          <div class="result-num mono">₹1,840</div>
+          <div class="result-split">
+            <div class="result-split-item"><div class="k">Your rate</div><div class="v mono">8.9%</div></div>
+            <div class="result-split-item" style="text-align: center;"><div class="k">Market</div><div class="v mono">8.5%</div></div>
+            <div class="result-split-item" style="text-align: right;"><div class="k">Break-even</div><div class="v mono">14 mo</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="eyebrow mb-3">What this involves</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Processing fee</div><div class="row-sub">~0.5% of outstanding</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹31,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Documentation</div><div class="row-sub">Stamping, legal, valuation</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹8,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Total upfront</div><div class="row-sub">Recovered in 14 months</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹39,000</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  afford: {
+    tab: 'plans',
+    caption: ['Affordability', 'Can I buy a ₹40L car?'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Affordability</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="result-lbl">A ₹40L car</div>
+          <div class="result-num mono">Not yet</div>
+          <div class="sm mt-3" style="color: var(--ink-2); max-width: 32ch;">You'd need ₹4,800/month more headroom, or 18 more months of savings.</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Assumptions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Down payment</div><div class="row-sub">20% of ₹40L</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹8,00,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Loan at 9.5%</div><div class="row-sub">60 months</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹67,200</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Total monthly outflow</div><div class="row-sub">Including insurance</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹72,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">Your headroom</div>
+            <div class="body-ink">After EMIs, SIPs, and living expenses, you currently have ₹67,200/month free. A ₹40L car would consume all of it.</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  /* ─── JOURNEY 4: WHAT NEXT ─── */
+  health: {
+    tab: 'plans',
+    caption: ['Health score', 'The number. One sentence of context.'],
+    body: () => `
+      <div class="screen-scroll">
+        <div class="score-top">
+          <div class="eyebrow mb-4">Health score</div>
+          <div class="score-num mono">742</div>
+          <div class="score-den">Out of 900</div>
+          <div class="sm mt-5" style="color: var(--forest);">↑ 18 points this month</div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="body" style="color: var(--ink-2);">
+            You're in the top 22% for your income band. Repayment is clean. The two drags are card utilisation and emergency fund size.
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="go('health-breakdown','push')">See the six components</button>
+        </div>
+      </div>`,
+  },
+
+  'health-breakdown': {
+    tab: 'plans',
+    caption: ['Health breakdown', 'Six components. Plain labels. No jargon.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Breakdown</div>
+      </div>
+      <div class="screen-scroll">
+        <div>
+          <div class="score-row">
+            <div class="sl">Debt to income</div>
+            <div class="st"><div class="sf" style="width: 78%"></div></div>
+            <div class="sv">23%</div>
+          </div>
+          <div class="score-row">
+            <div class="sl">Savings rate</div>
+            <div class="st"><div class="sf" style="width: 82%"></div></div>
+            <div class="sv">22%</div>
+          </div>
+          <div class="score-row">
+            <div class="sl">Emergency fund</div>
+            <div class="st"><div class="sf" style="width: 56%"></div></div>
+            <div class="sv">3.2 mo</div>
+          </div>
+          <div class="score-row">
+            <div class="sl">Card utilisation</div>
+            <div class="st"><div class="sf" style="width: 90%"></div></div>
+            <div class="sv">6%</div>
+          </div>
+          <div class="score-row">
+            <div class="sl">Diversification</div>
+            <div class="st"><div class="sf" style="width: 64%"></div></div>
+            <div class="sv">64%</div>
+          </div>
+          <div class="score-row">
+            <div class="sl">Repayment track</div>
+            <div class="st"><div class="sf" style="width: 96%"></div></div>
+            <div class="sv">96%</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">What's dragging</div>
+          <div class="body-ink mb-4">Emergency fund and diversification. Both are fixable in three months.</div>
+        </div>
+
+        <div class="pad" style="padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="go('recommendations','push')">See 3 actions</button>
+        </div>
+      </div>`,
+  },
+
+  recommendations: {
+    tab: 'plans',
+    caption: ['Recommendations', 'Ranked. Reasoned. Nothing generic.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Recommendations</div>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding-top: 8px;">
+          <div class="rec-card" onclick="go('action','push')">
+            <div class="rec-rank mono">01</div>
+            <div class="rec-title">Move ₹4.2L from savings to a term deposit</div>
+            <div class="rec-reason">Your savings account earns 3%. A 12-month fixed deposit at HDFC earns 7.1%. Same access, better yield.</div>
+            <div class="rec-meta">
+              <div class="rec-meta-item"><div class="rec-meta-k">Gain / year</div><div class="rec-meta-v">₹13,800</div></div>
+              <div class="rec-meta-item"><div class="rec-meta-k">Effort</div><div class="rec-meta-v">5 min</div></div>
+            </div>
+          </div>
+
+          <div class="rec-card" onclick="go('action','push')">
+            <div class="rec-rank mono">02</div>
+            <div class="rec-title">Check refinance on your HDFC home loan</div>
+            <div class="rec-reason">Market rate for your profile is 8.5%. Refinancing saves ₹1,840/month. Break-even after 14 months.</div>
+            <div class="rec-meta">
+              <div class="rec-meta-item"><div class="rec-meta-k">Save / year</div><div class="rec-meta-v">₹22,080</div></div>
+              <div class="rec-meta-item"><div class="rec-meta-k">Effort</div><div class="rec-meta-v">2 weeks</div></div>
+            </div>
+          </div>
+
+          <div class="rec-card" onclick="go('action','push')">
+            <div class="rec-rank mono">03</div>
+            <div class="rec-title">Add ₹5,000/month to your emergency fund</div>
+            <div class="rec-reason">At 3.2 months you're below the 6-month benchmark. At ₹5K/month you'll reach it in 8 months.</div>
+            <div class="rec-meta">
+              <div class="rec-meta-item"><div class="rec-meta-k">Target</div><div class="rec-meta-v">₹7.2L</div></div>
+              <div class="rec-meta-item"><div class="rec-meta-k">Effort</div><div class="rec-meta-v">1 min</div></div>
+            </div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  action: {
+    tab: 'plans',
+    caption: ['Action detail', 'Why this. Why now. What it costs.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Refinance check</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow mb-3">Recommended action</div>
+          <div class="h-22">Refinance your HDFC home loan</div>
+          <p class="body mt-4" style="color: var(--ink-2);">
+            Your rate is 8.9%. Banks are offering 8.5% for a profile like yours. The switch has costs — you'll recover them in 14 months.
+          </p>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Why we're suggesting this</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Your rate</div><div class="row-sub">Floating, HDFC home loan</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">8.9%</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Market rate</div><div class="row-sub">For a 62L loan, 18-year tenure</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">8.5%</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Monthly saving</div><div class="row-sub">If switched today</div></div>
+            <div class="mono pos" style="font-size: 14px; font-weight: 500;">₹1,840</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">What it costs</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Processing fee</div><div class="row-sub">Charged by the new lender</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹31,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Legal and stamp</div><div class="row-sub">Documentation, valuation</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹8,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Total upfront</div><div class="row-sub">Recovered in 14 months</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹39,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-accent" onclick="go('confirmation','push')">Start with HDFC</button>
+          <button class="btn btn-ghost mt-3" onclick="goBack()">Not now</button>
+        </div>
+      </div>`,
+  },
+
+  confirmation: {
+    tab: 'plans',
+    caption: ['Confirmation', 'Outcome and next review date.'],
+    body: () => `
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 120px;">
+          <div class="eyebrow mb-4">Request received</div>
+          <div class="h-28">We'll follow up on<br>13 October.</div>
+          <p class="body mt-5" style="color: var(--ink-2); max-width: 34ch;">
+            HDFC will reach out within 3 working days. We'll check back in two weeks — if they haven't called, we'll nudge them for you.
+          </p>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">Tracking number</div>
+            <div class="mono" style="font-size: 15px; font-weight: 500;">FN-2714-0929</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="switchTab('home')">Back to home</button>
+        </div>
+      </div>`,
+  },
+
+  /* ─── JOURNEY 4b: GOALS ─── */
+  goals: {
+    tab: 'plans',
+    caption: ['Goals', 'Long-horizon savings, funded and tracked.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Goals</div>
+        <div class="row-right">
+          <button class="nav-back" onclick="go('goal-new','push')" style="margin-right: -8px;">${I.plus(20)}</button>
+        </div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2); max-width: 32ch;">
+            Three active goals. Funded from your linked accounts.
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <div class="rec-card" onclick="go('goal-detail','push')">
+            <div class="eyebrow mb-3">Home upgrade · Dec 2027</div>
+            <div class="h-17" style="margin-bottom: 16px;">₹8,40,000 of ₹30,00,000</div>
+            <div style="height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 8px;">
+              <div style="position: absolute; left: 0; top: 0; height: 100%; width: 28%; background: var(--ink); border-radius: 2px;"></div>
+            </div>
+            <div class="flex between center">
+              <div class="xs">28% funded</div>
+              <div class="xs">₹1,76,000/mo needed</div>
+            </div>
+          </div>
+
+          <div class="rec-card" onclick="go('goal-detail','push')">
+            <div class="eyebrow mb-3">Emergency fund · Mar 2027</div>
+            <div class="h-17" style="margin-bottom: 16px;">₹4,20,000 of ₹7,20,000</div>
+            <div style="height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 8px;">
+              <div style="position: absolute; left: 0; top: 0; height: 100%; width: 58%; background: var(--ink); border-radius: 2px;"></div>
+            </div>
+            <div class="flex between center">
+              <div class="xs">58% funded</div>
+              <div class="xs">₹50,000/mo needed</div>
+            </div>
+          </div>
+
+          <div class="rec-card" onclick="go('goal-detail','push')">
+            <div class="eyebrow mb-3">Daughter's education · Jun 2038</div>
+            <div class="h-17" style="margin-bottom: 16px;">₹6,20,000 of ₹50,00,000</div>
+            <div style="height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 8px;">
+              <div style="position: absolute; left: 0; top: 0; height: 100%; width: 12%; background: var(--ink); border-radius: 2px;"></div>
+            </div>
+            <div class="flex between center">
+              <div class="xs">12% funded</div>
+              <div class="xs">₹22,400/mo needed</div>
+            </div>
+          </div>
+        </div>
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  'goal-detail': {
+    tab: 'plans',
+    caption: ['Goal detail', 'Progress, funding, what to add next.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Home upgrade</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Funded</div>
+          <div class="result-num mt-3 mono">₹8,40,000</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">of ₹30,00,000 target · Dec 2027</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div style="height: 3px; background: var(--border); border-radius: 2px; position: relative;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 28%; background: var(--ink); border-radius: 2px;"></div>
+          </div>
+          <div class="flex between center mt-3">
+            <div class="xs">28% funded</div>
+            <div class="xs">15 months remaining</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Contributions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Groww — Parag Parikh Flexi Cap</div><div class="row-sub">₹15,000/month since Apr 2024</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹7,20,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">HDFC — Recurring deposit</div><div class="row-sub">₹10,000/month since Aug 2025</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹1,20,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">On track?</div>
+            <div class="body-ink">At current pace you'll reach ₹22.4L by Dec 2027. You need ₹1,76,000/month more to hit ₹30L. Extending the goal to mid-2029 closes the gap without changing monthly savings.</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary">${I.plus(18)} Add to this goal</button>
+        </div>
+      </div>`,
+  },
+
+  'goal-new': {
+    tab: 'plans',
+    caption: ['New goal', 'Name it, size it, date it.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">New goal</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow mb-3">What for</div>
+          <div class="field"><span>Home upgrade</span></div>
+
+          <div class="eyebrow mb-3" style="margin-top: 24px;">Target amount</div>
+          <div class="field"><span class="mono">₹30,00,000</span></div>
+
+          <div class="eyebrow mb-3" style="margin-top: 24px;">Target date</div>
+          <div class="field"><span class="mono">December 2027</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="goBack()">Create goal</button>
+        </div>
+      </div>`,
+  },
+
+  /* ─── TAX ─── */
+  tax: {
+    tab: 'plans',
+    caption: ['Tax', 'Section 80C, 80D, home loan interest. What\'s left to do.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Tax · FY 2025–26</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow">Section 80C · used ₹94,000 of ₹1,50,000</div>
+          <div class="result-num mt-3 mono">₹56,000</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">Left to invest before 31 March</div>
+          <div style="height: 2px; background: var(--border); border-radius: 2px; margin-top: 20px; position: relative;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 63%; background: var(--ink); border-radius: 2px;"></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">80C breakdown</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">PPF contribution</div><div class="row-sub">HDFC · auto-debit</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹42,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">ELSS SIP</div><div class="row-sub">Parag Parikh Tax Saver · ₹2,500/month</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹30,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Life insurance premium</div><div class="row-sub">HDFC Life · annual</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹22,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Section 80D · health insurance</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Self and family</div><div class="row-sub">Limit ₹25,000</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹14,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Section 24b · home loan interest</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Interest paid this year</div><div class="row-sub">Capped at ₹2,00,000</div></div>
+            <div class="mono pos" style="font-size: 14px; font-weight: 500;">₹5,51,800</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">What's left</div>
+            <div class="body-ink">₹56,000 in 80C room. A lumpsum ELSS of ₹56,000 saves ₹17,360 in tax at the 30% bracket.</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  /* ─── JOURNEY 5: ADVISOR ─── */
+  advisor: {
+    tab: 'advisor',
+    caption: ['Advisor · empty', 'A few good starting questions. Nothing generic.'],
+    body: () => `
+      <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+        <div class="eyebrow mb-3">Advisor</div>
+        <div class="h-28">Ask about<br>any transaction.</div>
+        <p class="body mt-4" style="color: var(--ink-2); max-width: 32ch;">
+          Finous reads your accounts and answers. Every response cites the account it used.
+        </p>
+      </div>
+
+      <div class="chat-suggestions">
+        <button class="suggest" onclick="go('advisor-chat','push')">
+          <span>${I.sparkle(18)}</span>
+          <span class="grow">What's my biggest expense this month?</span>
+        </button>
+        <button class="suggest" onclick="go('advisor-chat','push')">
+          <span>${I.sparkle(18)}</span>
+          <span class="grow">Should I prepay my home loan?</span>
+        </button>
+        <button class="suggest" onclick="go('advisor-chat','push')">
+          <span>${I.sparkle(18)}</span>
+          <span class="grow">How much did I spend on food last month?</span>
+        </button>
+        <button class="suggest" onclick="go('advisor-chat','push')">
+          <span>${I.sparkle(18)}</span>
+          <span class="grow">Can I afford a ₹40L car?</span>
+        </button>
+      </div>`,
+  },
+
+  'advisor-chat': {
+    tab: 'advisor',
+    caption: ['Advisor · chat', 'Real Q&A. Real numbers. Every claim cited.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Advisor</div>
+        <div class="row-right">
+          <button class="nav-back" onclick="go('advisor-voice','push')" style="margin-right: -8px;">${I.mic(20)}</button>
+        </div>
+      </div>
+      <div class="chat-scroll">
+        <div class="chat-msg user">
+          <div class="bubble">Should I prepay my home loan?</div>
+          <div class="meta">9:41 AM</div>
+        </div>
+
+        <div class="chat-msg ai">
+          <div class="bubble">
+            You have ₹62L outstanding on your HDFC loan at 8.9%, and ₹4.2L in savings.<br><br>
+            If you pay ₹50,000 extra today, you save about ₹1,40,200 in interest and close the loan 8 months early.<br><br>
+            But your savings only cover 3.2 months of expenses. Prepaying would reduce that to about 2 months.
+          </div>
+          <div class="meta">Based on HDFC •4821 and HDFC home loan</div>
+        </div>
+
+        <div class="chat-msg user">
+          <div class="bubble">What would you do?</div>
+          <div class="meta">9:42 AM</div>
+        </div>
+
+        <div class="chat-msg ai">
+          <div class="bubble">
+            I don't recommend. But the tradeoff is: prepayment improves your net worth by ₹1.4L over 11 years. Keeping the buffer protects you against a job change or medical expense over the next 6 months.<br><br>
+            Most people in your band do both — add ₹5K/month to savings and prepay in 8 months once the buffer is 5 months.
+          </div>
+          <div class="meta" style="cursor: pointer;" onclick="go('advisor-sources','push')">See sources · Tap to open</div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <div class="chat-field">Ask anything…</div>
+        <button class="chat-send">${I.send(18)}</button>
+      </div>`,
+  },
+
+  'advisor-voice': {
+    tab: 'advisor',
+    caption: ['Advisor · voice', 'Live transcript while you speak.'],
+    body: () => `
+      <div class="voice-wrap">
+        <div class="voice-wave">
+          <div class="vw"></div><div class="vw"></div><div class="vw"></div>
+          <div class="vw"></div><div class="vw"></div><div class="vw"></div>
+          <div class="vw"></div>
+        </div>
+        <div class="voice-status">Listening</div>
+        <div class="voice-sub">Speak normally. I'll answer once you pause.</div>
+      </div>
+      <div class="pad" style="padding-bottom: 24px;">
+        <div class="card-flat">
+          <div class="eyebrow mb-2">You said</div>
+          <div class="body-ink">"How much did I spend on food this month?"</div>
+        </div>
+      </div>`,
+  },
+
+  'advisor-sources': {
+    tab: 'advisor',
+    caption: ['Advisor · sources', 'Every claim traced back to a real account.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Sources</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow mb-4">How we answered</div>
+          <div class="h-22">"Should I prepay my home loan?"</div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+          <div class="source-row">
+            <div class="source-dot"></div>
+            <div>
+              <div class="source-t">HDFC Home Loan</div>
+              <div class="source-d">₹62,00,000 outstanding · 8.9% · 11 years remaining</div>
+            </div>
+          </div>
+          <div class="source-row">
+            <div class="source-dot"></div>
+            <div>
+              <div class="source-t">HDFC Bank •4821</div>
+              <div class="source-d">₹2,84,000 savings balance · last updated 2 hours ago</div>
+            </div>
+          </div>
+          <div class="source-row">
+            <div class="source-dot"></div>
+            <div>
+              <div class="source-t">State Bank of India •7723</div>
+              <div class="source-d">₹1,36,000 savings balance · last updated 2 hours ago</div>
+            </div>
+          </div>
+          <div class="source-row">
+            <div class="source-dot"></div>
+            <div>
+              <div class="source-t">6-month expense history</div>
+              <div class="source-d">Average outflow ₹1,86,400/month across all accounts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-bottom: 24px;">
+          <div class="xs" style="line-height: 1.6;">Finous does not recommend investments. Answers describe what your data shows.</div>
+        </div>
+      </div>`,
+  },
+
+  /* ─── JOURNEY 6: SETUP ─── */
+  you: {
+    tab: 'you',
+    caption: ['You', 'Profile, accounts, consent, preferences.'],
+    body: () => `
+      <div class="screen-scroll">
+        <div class="profile-hero">
+          <div class="profile-av">A</div>
+          <div class="grow">
+            <div class="profile-name">${D.user.name}</div>
+            <div class="profile-meta">${D.user.email}</div>
+            <div class="verify-chip">${I.shield(12)} Aadhaar verified</div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="row" onclick="go('linked','push')">
+            <div class="row-icon">${I.link()}</div>
+            <div class="grow">
+              <div class="row-title">Linked accounts</div>
+              <div class="row-sub">7 connections</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('consent-mgr','push')">
+            <div class="row-icon">${I.shield()}</div>
+            <div class="grow">
+              <div class="row-title">Consent manager</div>
+              <div class="row-sub">2 active · next expiry Sep 2026</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('notif-prefs','push')">
+            <div class="row-icon">${I.bell()}</div>
+            <div class="grow">
+              <div class="row-title">Notifications</div>
+              <div class="row-sub">Weekly summary, alerts on</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('language','push')">
+            <div class="row-icon">${I.globe()}</div>
+            <div class="grow">
+              <div class="row-title">Language</div>
+              <div class="row-sub">English</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('privacy','push')">
+            <div class="row-icon">${I.lock()}</div>
+            <div class="grow">
+              <div class="row-title">Privacy and data</div>
+              <div class="row-sub">Download, delete, retention</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('sync-partial','push')">
+            <div class="row-icon">${I.refresh()}</div>
+            <div class="grow">
+              <div class="row-title">Connection status</div>
+              <div class="row-sub">Online</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('profile','push')">
+            <div class="row-icon">${I.user()}</div>
+            <div class="grow">
+              <div class="row-title">Profile</div>
+              <div class="row-sub">Name, email, phone</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="xs" style="text-align: center;">Finous version 1.0</div>
+        </div>
+      </div>`,
+  },
+
+  linked: {
+    tab: 'you',
+    caption: ['Linked accounts', 'Every connection. Revoke on tap.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Linked accounts</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="mt-2">
+          ${D.accounts.map(a => `
+            <div class="row">
+              <div class="row-icon">${I.bank()}</div>
+              <div class="grow">
+                <div class="row-title">${a.name}</div>
+                <div class="row-sub">${a.sub} · Active</div>
+              </div>
+            </div>
+          `).join('')}
+          ${D.loans.map(l => `
+            <div class="row">
+              <div class="row-icon">${I.home()}</div>
+              <div class="grow">
+                <div class="row-title">${l.name}</div>
+                <div class="row-sub">Active · ${l.rate}</div>
+              </div>
+            </div>
+          `).join('')}
+          ${D.cards.map(c => `
+            <div class="row">
+              <div class="row-icon">${I.card()}</div>
+              <div class="grow">
+                <div class="row-title">${c.name}</div>
+                <div class="row-sub">Active · ₹3L limit</div>
+              </div>
+            </div>
+          `).join('')}
+          ${D.investments.map(i => `
+            <div class="row">
+              <div class="row-icon">${I.trend()}</div>
+              <div class="grow">
+                <div class="row-title">${i.name}</div>
+                <div class="row-sub">${i.sub}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost" onclick="go('add-account','push')">${I.plus(18)} Add an account</button>
+        </div>
+      </div>`,
+  },
+
+  'add-account': {
+    tab: 'you',
+    caption: ['Add account', 'For assets not on AA — FD, gold, property.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Add an account</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2);">
+            Some assets aren't on Account Aggregator yet. Add them manually — you can update the value anytime.
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Type</div>
+          <div class="flex" style="gap: 8px; flex-wrap: wrap;">
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Fixed deposit</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Recurring deposit</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Gold</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Property</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Other</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Name</div>
+          <div class="field"><span class="placeholder">e.g. HDFC FD</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Current value</div>
+          <div class="field"><span class="placeholder">₹</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Notes · optional</div>
+          <div class="field"><span class="placeholder">Maturity date, co-owner, anything</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="goBack()">Add to my net worth</button>
+        </div>
+      </div>`,
+  },
+
+  'consent-mgr': {
+    tab: 'you',
+    caption: ['Consent manager', 'What Finous can see, and for how long.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Consent manager</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2);">
+            Two active consents. Data is refreshed every 12 hours. You can revoke either at any time.
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">Financial dashboard</div>
+              <div class="row-sub">Balances, transactions, holdings</div>
+              <div class="xs mt-2">Expires 24 Sep 2026 · 12 months</div>
+            </div>
+            <div class="row-right"><span class="tag tag-forest">Active</span></div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">Health score</div>
+              <div class="row-sub">Aggregated analysis only</div>
+              <div class="xs mt-2">Expires 24 Sep 2026 · 12 months</div>
+            </div>
+            <div class="row-right"><span class="tag tag-forest">Active</span></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">Revoking consent</div>
+            <div class="body-ink">We delete your data within 24 hours of revocation. Backup copies clear within 14 days.</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
+  privacy: {
+    tab: 'you',
+    caption: ['Privacy & data', 'Download, delete, retention. Plain language.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Privacy and data</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="mt-2">
+          <div class="row">
+            <div class="row-icon">${I.download()}</div>
+            <div class="grow">
+              <div class="row-title">Download my data</div>
+              <div class="row-sub">CSV and PDF · emailed in 24 hours</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row">
+            <div class="row-icon">${I.doc()}</div>
+            <div class="grow">
+              <div class="row-title">Privacy policy</div>
+              <div class="row-sub">Last updated Aug 2026</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row">
+            <div class="row-icon">${I.doc()}</div>
+            <div class="grow">
+              <div class="row-title">Terms and conditions</div>
+              <div class="row-sub">Last updated Aug 2026</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">Retention</div>
+            <div class="body-ink">Live data is deleted within 24 hours of you closing your account. Backups clear in 14 days. Audit logs (no financial data) are retained for 3 years as required by RBI.</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost" style="color: var(--brick); border-color: rgba(160,40,40,0.15);">Delete my account</button>
+        </div>
+      </div>`,
+  },
+
+  profile: {
+    tab: 'you',
+    caption: ['Profile', 'Real name. Real verification state.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Profile</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="profile-hero">
+          <div class="profile-av">A</div>
+          <div class="grow">
+            <div class="profile-name">${D.user.name}</div>
+            <div class="profile-meta">${D.user.email}</div>
+            <div class="verify-chip">${I.shield(12)} Aadhaar verified</div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="row">
+            <div class="grow"><div class="row-sub">Full name</div><div class="row-title mt-2">${D.user.name}</div></div>
+            <div class="row-chev">${I.edit(18)}</div>
+          </div>
+          <div class="row">
+            <div class="grow"><div class="row-sub">Email</div><div class="row-title mt-2">${D.user.email}</div></div>
+            <div class="row-chev">${I.edit(18)}</div>
+          </div>
+          <div class="row">
+            <div class="grow"><div class="row-sub">Phone</div><div class="row-title mt-2">+91 98450 48210</div></div>
+            <div class="row-chev">${I.edit(18)}</div>
+          </div>
+          <div class="row">
+            <div class="grow"><div class="row-sub">City</div><div class="row-title mt-2">Bengaluru</div></div>
+            <div class="row-chev">${I.edit(18)}</div>
+          </div>
+        </div>
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  'notif-prefs': {
+    tab: 'you',
+    caption: ['Notification preferences', 'Granular. Honest. No re-engagement spam.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Notifications</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="mt-2">
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">Weekly summary</div>
+              <div class="row-sub">Every Monday at 9 AM</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">EMI reminders</div>
+              <div class="row-sub">3 days before due date</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">Rate changes</div>
+              <div class="row-sub">When a rate on your loans changes</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">Card utilisation alerts</div>
+              <div class="row-sub">When you cross 30% of a card limit</div>
+            </div>
+            <div class="switch"></div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">New recommendations</div>
+              <div class="row-sub">When a new action is worth your time</div>
+            </div>
+            <div class="switch on"></div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">Product updates</div>
+              <div class="row-sub">What we've built recently</div>
+            </div>
+            <div class="switch"></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="xs">We never send promotional content. If something isn't actionable, it doesn't come to you.</div>
+        </div>
+      </div>`,
+  },
+
+  language: {
+    tab: 'you',
+    caption: ['Language', 'App language. Not AI response language.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Language</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2);">
+            Changes the app interface. Your advisor still answers in whichever language you write in.
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">English</div>
+              <div class="row-sub">Current</div>
+            </div>
+            <div class="row-right" style="color: var(--ink);">${I.check(18)}</div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">हिन्दी</div>
+              <div class="row-sub">Hindi</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">ಕನ್ನಡ</div>
+              <div class="row-sub">Kannada</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="xs">More languages coming. Tell us which one matters to you at hello@finous.site.</div>
+        </div>
+      </div>`,
+  },
+
+  'sync-partial': {
+    tab: 'you',
+    caption: ['Partial sync', 'One connection failed. Everything else is fine.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Sync status</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow">Almost done</div>
+          <div class="h-28 mt-3">4 of 5 accounts updated.</div>
+          <p class="body mt-4" style="color: var(--ink-2); max-width: 34ch;">
+            ICICI didn't respond. It usually comes back within a few minutes. Nothing else is affected.
+          </p>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">HDFC Bank</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">State Bank of India</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">Groww</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">Zerodha</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--burnt);">${I.refresh(18)}</div>
+            <div class="grow">
+              <div class="row-title">ICICI Amazon Pay</div>
+              <div class="row-sub">Last synced 6 hours ago</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-accent">Retry ICICI</button>
+          <button class="btn btn-ghost mt-3" onclick="goBack()">Continue anyway</button>
+        </div>
+      </div>`,
+  },
+
+  offline: {
+    tab: 'you',
+    caption: ['Offline', 'Clear recovery path. No cached nonsense.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Connection</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 80px; text-align: center;">
+          <div style="display: flex; justify-content: center; margin-bottom: 24px; color: var(--ink);">
+            ${I.wifiOff(48)}
+          </div>
+          <div class="h-22">You're offline</div>
+          <p class="body mt-3" style="color: var(--ink-2); max-width: 30ch; margin-left: auto; margin-right: auto;">
+            We don't show cached balances. When you're back online, we'll fetch fresh data.
+          </p>
+          <div class="xs mt-5" style="color: var(--ink-3);">Last synced 2 hours ago</div>
+        </div>
+
+        <div class="pad" style="padding-top: 48px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="goBack()">Retry</button>
+        </div>
+      </div>`,
+  },
+
+  'plans-hub': {
+    tab: 'plans',
+    caption: ['Plans', 'Tools and score. One entry per intent.'],
+    body: () => `
+      <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+        <div class="eyebrow mb-3">Plans</div>
+        <div class="h-28">What do you want to figure out?</div>
+      </div>
+      <div class="mt-2">
+        <div class="row" onclick="go('health','push')">
+          <div class="row-icon">${I.compass()}</div>
+          <div class="grow">
+            <div class="row-title">Health score</div>
+            <div class="row-sub">Where you stand, in six numbers</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('goals','push')">
+          <div class="row-icon">${I.target()}</div>
+          <div class="grow">
+            <div class="row-title">Goals</div>
+            <div class="row-sub">3 active · home, emergency, education</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('tax','push')">
+          <div class="row-icon">${I.doc()}</div>
+          <div class="grow">
+            <div class="row-title">Tax</div>
+            <div class="row-sub">₹56,000 left in 80C</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('prepay','push')">
+          <div class="row-icon">${I.trend()}</div>
+          <div class="grow">
+            <div class="row-title">Prepay home loan</div>
+            <div class="row-sub">What if I pay ₹50K extra</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('refinance','push')">
+          <div class="row-icon">${I.chart()}</div>
+          <div class="grow">
+            <div class="row-title">Refinance check</div>
+            <div class="row-sub">Should I switch my home loan</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('afford','push')">
+          <div class="row-icon">${I.calc()}</div>
+          <div class="grow">
+            <div class="row-title">Affordability check</div>
+            <div class="row-sub">Can I buy a ₹40L car</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('emi','push')">
+          <div class="row-icon">${I.calc()}</div>
+          <div class="grow">
+            <div class="row-title">EMI calculator</div>
+            <div class="row-sub">Any loan, any rate</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+      </div>`,
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUTER
+   ═══════════════════════════════════════════════════════════════ */
+const state = {
+  mode: 'onboarding',
+  obStep: 'splash',
+  activeTab: 'home',
+  stacks: {
+    home: ['home'],
+    advisor: ['advisor'],
+    plans: ['plans-hub'],
+    you: ['you'],
+  },
+};
+
+const TAB_OF_SCREEN = {
+  /* home tab */
+  home: 'home', accounts: 'home', 'account-detail': 'home', 'txn-detail': 'home',
+  'card-detail': 'home', 'investment-detail': 'home', 'net-worth': 'home',
+  cashflow: 'home', recap: 'home', search: 'home', notifications: 'home',
+  /* plans tab */
+  'plans-hub': 'plans', emi: 'plans', prepay: 'plans', refinance: 'plans',
+  afford: 'plans', health: 'plans', 'health-breakdown': 'plans',
+  recommendations: 'plans', action: 'plans', confirmation: 'plans',
+  goals: 'plans', 'goal-detail': 'plans', 'goal-new': 'plans', tax: 'plans',
+  /* advisor tab */
+  advisor: 'advisor', 'advisor-chat': 'advisor', 'advisor-voice': 'advisor',
+  'advisor-sources': 'advisor',
+  /* you tab */
+  you: 'you', linked: 'you', 'add-account': 'you', 'consent-mgr': 'you',
+  privacy: 'you', profile: 'you', 'notif-prefs': 'you', language: 'you',
+  'sync-partial': 'you', offline: 'you',
+};
+
+const TAB_ORDER = ['home', 'advisor', 'plans', 'you'];
+
+const screensEl = document.getElementById('screens');
+const tabbarEl = document.getElementById('tabbar');
+const capName = document.getElementById('cap-name');
+const capDesc = document.getElementById('cap-desc');
+
+function screenMeta(id) {
+  const s = SCREENS[id];
+  if (!s) return { caption: [id, ''], body: () => '<div style="padding:20px">Missing screen</div>' };
+  return s;
+}
+
+function renderChrome(id) {
+  const s = screenMeta(id);
+  capName.textContent = s.caption[0];
+  capDesc.textContent = s.caption[1];
+
+  if (state.mode === 'onboarding') {
+    tabbarEl.classList.add('hidden');
+  } else {
+    tabbarEl.classList.remove('hidden');
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === state.activeTab);
+    });
+  }
+}
+
+function renderScreen(id, animation) {
+  const s = screenMeta(id);
+  const next = document.createElement('div');
+  next.className = 'screen';
+  next.innerHTML = s.body();
+  if (animation) next.classList.add(animation);
+
+  const old = screensEl.querySelector('.screen');
+  if (old) {
+    if (animation === 'push-in') old.classList.add('push-out');
+    else if (animation === 'pop-in') old.classList.add('pop-out');
+    if (animation === 'push-in' || animation === 'pop-in') {
+      setTimeout(() => { try { old.remove(); } catch(e){} }, 280);
+    } else {
+      old.remove();
+    }
+  }
+
+  screensEl.appendChild(next);
+  renderChrome(id);
+}
+
+function go(id, animation = 'push-in') {
+  if (state.mode === 'onboarding') {
+    state.obStep = id;
+    renderScreen(id, 'fade-in');
+    if (id === 'splash') {
+      setTimeout(() => { if (state.obStep === 'splash') go('welcome','fade-in'); }, 1200);
+    }
+    return;
+  }
+  const tab = TAB_OF_SCREEN[id];
+  if (!tab) {
+    state.stacks[state.activeTab].push(id);
+    renderScreen(id, animation);
+    return;
+  }
+  if (tab !== state.activeTab) {
+    state.stacks[tab].push(id);
+    switchTab(tab);
+    return;
+  }
+  state.stacks[state.activeTab].push(id);
+  renderScreen(id, animation);
+}
+
+function goBack() {
+  const stack = state.stacks[state.activeTab];
+  if (stack.length <= 1) return;
+  stack.pop();
+  renderScreen(stack[stack.length - 1], 'pop-in');
+}
+
+function switchTab(tab) {
+  if (tab === state.activeTab) {
+    state.stacks[tab] = [state.stacks[tab][0]];
+    renderScreen(state.stacks[tab][0], 'fade-in');
+    return;
+  }
+  const fromIdx = TAB_ORDER.indexOf(state.activeTab);
+  const toIdx = TAB_ORDER.indexOf(tab);
+  const direction = toIdx > fromIdx ? 'tab-r-in' : 'tab-l-in';
+  state.activeTab = tab;
+  renderScreen(state.stacks[tab][state.stacks[tab].length - 1], direction);
+}
+
+function enterApp() {
+  state.mode = 'app';
+  state.activeTab = 'home';
+  renderScreen('home', 'fade-in');
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => switchTab(t.dataset.tab));
+});
+
+renderScreen('splash', 'fade-in');
+setTimeout(() => { if (state.obStep === 'splash') go('welcome', 'fade-in'); }, 1200);
+</script>
+
+</body>
+</html>
