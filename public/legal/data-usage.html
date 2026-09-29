@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Usage and Sharing Policy | Finous</title>
+  <meta name="description" content="Data Usage and Sharing Policy for Finous by Nidhiverse Private Limited">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f2f7;
+      color: #4a5568;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      padding: 40px 20px;
+    }
+
+    .card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e4e9f0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      padding: 48px 56px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid #e8ecf2;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: #c9a227;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f1f3d;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f1f3d;
+      margin: 0;
+    }
+
+    .brand-text p {
+      font-size: 13px;
+      color: #9aa3b3;
+      margin: 2px 0 0 0;
+    }
+
+    .badge {
+      background: #c9a227;
+      color: #0f1f3d;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      color: #c9a227;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .draft-notice {
+      background: #fffbef;
+      border-left: 4px solid #c9a227;
+      padding: 16px 22px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 32px;
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .doc-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f1f3d;
+      letter-spacing: -0.6px;
+      margin-bottom: 8px;
+    }
+
+    .doc-dates {
+      font-size: 14px;
+      color: #9aa3b3;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f1f3d;
+      margin: 36px 0 14px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e8ecf2;
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f1f3d;
+      margin: 24px 0 10px 0;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #4a5568;
+      margin-bottom: 16px;
+    }
+
+    ul, ol {
+      margin: 12px 0 18px 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #4a5568;
+    }
+
+    strong {
+      color: #0f1f3d;
+      font-weight: 600;
+    }
+
+    a {
+      color: #c9a227;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .callout-gold {
+      background: #fffbef;
+      border-left: 4px solid #c9a227;
+      padding: 16px 22px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+
+    .callout-blue {
+      background: #f0f4ff;
+      border-left: 4px solid #1a4fa0;
+      padding: 16px 22px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+
+    .contact-box {
+      background: #f8f9fc;
+      border: 1px solid #e8ecf2;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .contact-box p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .contact-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border: 1px solid #e8ecf2;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #0f1f3d;
+    }
+
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #4a5568;
+      border-top: 1px solid #e8ecf2;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fafbfd;
+    }
+
+    tbody tr:hover {
+      background: #f5f7fa;
+    }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 2px solid #e8ecf2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #9aa3b3;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 16px;
+      }
+
+      .card {
+        padding: 28px 20px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .doc-title {
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      table {
+        font-size: 13px;
+      }
+
+      th, td {
+        padding: 10px 12px;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .card {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="https://www.finous.site/" class="back-link">← Back to Finous</a>
+
+    <div class="header">
+      <div class="header-left">
+        <div class="logo">F</div>
+        <div class="brand-text">
+          <h1>Finous</h1>
+          <p>by Nidhiverse Private Limited</p>
+        </div>
+      </div>
+      <div class="badge">Legal Document</div>
+    </div>
+
+    <div class="draft-notice">
+      <strong>Notice:</strong> These documents are drafts. A qualified legal professional must review them before publishing.
+    </div>
+
+    <h1 class="doc-title">Data Usage and Sharing Policy</h1>
+    <p class="doc-dates">Effective Date: [INSERT DATE] · Last Updated: [INSERT DATE]</p>
+
+    <h2>1. Purpose of This Policy</h2>
+    <p>This Data Usage and Sharing Policy supplements our Privacy Policy and Terms and Conditions. It provides detailed information about how we collect, use, and share your data.</p>
+    <p>This policy complies with:</p>
+    <ul>
+      <li>The Digital Personal Data Protection Act, 2023 (DPDP Act)</li>
+      <li>The Digital Personal Data Protection Rules, 2025</li>
+      <li>The RBI Account Aggregator framework</li>
+    </ul>
+
+    <h2>2. Data We Collect and Why</h2>
+    <p>The following table summarizes the categories of data we collect and the purposes for which we collect it:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Data Category</th>
+          <th>What We Collect</th>
+          <th>Why We Collect It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Contact Data</strong></td>
+          <td>Name, email, phone</td>
+          <td>Communication and support</td>
+        </tr>
+        <tr>
+          <td><strong>Identity Data</strong></td>
+          <td>PAN, Aadhaar, DOB, address</td>
+          <td>eKYC verification and regulatory compliance</td>
+        </tr>
+        <tr>
+          <td><strong>Financial Data</strong></td>
+          <td>Bank balances, transactions, loans, investments, insurance</td>
+          <td>Unified dashboard and AI insights (with consent via AA)</td>
+        </tr>
+        <tr>
+          <td><strong>Usage Data</strong></td>
+          <td>Device info, IP, pages visited, time spent</td>
+          <td>Improving Services and personalising experience</td>
+        </tr>
+        <tr>
+          <td><strong>Communication Data</strong></td>
+          <td>Questions, feedback, Voice Agent conversations</td>
+          <td>Responding to inquiries and improving AI models</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. How We Use Your Data</h2>
+    <p>We use your data for the following purposes:</p>
+    <ol>
+      <li><strong>Providing Services:</strong> To deliver the features and functionality you request, including displaying your financial data and providing insights</li>
+      <li><strong>Personalisation:</strong> To tailor recommendations and insights to your specific financial situation and goals</li>
+      <li><strong>Communication:</strong> To respond to your inquiries, send important updates about your account, and provide customer support</li>
+      <li><strong>Improving Services:</strong> To analyze usage patterns, identify areas for improvement, and develop new features</li>
+      <li><strong>Regulatory Compliance:</strong> To meet our legal and regulatory obligations under applicable laws</li>
+      <li><strong>Security:</strong> To protect against fraud, unauthorized access, and other security threats</li>
+    </ol>
+
+    <h2>4. How We Share Your Data</h2>
+
+    <h3>4.1 With Your Consent</h3>
+    <p>We share your data only with your explicit, informed consent. You can withdraw consent at any time.</p>
+
+    <h3>4.2 With Service Providers</h3>
+    <p>We share data with trusted service providers who help us operate our Services:</p>
+    <ul>
+      <li><strong>Cloud infrastructure providers:</strong> For hosting and storage</li>
+      <li><strong>Account Aggregator providers:</strong> For accessing financial data from Financial Information Providers (FIPs)</li>
+      <li><strong>eKYC providers:</strong> For identity verification</li>
+      <li><strong>AI providers:</strong> For powering our AI Advisor and analytics</li>
+      <li><strong>Analytics providers:</strong> For understanding usage patterns</li>
+    </ul>
+    <p>All service providers are contractually bound to protect your data and use it only for the purposes we specify.</p>
+
+    <h3>4.3 For Legal and Regulatory Reasons</h3>
+    <p>We may share data when required by law, regulation, or legal process, or to protect the rights, property, or safety of Nidhiverse Private Limited, our users, or others.</p>
+
+    <h3>4.4 In Anonymised or Aggregated Form</h3>
+    <p>We may share anonymised or aggregated data that cannot identify you for research, analytics, or other purposes.</p>
+
+    <h2>5. Data Sharing Summary</h2>
+    <p>The following table provides a summary of how we share your data:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Recipient</th>
+          <th>Data Shared</th>
+          <th>Purpose</th>
+          <th>Consent Required</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Account Aggregator</strong></td>
+          <td>Consent artefact</td>
+          <td>Retrieve financial data from FIPs</td>
+          <td>Yes — explicit</td>
+        </tr>
+        <tr>
+          <td><strong>Banks/NBFCs</strong></td>
+          <td>Financial data</td>
+          <td>Only if user requests a product via platform</td>
+          <td>Yes — explicit</td>
+        </tr>
+        <tr>
+          <td><strong>Service Providers</strong></td>
+          <td>Contact, identity, usage data</td>
+          <td>Operate Services (hosting, analytics, eKYC, AI)</td>
+          <td>Yes — contractual</td>
+        </tr>
+        <tr>
+          <td><strong>Regulators</strong></td>
+          <td>As required by law</td>
+          <td>Legal and regulatory obligations</td>
+          <td>No — legal requirement</td>
+        </tr>
+        <tr>
+          <td><strong>Anonymised Data</strong></td>
+          <td>Aggregated, non-identifiable</td>
+          <td>Research and improving AI models</td>
+          <td>No — anonymised</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Consent and Withdrawal</h2>
+    <div class="callout-blue">
+      <strong>Your Consent Matters:</strong> We obtain explicit, informed, and specific consent before collecting or sharing your data. You have the right to withdraw consent at any time.
+    </div>
+    <p>You can withdraw consent by:</p>
+    <ul>
+      <li>Using the Account Aggregator app to revoke consent</li>
+      <li>Contacting us at <a href="mailto:privacy@finous.site">privacy@finous.site</a></li>
+    </ul>
+    <p>You also have the right to:</p>
+    <ul>
+      <li>Revoke data sharing with specific parties</li>
+      <li>Access your data</li>
+      <li>Correct inaccurate data</li>
+      <li>Request erasure of your data</li>
+    </ul>
+
+    <h2>7. Data Security</h2>
+    <p>We implement robust security measures to protect your data:</p>
+    <ul>
+      <li><strong>Encryption:</strong> Data is encrypted in transit and at rest using industry-standard protocols</li>
+      <li><strong>Access controls:</strong> Strict access controls limit who can access your data</li>
+      <li><strong>Regular audits:</strong> We conduct regular Vulnerability Assessment and Penetration Testing (VAPT)</li>
+      <li><strong>Employee training:</strong> Our team is trained on data protection and privacy best practices</li>
+      <li><strong>Incident response:</strong> We have procedures to respond to data breaches</li>
+    </ul>
+    <p>In the event of a data breach, we will notify you and the relevant authorities as required by the DPDP Act and DPDP Rules, 2025.</p>
+
+    <h2>8. Data Retention</h2>
+    <p>We retain your data only for as long as necessary to fulfill the purposes for which it was collected, or as required by law.</p>
+    <p>Data collected via the Account Aggregator framework is retained only for the duration specified in your consent artefact. Once consent is withdrawn or expires, we delete the data unless required to retain it for legal reasons.</p>
+
+    <h2>9. Your Rights (DPDP Act)</h2>
+    <p>Under the Digital Personal Data Protection Act, 2023, you have the following rights:</p>
+    <ul>
+      <li><strong>Right to access:</strong> Request a copy of your personal data</li>
+      <li><strong>Right to correction:</strong> Request correction of inaccurate or incomplete data</li>
+      <li><strong>Right to erasure:</strong> Request deletion of your data</li>
+      <li><strong>Right to withdraw consent:</strong> Withdraw your consent at any time</li>
+      <li><strong>Right to nominate:</strong> Nominate another person to exercise your rights on your behalf in the event of death or incapacity</li>
+      <li><strong>Right to grievance redressal:</strong> Raise concerns about data processing and receive a response</li>
+    </ul>
+    <p>To exercise these rights, contact our Data Protection Officer at <a href="mailto:privacy@finous.site">privacy@finous.site</a>.</p>
+
+    <h2>10. Contact Us</h2>
+    <div class="contact-box">
+      <strong>Data Protection Officer</strong>
+      <p>Nidhiverse Private Limited<br>
+      [INSERT ADDRESS]<br>
+      Pune, Maharashtra, India<br>
+      Email: <a href="mailto:privacy@finous.site">privacy@finous.site</a></p>
+    </div>
+
+    <h2>11. Changes to This Policy</h2>
+    <p>We may update this Data Usage and Sharing Policy from time to time. We will notify you of significant changes by posting the updated policy on our website and updating the "Last Updated" date.</p>
+    <p>We encourage you to review this policy periodically to stay informed about how we are protecting your data.</p>
+
+    <div class="footer">
+      <div>Confidential · Finous by Nidhiverse Private Limited · 2026</div>
+      <div>Data Usage and Sharing Policy</div>
+    </div>
+  </div>
+</body>
+</html>
