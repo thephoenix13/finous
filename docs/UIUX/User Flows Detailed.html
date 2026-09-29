@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finous — B2C PWA User Flows</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f7;
+    color: #1a1a2e;
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    padding: 16px;
+  }
+
+  .page {
+    max-width: 1060px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 40px 48px 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    border: 1px solid #e4e9f0;
+  }
+
+  @media print {
+    body { background: #ffffff; padding: 0; font-size: 10.5px; }
+    .page { border-radius: 0; box-shadow: none; border: none; padding: 0.4in; margin: 0; max-width: 100%; }
+    h2 { page-break-after: avoid; }
+    .flow-block { page-break-inside: avoid; }
+    .feature-section { page-break-inside: avoid; }
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #0f1f3d;
+    margin-bottom: 28px;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 40px; height: 40px;
+    background: #c9a227;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #ffffff;
+  }
+  .logo-text { font-size: 20px; font-weight: 800; color: #0f1f3d; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 11px; color: #9aa3b3; letter-spacing: 0.3px; }
+  .doc-badge {
+    font-size: 10px; font-weight: 700;
+    color: #c9a227;
+    background: rgba(201,162,39,0.1);
+    border: 1px solid rgba(201,162,39,0.25);
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.6px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 24px;
+    line-height: 1.65;
+    max-width: 780px;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    background: #f8f9fc;
+    border: 1px solid #e8ecf2;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-bottom: 32px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5568;
+  }
+  .legend-swatch {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .sw-start { background: #e6efff; border-left: 3px solid #1a4fa0; }
+  .sw-step { background: #ffffff; border-left: 3px solid #7b3fa0; }
+  .sw-decision { background: #fff4e0; border-left: 3px solid #a8871f; }
+  .sw-success { background: #e8f5ec; border-left: 3px solid #2e7d4f; }
+  .sw-error { background: #fce8e8; border-left: 3px solid #b8390e; }
+
+  /* ── Part Headers ── */
+  .part-header {
+    font-size: 11px;
+    font-weight: 800;
+    color: #9aa3b3;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin: 40px 0 6px;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.4px;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #c9a227;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    line-height: 1.65;
+  }
+
+  /* ── Feature Section ── */
+  .feature-section {
+    margin-bottom: 40px;
+  }
+  .feature-section:last-child { margin-bottom: 0; }
+
+  /* ── Flow Block ── */
+  .flow-block {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+  }
+  .flow-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e8ecf2;
+  }
+  .flow-block-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.2px;
+  }
+  .flow-block-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag-p1 { background: #e8f5ec; color: #2e7d4f; }
+  .tag-p2 { background: #e6efff; color: #1a4fa0; }
+  .tag-p3 { background: #fff4e0; color: #a8871f; }
+  .tag-p4 { background: #f3e8ff; color: #7b3fa0; }
+  .tag-p5 { background: #fce8e8; color: #b8390e; }
+
+  /* ── Entry / Exit Info ── */
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .meta-box {
+    background: #ffffff;
+    border: 1px solid #e8ecf2;
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #9aa3b3;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .meta-value {
+    font-size: 12.5px;
+    color: #4a5568;
+    line-height: 1.6;
+  }
+  .meta-value ul { list-style: none; padding: 0; margin: 0; }
+  .meta-value li { padding-left: 12px; position: relative; margin-bottom: 2px; }
+  .meta-value li::before {
+    content: "·";
+    position: absolute;
+    left: 2px;
+    color: #c9a227;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  /* ── Flow Steps ── */
+  .flow-steps-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-step {
+    background: #ffffff;
+    border: 1px solid #e0e5ee;
+    border-left: 3px solid #7b3fa0;
+    border-radius: 8px;
+    padding: 11px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .flow-step.start { border-left-color: #1a4fa0; background: #f8fbff; }
+  .flow-step.decision { border-left-color: #a8871f; background: #fffdf7; }
+  .flow-step.success { border-left-color: #2e7d4f; background: #f8fdf9; }
+  .flow-step.error { border-left-color: #b8390e; background: #fff9f7; }
+
+  .flow-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: #0f1f3d;
+    color: #c9a227;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .flow-step.start .flow-step-num { background: #1a4fa0; color: #ffffff; }
+  .flow-step.decision .flow-step-num { background: #a8871f; color: #ffffff; }
+  .flow-step.success .flow-step-num { background: #2e7d4f; color: #ffffff; }
+  .flow-step.error .flow-step-num { background: #b8390e; color: #ffffff; }
+
+  .flow-step-body {
+    flex: 1;
+  }
+  .flow-step-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f1f3d;
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  .flow-step-desc {
+    font-size: 11.5px;
+    color: #6b7280;
+    line-height: 1.55;
+  }
+  .flow-step-desc strong { color: #4a5568; font-weight: 600; }
+
+  .flow-arrow {
+    text-align: center;
+    color: #c9a227;
+    font-size: 16px;
+    line-height: 1;
+    margin: 5px 0;
+    font-weight: 700;
+  }
+
+  /* ── Branch ── */
+  .branch-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #a8871f;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin: 8px 0 4px;
+  }
+  .branch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 8px 0;
+  }
+  .branch-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin: 8px 0;
+  }
+  .branch-col {
+    display: flex;
+    flex-direction: column;
+  }
+  .branch-col-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-bottom: 6px;
+    padding: 3px 8px;
+    border-radius: 100px;
+  }
+  .branch-col-label.yes { background: #e8f5ec; color: #2e7d4f; }
+  .branch-col-label.no { background: #fce8e8; color: #b8390e; }
+  .branch-col-label.alt { background: #fff4e0; color: #a8871f; }
+
+  /* ── Edge Cases Box ── */
+  .edge-box {
+    background: #fdf7f7;
+    border: 1px solid #f0d5d5;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+  }
+  .edge-box-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #b8390e;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .edge-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .edge-box li {
+    font-size: 11.5px;
+    color: #5a6272;
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.55;
+    margin-bottom: 5px;
+  }
+  .edge-box li::before {
+    content: "!";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #b8390e;
+    font-weight: 800;
+    font-size: 12px;
+  }
+  .edge-box li strong { color: #0f1f3d; font-weight: 600; }
+
+  /* ── Callout ── */
+  .callout {
+    background: #fffbef;
+    border-left: 4px solid #c9a227;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 18px;
+    margin: 14px 0;
+    font-size: 12.5px;
+    color: #4a3728;
+    line-height: 1.65;
+  }
+  .callout strong { color: #0f1f3d; }
+
+  .callout-blue {
+    background: #f0f4ff;
+    border-left-color: #1a4fa0;
+    color: #1a2a4a;
+  }
+  .callout-blue strong { color: #1a4fa0; }
+
+  /* ── Table of Contents ── */
+  .toc {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 12px;
+    padding: 20px 26px;
+    margin-bottom: 32px;
+  }
+  .toc-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #c9a227;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 24px;
+  }
+  .toc-item {
+    font-size: 12.5px;
+    color: #4a5568;
+    padding: 3px 0;
+  }
+  .toc-item strong {
+    color: #0f1f3d;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 44px;
+    padding-top: 16px;
+    border-top: 1px solid #e8ecf2;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #9aa3b3;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 800px) {
+    .page { padding: 24px 18px; margin: 10px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 17px; }
+    .meta-row { grid-template-columns: 1fr; }
+    .branch-grid, .branch-grid-3, .toc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="logo">
+      <div class="logo-mark">F</div>
+      <div>
+        <div class="logo-text">Finous</div>
+        <div class="logo-sub">by Nidhiverse Private Limited</div>
+      </div>
+    </div>
+    <div class="doc-badge">User Flows v1.0</div>
+  </div>
+
+  <h1>B2C PWA — User Flows</h1>
+  <p class="subtitle">
+    Complete user journey map for the Finous Progressive Web App. Every feature documented with entry points, step-by-step flow, decision branches, success paths, and error handling. Print-ready reference for design and engineering.
+  </p>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch sw-start"></span> Entry / Start</div>
+    <div class="legend-item"><span class="legend-swatch sw-step"></span> Action Step</div>
+    <div class="legend-item"><span class="legend-swatch sw-decision"></span> Decision Point</div>
+    <div class="legend-item"><span class="legend-swatch sw-success"></span> Success Terminal</div>
+    <div class="legend-item"><span class="legend-swatch sw-error"></span> Error / Alt Path</div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <div class="toc-grid">
+      <div class="toc-item"><strong>1.</strong> Onboarding &amp; Identity</div>
+      <div class="toc-item"><strong>7.</strong> Marketplace</div>
+      <div class="toc-item"><strong>2.</strong> Account Aggregator</div>
+      <div class="toc-item"><strong>8.</strong> Goals Planner</div>
+      <div class="toc-item"><strong>3.</strong> Core Dashboard</div>
+      <div class="toc-item"><strong>9.</strong> Investment Hub</div>
+      <div class="toc-item"><strong>4.</strong> AI Advisor &amp; Voice</div>
+      <div class="toc-item"><strong>10.</strong> Premium Tier</div>
+      <div class="toc-item"><strong>5.</strong> Loan Suite</div>
+      <div class="toc-item"><strong>11.</strong> Settings &amp; Account</div>
+      <div class="toc-item"><strong>6.</strong> Financial Health Score</div>
+      <div class="toc-item"><strong>12.</strong> Day 0 Tools</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 1 — ONBOARDING -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 1</div>
+  <h2>Onboarding &amp; Identity</h2>
+  <p class="section-desc">First-time user journey from app entry through phone authentication to profile creation. Aadhaar eKYC is deferred to the AA consent step.</p>
+
+  <!-- Feature 1.1 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">1.1 — App Entry &amp; Phone Authentication</div>
+        <span class="flow-block-tag tag-p1">Phase 1</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Direct URL visit to finous.site</li>
+              <li>Referral link from another user</li>
+              <li>Bank white-label subdomain (hdfcbank.finous.site)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Dashboard (existing user)</li>
+              <li>Profile setup (new user)</li>
+              <li>Abandoned at any step</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Splash Screen</div>
+            <div class="flow-step-desc">Finous logo + subtle gold animation. Duration: max 1.5s. Checks for existing valid session.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Session exists?</div>
+            <div class="flow-step-desc">Backend validates refresh token from httpOnly cookie.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Yes → Dashboard</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Skip to Home</div>
+                <div class="flow-step-desc">Route directly to Home — Connected (or Empty State if AA not yet linked).</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">No → Continue</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Welcome Screen</div>
+                <div class="flow-step-desc">Headline + 2-line sub. CTAs: "Get started" and "I have an account".</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Phone Entry</div>
+            <div class="flow-step-desc">+91 country code locked. 10-digit input with auto-format. "Send OTP" button enables once 10 digits valid.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">OTP Verification</div>
+            <div class="flow-step-desc">6-digit input. Auto-read OTP on supported browsers. Resend timer 30s. Max 3 attempts.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">OTP correct?</div>
+            <div class="flow-step-desc">Backend validates OTP and creates/looks up user.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">New user</div>
+            <div class="flow-step">
+              <div class="flow-step-num">5a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Name &amp; Email</div>
+                <div class="flow-step-desc">Name required. Email optional but encouraged. "Continue" advances.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label yes">Existing user</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">5b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Skip to Home</div>
+                <div class="flow-step-desc">Load profile, refresh AA data if stale, show dashboard.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Profile Setup Complete</div>
+            <div class="flow-step-desc">User lands on Home — Empty State. Next step is "Connect accounts" (AA Consent).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-box">
+        <div class="edge-box-title">Edge Cases &amp; Error Handling</div>
+        <ul>
+          <li><strong>Invalid phone format:</strong> inline validation, button stays disabled</li>
+          <li><strong>OTP expired:</strong> "OTP expired. Resend a new one." with prominent resend link</li>
+          <li><strong>3 failed OTP attempts:</strong> 15-minute lockout, support contact shown</li>
+          <li><strong>Network failure during OTP send:</strong> "Couldn't send OTP. Check your connection and try again."</li>
+          <li><strong>User abandons at OTP screen:</strong> session token not created; next visit starts fresh</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 2 — ACCOUNT AGGREGATOR -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 2</div>
+  <h2>Account Aggregator</h2>
+  <p class="section-desc">The most critical flow in the product. Aadhaar eKYC, AA consent, first data fetch, and consent revocation.</p>
+
+  <!-- Feature 2.1 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">2.1 — First-Time AA Consent &amp; Data Fetch</div>
+        <span class="flow-block-tag tag-p2">Phase 2</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Home — Empty State "Connect accounts" CTA</li>
+              <li>Settings → Linked Accounts → "Add account"</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Home — Connected (success)</li>
+              <li>Consent Failed screen (failure)</li>
+              <li>User cancels at AA</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User taps "Connect accounts"</div>
+            <div class="flow-step-desc">PWA calls backend → AA Module initiates consent flow.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Consent Intro Screen</div>
+            <div class="flow-step-desc">Plain-language explanation: what AA is, what Finous can do, what it can't. One screen, no jargon. CTA: "Proceed to Aadhaar verification".</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Aadhaar eKYC</div>
+            <div class="flow-step-desc">12-digit Aadhaar input → OTP sent by UIDAI → 6-digit OTP → verified. Minimal data stored: name, DOB, address.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">eKYC successful?</div>
+            <div class="flow-step-desc">Backend confirms with provider.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Yes</div>
+            <div class="flow-step">
+              <div class="flow-step-num">4a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Create AA Consent</div>
+                <div class="flow-step-desc">Backend creates consent artefact via Setu. Duration: 1 year. Purpose: financial dashboard + AI insights.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">No</div>
+            <div class="flow-step error">
+              <div class="flow-step-num">4b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">eKYC Failed</div>
+                <div class="flow-step-desc">Reason shown (invalid Aadhaar / OTP mismatch / provider error). "Retry" and "Contact support" options.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Redirect to AA App / Web</div>
+            <div class="flow-step-desc">User leaves Finous temporarily. AA shows which FIPs to share data from. User approves each institution.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User approves consent?</div>
+            <div class="flow-step-desc">AA sends callback to Finous backend with consent status.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Approved</div>
+            <div class="flow-step">
+              <div class="flow-step-num">6a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Fetch FIP Data</div>
+                <div class="flow-step-desc">Backend pulls data from each FIP via AA. Decrypts using keys from Key Vault. Normalises into standard schema.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Rejected / Cancelled</div>
+            <div class="flow-step error">
+              <div class="flow-step-num">6b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Consent Declined</div>
+                <div class="flow-step-desc">"No problem — you can connect accounts whenever you're ready." Return to Home Empty State.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">7</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Data Normalisation</div>
+            <div class="flow-step-desc">Financial Data module writes accounts, loans, investments, credit cards to Postgres. Generates Financial Snapshot → Redis (12h TTL).</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">8</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Success Screen — Consent Granted</div>
+            <div class="flow-step-desc">"Your dashboard is ready." CTA: "View dashboard". Confetti-lite animation. Duration: 2s before auto-forward.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">9</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Home — Connected</div>
+            <div class="flow-step-desc">Net worth card, bank balances, EMI burden, credit utilisation, cash flow. First-time tooltip tour overlay (dismissable).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-box">
+        <div class="edge-box-title">Edge Cases &amp; Error Handling</div>
+        <ul>
+          <li><strong>Partial FIP success:</strong> If 3 of 4 banks return data, show what's available and flag "SBI data unavailable — retry?"</li>
+          <li><strong>FIP timeout:</strong> Retry once after 30s. If still failing, proceed with available data and mark the FIP for background retry.</li>
+          <li><strong>User closes app during AA:</strong> Consent remains pending. On next app open, check consent status and resume.</li>
+          <li><strong>Aadhaar locked:</strong> UIDAI locks Aadhaar after 3 failed OTP attempts. Show help link to unlock via UIDAI portal.</li>
+          <li><strong>Consent expired before fetch:</strong> Rare, but re-create consent and restart from step 5.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 2.2 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">2.2 — Consent Revocation (Hard Delete)</div>
+        <span class="flow-block-tag tag-p2">Phase 2</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Settings → Linked Accounts → "Revoke"</li>
+              <li>Settings → Privacy &amp; Data → "Delete my account"</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Logged out, data deleted</li>
+              <li>Revoked at AA level (single institution)</li>
+              <li>User cancels deletion</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User taps "Revoke" or "Delete account"</div>
+            <div class="flow-step-desc">Modal opens with clear consequences: what gets deleted, when, and what's retained.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Confirm deletion?</div>
+            <div class="flow-step-desc">Two-step confirmation required. Type "DELETE" to proceed. Prevents accidental taps.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Confirmed</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Block Access Immediately</div>
+                <div class="flow-step-desc">Session invalidated. All API calls return 401. User logged out.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Cancelled</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Return to Settings</div>
+                <div class="flow-step-desc">No action taken. Modal closed.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Deletion Job Triggered</div>
+            <div class="flow-step-desc">Async job runs. User sees: "Your data will be deleted within 24 hours. Backups clear in 7–14 days."</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Delete from Live Systems</div>
+            <div class="flow-step-desc">Postgres rows + Redis cache + Blob objects + Key Vault secrets all removed within 24h.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Audit Log Retained</div>
+            <div class="flow-step-desc">Only hashed user_id, action, timestamp. No financial values. Required for DPDP compliance.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Confirmation Email Sent</div>
+            <div class="flow-step-desc">"Your account and data have been deleted. Backups will clear within 14 days."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Deletion policy commitment:</strong> Live systems within 24 hours. Backups within 14 days. This window is documented in the Data Deletion Policy.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 3 — CORE DASHBOARD -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 3</div>
+  <h2>Core Dashboard</h2>
+  <p class="section-desc">The main product surface. Home, drill-downs, and cash flow visualisation.</p>
+
+  <!-- Feature 3.1 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">3.1 — Home Dashboard</div>
+        <span class="flow-block-tag tag-p2">Phase 2</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Bottom tab "Home"</li>
+              <li>Post-login default destination</li>
+              <li>Post-AA-consent success screen</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Any detail screen (accounts, loans, etc.)</li>
+              <li>AI Advisor via floating "Ask Finous"</li>
+              <li>Other bottom tabs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Load Dashboard</div>
+            <div class="flow-step-desc">Read Financial Snapshot from Redis (12h TTL). If stale &gt; 12h, trigger background refresh.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">AA connected?</div>
+            <div class="flow-step-desc">Backend checks for active consent.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Connected</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Show Connected Dashboard</div>
+                <div class="flow-step-desc">Net worth card at top. Bank balances strip. EMI burden. Credit utilisation. Cash flow mini-chart. Floating "Ask Finous" button.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Not connected</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Show Empty State</div>
+                <div class="flow-step-desc">Hero: "Connect your accounts". Preview tiles of what's coming. Big CTA to AA Consent flow.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User taps a card?</div>
+            <div class="flow-step-desc">Which detail screen opens depends on the card tapped.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid-3">
+          <div class="branch-col">
+            <div class="branch-col-label alt">Accounts</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Accounts Detail</div>
+                <div class="flow-step-desc">List of linked banks, expandable to show balances and recent activity.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Loans</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Loans Detail</div>
+                <div class="flow-step-desc">Loan cards with lender, outstanding, EMI, next due date. Total EMI burden at top.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">More</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3c</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Investments / Cards / Cash Flow</div>
+                <div class="flow-step-desc">Investments: allocation donut. Cards: combined utilisation. Cash Flow: monthly bars.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Pull-to-Refresh</div>
+            <div class="flow-step-desc">User-initiated live data pull. Backend triggers fresh AA fetch for all FIPs. Takes 5–15s. Progress indicator shown.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Dashboard Updated</div>
+            <div class="flow-step-desc">Latest data reflected. Snapshot TTL reset to 12h.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-box">
+        <div class="edge-box-title">Edge Cases &amp; Error Handling</div>
+        <ul>
+          <li><strong>Snapshot missing:</strong> Show skeleton loader, trigger fresh AA fetch in background</li>
+          <li><strong>AA consent expired:</strong> Home shows "Reconnect your accounts" banner with one-tap renewal</li>
+          <li><strong>Partial data available:</strong> Show what's there, flag missing institutions at the top</li>
+          <li><strong>Network offline:</strong> Show "You're offline" screen — no cached data displayed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 4 — AI & VOICE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 4</div>
+  <h2>AI Advisor &amp; Voice Agent</h2>
+  <p class="section-desc">Conversational AI and voice-first operations. Both enforce "information, not advice" and log anonymised conversations for FLM training.</p>
+
+  <!-- Feature 4.1 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">4.1 — AI Advisor Chat</div>
+        <span class="flow-block-tag tag-p2">Phase 2</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Bottom tab "Ask"</li>
+              <li>Floating "Ask Finous" button on Home</li>
+              <li>Contextual CTA from any feature screen</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Back to previous screen</li>
+              <li>Switch to Voice mode</li>
+              <li>Start new conversation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User opens AI Advisor</div>
+            <div class="flow-step-desc">Chat screen loads. Greeting: "Hi [name], what would you like to know?" 3 suggested questions shown based on their data.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User types or picks a suggestion</div>
+            <div class="flow-step-desc">Message appears in chat. Backend receives query.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">AI Service assembles context</div>
+            <div class="flow-step-desc">Reads Financial Snapshot from Redis. Injects user's real numbers, session tenant, and preferred bank into prompt.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">LLM call with guardrails</div>
+            <div class="flow-step-desc">System prompt enforces "information, not advice". Response filtered before return.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Response safe?</div>
+            <div class="flow-step-desc">Post-processing check for recommendation language ("you should", product names, etc.).</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Safe</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">5a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Display Response</div>
+                <div class="flow-step-desc">Message bubble + disclaimer: "This is general information, not financial or tax advice." Logged for FLM training.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Blocked</div>
+            <div class="flow-step error">
+              <div class="flow-step-num">5b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Reframe Response</div>
+                <div class="flow-step-desc">"I can explain how this works, but I can't recommend what you should do. For that, please consult a qualified advisor."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Follow-up or Exit</div>
+            <div class="flow-step-desc">User asks another question, starts new chat, or exits. Conversation stored for 90 days then auto-deleted.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Rate limit:</strong> 30 queries per user per day for free tier. Premium tier unlocks unlimited.
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 4.2 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">4.2 — Voice Agent Session</div>
+        <span class="flow-block-tag tag-p2">Phase 2</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Bottom tab "Ask" → Voice toggle</li>
+              <li>Mic icon on Home</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>End session → transcript view</li>
+              <li>Close app mid-session → lost</li>
+              <li>Token expiry (5 min) → auto-end</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User taps mic icon</div>
+            <div class="flow-step-desc">PWA requests short-lived Deepgram token from backend. Voice Module issues 5-min token + creates session record.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Mic permission</div>
+            <div class="flow-step-desc">If first time, browser asks for mic permission. If denied, show fallback text input.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Idle → Listening</div>
+            <div class="flow-step-desc">User speaks. Deepgram STT streams transcript to backend. UI shows pulsing gold ring.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Listening → Thinking</div>
+            <div class="flow-step-desc">Deepgram calls Finous /voice/llm. Same AI Service as chat. Reads Financial Snapshot, assembles prompt.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Thinking → Speaking</div>
+            <div class="flow-step-desc">Deepgram TTS plays response. UI shows waveform animation. User can pause mid-speech.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Continue conversation?</div>
+            <div class="flow-step-desc">User asks another question or ends session.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Continue</div>
+            <div class="flow-step">
+              <div class="flow-step-num">6a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Loop back to Listening</div>
+                <div class="flow-step-desc">Token still valid (5 min TTL). Same session continues.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">End session</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">6b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Post transcript</div>
+                <div class="flow-step-desc">PWA posts full transcript to backend. Session record closed. Stored for FLM training.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">7</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Transcript View</div>
+            <div class="flow-step-desc">Text bubbles like chat. Replay button per response. "Ask another question" or "Done".</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edge-box">
+        <div class="edge-box-title">Edge Cases &amp; Error Handling</div>
+        <ul>
+          <li><strong>App closed mid-session:</strong> WebSocket closes. Conversation lost. On reopen: "Session ended. Tap to start a new conversation."</li>
+          <li><strong>Token expires mid-session:</strong> Auto-refresh silently if session is active. If refresh fails, session ends gracefully.</li>
+          <li><strong>Deepgram outage:</strong> "Voice is unavailable right now. Try text chat instead." Fallback to AI Advisor.</li>
+          <li><strong>Mic permission denied:</strong> Show text input option. Explain how to enable in browser settings.</li>
+          <li><strong>Noisy environment:</strong> STT confidence low. If repeated, prompt user to type instead.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 5 — LOAN SUITE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 5</div>
+  <h2>Loan Suite</h2>
+  <p class="section-desc">Loan intelligence tools powered by AA data. Prepayment, refinancing, consolidation.</p>
+
+  <!-- Feature 5.1 -->
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">5.1 — Loan Hub &amp; Prepayment Calculator</div>
+        <span class="flow-block-tag tag-p3">Phase 3</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Bottom tab "Loans"</li>
+              <li>Home dashboard "EMI Burden" card</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>EMI Calendar</li>
+              <li>Refinancing details</li>
+              <li>Consolidation view</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User opens Loan Hub</div>
+            <div class="flow-step-desc">Loans list pulled from AA data. Each loan card: lender, outstanding, rate, EMI, next due date.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Which tool?</div>
+            <div class="flow-step-desc">Three options in the hub.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid-3">
+          <div class="branch-col">
+            <div class="branch-col-label alt">Prepayment</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Prepayment Calculator</div>
+                <div class="flow-step-desc">Pick a loan, enter extra amount, see interest saved + months closed early.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Refinancing</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Refinancing Alert</div>
+                <div class="flow-step-desc">Shows current rate vs. market rate. Monthly + lifetime savings projected.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Consolidation</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2c</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Consolidation View</div>
+                <div class="flow-step-desc">Detects multiple loans. Shows blended rate vs. consolidated offer + savings.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Savings Shown</div>
+            <div class="flow-step-desc">Example: "Pay ₹50,000 extra today → save ₹1.4L in interest, close 8 months early."</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User action?</div>
+            <div class="flow-step-desc">What does the user do with this information?</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Learn more</div>
+            <div class="flow-step">
+              <div class="flow-step-num">4a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Partner Handoff</div>
+                <div class="flow-step-desc">For refinancing/consolidation, "Learn more" opens partner's page in new tab. Tracked click for DSA commission.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Just exploring</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">4b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Return to Hub</div>
+                <div class="flow-step-desc">No action. All calculations kept in session only.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 6 — FINANCIAL HEALTH SCORE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 6</div>
+  <h2>Financial Health Score</h2>
+  <p class="section-desc">Proprietary score across 6 components. Free users see the number; premium unlocks the full breakdown.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">6.1 — Health Score View</div>
+        <span class="flow-block-tag tag-p3">Phase 3</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-valuel">
+            <ul>
+              <li>Bottom tab "Goals" → Score tab</li>
+              <li>Home dashboard widget</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Score history</li>
+              <li>"What's dragging" → actionable fixes</li>
+              <li>Premium upsell</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User opens Health Score</div>
+            <div class="flow-step-desc">Big number (300–900). Month-on-month trend arrow. 6 component bars below.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Premium user?</div>
+            <div class="flow-step-desc">Free users see the number. Premium sees the full breakdown.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Premium</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Full Breakdown</div>
+                <div class="flow-step-desc">Component weights, current values, "what's dragging" list with point impact.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Free</div>
+            <div class="flow-step decision">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Number + Upsell</div>
+                <div class="flow-step-desc">Show number. Blurred breakdown with "Unlock with Premium".</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Tap a component</div>
+            <div class="flow-step-desc">E.g., "Credit utilisation 48%" → drill-down shows which cards, next steps.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Actionable Insight</div>
+            <div class="flow-step-desc">"Pay Axis card below 30% utilisation — adds ~40 points." Copy this, but always informational, not directive.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 7 — MARKETPLACE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 7</div>
+  <h2>Marketplace</h2>
+  <p class="section-desc">Curated product offers matched to the user profile. All recommendations route to the session tenant's products first.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">7.1 — Recommendations Feed → Referral Handoff</div>
+        <span class="flow-block-tag tag-p3">Phase 3</span>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User opens Marketplace</div>
+            <div class="flow-step-desc">Recommendations feed loads. Cards for loans, insurance, credit cards, MF — sorted by session tenant's products first, then general offers.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User taps a product</div>
+            <div class="flow-step-desc">Product detail screen. Benefits, rates, fees, eligibility. CTA: "Learn more" (not "Apply").</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User action?</div>
+            <div class="flow-step-desc">Learn more, compare, or back out.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid-3">
+          <div class="branch-col">
+            <div class="branch-col-label alt">Learn more</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Referral Handoff</div>
+                <div class="flow-step-desc">Modal shows disclosure: "You'll be redirected to [partner]. Finous may earn a referral fee." User confirms → opens partner in new tab. Click tracked.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Compare</div>
+            <div class="flow-step">
+              <div class="flow-step-num">3b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Side-by-side</div>
+                <div class="flow-step-desc">Select 2–3 products. Compare on rates, fees, benefits. Same handoff CTA.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Back out</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">3c</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Return to Feed</div>
+                <div class="flow-step-desc">No action taken. Return to recommendations.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 8 — GOALS PLANNER -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 8</div>
+  <h2>Goals Planner</h2>
+  <p class="section-desc">Structured savings goals with auto-calculated monthly commitments and AA-linked progress tracking.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">8.1 — Create &amp; Track a Goal</div>
+        <span class="flow-block-tag tag-p4">Phase 4</span>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User taps "Create goal"</div>
+            <div class="flow-step-desc">Goal types: emergency fund, home, education, retirement, vehicle, vacation, custom.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Enter goal details</div>
+            <div class="flow-step-desc">Target amount + timeline. App auto-calculates required monthly savings based on current balance and expected returns.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Savings feasible?</div>
+            <div class="flow-step-desc">Compare required savings vs. available cash flow from AA data.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Feasible</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">3a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Goal created</div>
+                <div class="flow-step-desc">Progress bar from Day 1. Tracked via AA data — no manual entry.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Gap exists</div>
+            <div class="flow-step decision">
+              <div class="flow-step-num">3b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Gap Analysis</div>
+                <div class="flow-step-desc">"You're ₹12,000/month short. Options: extend timeline, reduce target, or reallocate from [category]."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">AI milestone alerts</div>
+            <div class="flow-step-desc">"You'll hit your emergency fund target 2 months early at current pace." Informational, never directive.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 9 — INVESTMENT HUB -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 9</div>
+  <h2>Investment Hub</h2>
+  <p class="section-desc">Cross-platform portfolio view. XIRR, tax impact, diversification. Analytics only, not advice.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">9.1 — Portfolio Overview</div>
+        <span class="flow-block-tag tag-p4">Phase 4</span>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User opens Investment Hub</div>
+            <div class="flow-step-desc">Total value, XIRR, allocation donut, top holdings. All data from AA — no manual entry.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Which view?</div>
+            <div class="flow-step-desc">Tabs: Overview, Holdings, Tax, Diversification.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid-3">
+          <div class="branch-col">
+            <div class="branch-col-label alt">Holdings</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">By Asset Class</div>
+                <div class="flow-step-desc">Tabs: Equity, Debt, Gold, Alternatives. Each with holding list and per-fund XIRR.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Tax</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Tax Impact Summary</div>
+                <div class="flow-step-desc">LTCG, STCG, dividend tax estimates for the year. Downloadable for CA.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Diversification</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2c</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Allocation vs Target</div>
+                <div class="flow-step-desc">Current vs. stated target. Drift indicators. "82% of equity is large cap — your risk profile supports adding mid/small cap."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step success">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Insight Delivered</div>
+            <div class="flow-step-desc">Informational framing. Never "buy X" or "sell Y". Only "here is your composition" and "here are approaches".</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 10 — PREMIUM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 10</div>
+  <h2>Premium Tier</h2>
+  <p class="section-desc">Subscription upgrade. Triggered contextually when a user hits a gated feature.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">10.1 — Upgrade Flow</div>
+        <span class="flow-block-tag tag-p5">Phase 5</span>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User hits a gated feature</div>
+            <div class="flow-step-desc">E.g., tries to see full Health Score breakdown. Soft prompt: "Unlock with Premium".</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Premium Plans Screen</div>
+            <div class="flow-step-desc">Two options: Monthly ₹299, Annual ₹2,499 (save 30%). Feature comparison.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Razorpay Checkout</div>
+            <div class="flow-step-desc">UPI, cards, netbanking supported. Order created server-side. PWA opens checkout.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Payment successful?</div>
+            <div class="flow-step-desc">Razorpay webhook confirms to backend.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid">
+          <div class="branch-col">
+            <div class="branch-col-label yes">Success</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">4a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Premium Activated</div>
+                <div class="flow-step-desc">Receipt shown. All premium features unlocked immediately. Confirmation email sent.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label no">Failed</div>
+            <div class="flow-step error">
+              <div class="flow-step-num">4b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Payment Failed</div>
+                <div class="flow-step-desc">"Payment didn't go through. Try again." Retry button. Support contact if repeated.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 11 — SETTINGS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 11</div>
+  <h2>Settings &amp; Account</h2>
+  <p class="section-desc">User controls for profile, consents, notifications, language, security, and account deletion.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">11.1 — Settings Hub</div>
+        <span class="flow-block-tag tag-p2">Phase 2</span>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User opens Profile tab</div>
+            <div class="flow-step-desc">Settings list: Profile, Linked Accounts, Notifications, Language, Security, Privacy &amp; Data, Help, About.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Which setting?</div>
+            <div class="flow-step-desc">Six common paths.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid-3">
+          <div class="branch-col">
+            <div class="branch-col-label alt">Profile</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Edit profile</div>
+                <div class="flow-step-desc">Name, email, phone. Aadhaar-verified badge shown.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Linked Accounts</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Manage consents</div>
+                <div class="flow-step-desc">List of institutions, expiry dates, "Add" and "Revoke" per institution.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Notifications</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2c</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Push preferences</div>
+                <div class="flow-step-desc">Toggles: alerts, tips, marketing. Push opt-in also controlled here.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Language</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2d</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Switch language</div>
+                <div class="flow-step-desc">English (default), Hindi. Change takes effect immediately.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Security</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2e</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Biometric + sessions</div>
+                <div class="flow-step-desc">Biometric lock toggle. Active sessions list. Log out all devices.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Privacy &amp; Data</div>
+            <div class="flow-step">
+              <div class="flow-step-num">2f</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">User rights</div>
+                <div class="flow-step-desc">Download my data, delete my account. Links to Privacy, Terms, Data Usage.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PART 12 — DAY 0 TOOLS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="part-header">Part 12</div>
+  <h2>Day 0 Tools</h2>
+  <p class="section-desc">License-free calculators and tools that ship before AA. Primary user acquisition channel via SEO.</p>
+
+  <div class="feature-section">
+    <div class="flow-block">
+      <div class="flow-block-header">
+        <div class="flow-block-title">12.1 — Calculator to Waitlist Flow</div>
+        <span class="flow-block-tag tag-p1">Phase 1</span>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-box">
+          <div class="meta-label">Entry Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Google search → calculator page</li>
+              <li>Direct URL /tools</li>
+              <li>Referral from another user</li>
+            </ul>
+          </div>
+        </div>
+        <div class="meta-box">
+          <div class="meta-label">Exit Points</div>
+          <div class="meta-value">
+            <ul>
+              <li>Waitlist signup</li>
+              <li>Credit card affiliate click</li>
+              <li>Abandoned</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-steps-vertical">
+        <div class="flow-step start">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User lands on calculator</div>
+            <div class="flow-step-desc">No login required. Opens to a live calculator — EMI, SIP, or Loan Eligibility.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User enters inputs</div>
+            <div class="flow-step-desc">Sliders + text fields. Real-time calculation updates as inputs change.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">Result displayed</div>
+            <div class="flow-step-desc">Clean number + chart. Below: "Want to see all your loans in one place?" CTA to waitlist.</div>
+          </div>
+        </div>
+        <div class="flow-arrow">↓</div>
+
+        <div class="flow-step decision">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-body">
+            <div class="flow-step-title">User action?</div>
+            <div class="flow-step-desc">Three paths.</div>
+          </div>
+        </div>
+
+        <div class="branch-grid-3">
+          <div class="branch-col">
+            <div class="branch-col-label alt">Waitlist</div>
+            <div class="flow-step success">
+              <div class="flow-step-num">4a</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Email signup</div>
+                <div class="flow-step-desc">Simple form. Confirmation email sent. Added to beta waitlist.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Credit cards</div>
+            <div class="flow-step">
+              <div class="flow-step-num">4b</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Card comparison</div>
+                <div class="flow-step-desc">Opens affiliate card list. Click tracked for EarnKaro/BankBazaar commission.</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-col">
+            <div class="branch-col-label alt">Explore more</div>
+            <div class="flow-step">
+              <div class="flow-step-num">4c</div>
+              <div class="flow-step-body">
+                <div class="flow-step-title">Tools hub</div>
+                <div class="flow-step-desc">Browse other calculators. Blog articles. Waitlist still visible in footer.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>Confidential · Finous by Nidhiverse Private Limited · 2026</span>
+    <span>B2C PWA User Flows · v1.0</span>
+  </div>
+
+</div>
+
+</body>
+</html>

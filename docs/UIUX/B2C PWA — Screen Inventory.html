@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finous — B2C PWA Screen Inventory</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f7;
+    color: #1a1a2e;
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    padding: 16px;
+  }
+
+  .page {
+    max-width: 1100px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 40px 48px 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    border: 1px solid #e4e9f0;
+  }
+
+  @media print {
+    body { background: #ffffff; padding: 0; }
+    .page { border-radius: 0; box-shadow: none; border: none; padding: 0.5in; margin: 0; max-width: 100%; }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #0f1f3d;
+    margin-bottom: 32px;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 40px; height: 40px;
+    background: #c9a227;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #ffffff;
+  }
+  .logo-text { font-size: 20px; font-weight: 800; color: #0f1f3d; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 11px; color: #9aa3b3; letter-spacing: 0.3px; }
+  .doc-badge {
+    font-size: 10px; font-weight: 700;
+    color: #c9a227;
+    background: rgba(201,162,39,0.1);
+    border: 1px solid rgba(201,162,39,0.25);
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Title ── */
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.6px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 28px;
+    line-height: 1.65;
+    max-width: 720px;
+  }
+
+  /* ── Meta Box ── */
+  .meta-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .meta-card {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .meta-card .m-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9aa3b3;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .meta-card .m-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f1f3d;
+  }
+  .meta-card .m-sub {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 12px 18px;
+    background: #f8f9fc;
+    border: 1px solid #e8ecf2;
+    border-radius: 10px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #4a5568;
+  }
+  .legend-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+  }
+  .pill-p1 { background: #e8f5ec; color: #2e7d4f; }
+  .pill-p2 { background: #e6efff; color: #1a4fa0; }
+  .pill-p3 { background: #fff4e0; color: #a8871f; }
+  .pill-p4 { background: #f3e8ff; color: #7b3fa0; }
+  .pill-p5 { background: #fce8e8; color: #b8390e; }
+
+  /* ── Section Headings ── */
+  h2 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f1f3d;
+    margin: 36px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #c9a227;
+    letter-spacing: -0.2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .h2-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #0f1f3d;
+    color: #c9a227;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 4px;
+    font-size: 12.5px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e8ecf2;
+  }
+  thead tr { background: #0f1f3d; }
+  th {
+    color: #ffffff;
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #e8ecf2;
+    color: #4a5568;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafbfd; }
+  td strong { color: #0f1f3d; font-weight: 600; }
+  td.num-col { color: #6b7280; font-weight: 600; width: 44px; white-space: nowrap; }
+  td.phase-col { width: 70px; white-space: nowrap; }
+
+  /* ── Phase Summary ── */
+  .phase-summary {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 14px 0 8px;
+  }
+  .phase-card {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .phase-card .p-phase {
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .phase-card .p-count {
+    font-size: 24px;
+    font-weight: 800;
+    color: #c9a227;
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .phase-card .p-label {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .phase-card.p-1 .p-phase { color: #2e7d4f; }
+  .phase-card.p-2 .p-phase { color: #1a4fa0; }
+  .phase-card.p-3 .p-phase { color: #a8871f; }
+  .phase-card.p-4 .p-phase { color: #7b3fa0; }
+  .phase-card.p-5 .p-phase { color: #b8390e; }
+
+  /* ── Callout ── */
+  .callout {
+    background: #fffbef;
+    border-left: 4px solid #c9a227;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 20px;
+    margin: 18px 0;
+    font-size: 13.5px;
+    color: #4a3728;
+    line-height: 1.7;
+  }
+  .callout strong { color: #0f1f3d; }
+
+  .callout-blue {
+    background: #f0f4ff;
+    border-left-color: #1a4fa0;
+    color: #1a2a4a;
+  }
+  .callout-blue strong { color: #1a4fa0; }
+
+  /* ── Navigation Table ── */
+  .nav-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 14px 0 8px;
+  }
+  .nav-tab {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .nav-tab .nt-icon { font-size: 22px; margin-bottom: 6px; }
+  .nav-tab .nt-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f1f3d;
+    margin-bottom: 3px;
+  }
+  .nav-tab .nt-purpose {
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+
+  /* ── Principles List ── */
+  ul.principles { list-style: none; padding: 0; margin: 10px 0; }
+  ul.principles li {
+    position: relative;
+    padding: 8px 0 8px 24px;
+    font-size: 13.5px;
+    color: #4a5568;
+    line-height: 1.65;
+    border-bottom: 1px solid #f0f2f7;
+  }
+  ul.principles li:last-child { border-bottom: none; }
+  ul.principles li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    color: #c9a227;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  ul.principles li strong { color: #0f1f3d; font-weight: 600; }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 44px;
+    padding-top: 16px;
+    border-top: 1px solid #e8ecf2;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #9aa3b3;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 800px) {
+    .page { padding: 24px 18px; margin: 10px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 14px; }
+    .meta-box { grid-template-columns: 1fr; }
+    .phase-summary { grid-template-columns: repeat(2, 1fr); }
+    .nav-tabs { grid-template-columns: repeat(2, 1fr); }
+    table { font-size: 11.5px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="logo">
+      <div class="logo-mark">F</div>
+      <div>
+        <div class="logo-text">Finous</div>
+        <div class="logo-sub">by Nidhiverse Private Limited</div>
+      </div>
+    </div>
+    <div class="doc-badge">Screen Inventory</div>
+  </div>
+
+  <!-- TITLE -->
+  <h1>B2C PWA — Screen Inventory</h1>
+  <p class="subtitle">
+    Complete screen catalogue for the Finous Progressive Web App. Mobile-first, installable, matches the Finous brand. 34 screens across 5 phases — from Day 0 tools through Premium tier.
+  </p>
+
+  <!-- META -->
+  <div class="meta-box">
+    <div class="meta-card">
+      <div class="m-label">Platform</div>
+      <div class="m-value">PWA</div>
+      <div class="m-sub">Mobile-first, installable</div>
+    </div>
+    <div class="meta-card">
+      <div class="m-label">Target User</div>
+      <div class="m-value">27–42 yrs</div>
+      <div class="m-sub">Urban Indian, ₹8–30L/year</div>
+    </div>
+    <div class="meta-card">
+      <div class="m-label">Total Screens</div>
+      <div class="m-value">34 + Day 0</div>
+      <div class="m-sub">Across 5 build phases</div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-pill pill-p1">P1</span> Day 0 · No AA, no licence</div>
+    <div class="legend-item"><span class="legend-pill pill-p2">P2</span> MVP · Dashboard + AI Advisor</div>
+    <div class="legend-item"><span class="legend-pill pill-p3">P3</span> Post-MVP · Loans, Score, Marketplace</div>
+    <div class="legend-item"><span class="legend-pill pill-p4">P4</span> Growth · Goals, Investment Hub</div>
+    <div class="legend-item"><span class="legend-pill pill-p5">P5</span> Later · Premium tier</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1. ONBOARDING -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">1</span> Onboarding &amp; Auth</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">1.1</td><td><strong>Splash / Loading</strong></td><td>First impression, brand</td><td>Finous logo, subtle gold animation, 1.5s max</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">1.2</td><td><strong>Welcome</strong></td><td>Introduce the value</td><td>Headline, 2-line sub, "Get started" CTA, "I have an account" link</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">1.3</td><td><strong>Phone Entry</strong></td><td>Start auth</td><td>Country code (+91), 10-digit input, "Send OTP" button</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">1.4</td><td><strong>OTP Verification</strong></td><td>Verify phone</td><td>6-digit input, resend timer, auto-read OTP</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">1.5</td><td><strong>Name &amp; Email</strong></td><td>Basic profile</td><td>Name field, email field (optional), "Continue"</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">1.6</td><td><strong>Aadhaar eKYC</strong></td><td>Compliance + AA access</td><td>Aadhaar number input, OTP auth, verified badge on success</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">1.7</td><td><strong>Consent Intro</strong></td><td>Explain what comes next</td><td>Plain-language explanation of AA, "What we can and can't do", "Proceed to consent"</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">1.8</td><td><strong>Permissions</strong></td><td>Notifications, storage</td><td>Notification opt-in, "Not now" option</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2. HOME / DASHBOARD -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">2</span> Home / Dashboard</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">2.1</td><td><strong>Home — Empty State</strong></td><td>Before AA consent</td><td>"Connect your accounts" hero, preview of what's coming, CTA to consent flow</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">2.2</td><td><strong>Home — Connected</strong></td><td>Main screen after AA</td><td>Net worth card, bank balances strip, EMI burden, credit utilisation, cash flow mini-chart, "Ask Finous" floating button</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">2.3</td><td><strong>Accounts Detail</strong></td><td>Drill into accounts</td><td>List of all linked banks, tap to expand balances and recent activity</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">2.4</td><td><strong>Loans Detail</strong></td><td>All loans in one view</td><td>Loan cards (lender, outstanding, EMI, next due date), total EMI burden at top</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">2.5</td><td><strong>Investments Detail</strong></td><td>Portfolio overview</td><td>Holdings by type (MF, PPF, NPS, EPF, SGB, stocks), total value, allocation donut</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">2.6</td><td><strong>Credit Cards Detail</strong></td><td>Cards in one place</td><td>Card list, utilisation per card, combined utilisation, due dates</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">2.7</td><td><strong>Cash Flow</strong></td><td>Income vs. spend</td><td>Monthly bars, category breakdown, savings rate</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3. AI ADVISOR -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">3</span> AI Advisor</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">3.1</td><td><strong>Chat — Empty</strong></td><td>First conversation</td><td>Greeting, 3 suggested questions, input field</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">3.2</td><td><strong>Chat — Active</strong></td><td>Conversation view</td><td>Message bubbles, typing indicator, "New chat" button, disclaimer at bottom</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">3.3</td><td><strong>Chat — History</strong></td><td>Past conversations</td><td>List of past chats by date, search, delete</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">3.4</td><td><strong>Proactive Alerts</strong></td><td>Push alerts feed</td><td>Alert cards (EMI reset, rate change, utilisation spike), mark as read</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4. VOICE AGENT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">4</span> Voice Agent</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">4.1</td><td><strong>Voice — Idle</strong></td><td>Tap to speak</td><td>Large mic button, "Tap to speak", connection status</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">4.2</td><td><strong>Voice — Listening</strong></td><td>Recording input</td><td>Pulsing gold ring, "Listening…", live transcript preview</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">4.3</td><td><strong>Voice — Thinking</strong></td><td>Processing</td><td>Subtle spinner, "Thinking…"</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">4.4</td><td><strong>Voice — Speaking</strong></td><td>Playing answer</td><td>Waveform animation, "Finous is speaking…", pause button</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">4.5</td><td><strong>Voice — Transcript</strong></td><td>Full conversation</td><td>Text bubbles like chat, replay button per response</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5. LOAN SUITE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">5</span> Loan Suite</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">5.1</td><td><strong>Loan Hub</strong></td><td>All loans + tools</td><td>Loans list, prepayment calculator, refinancing alerts, consolidation detector</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">5.2</td><td><strong>Prepayment Calculator</strong></td><td>Calculate savings</td><td>Loan picker, extra amount slider, savings output, CTA</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">5.3</td><td><strong>Refinancing Alert</strong></td><td>Flag better rates</td><td>Current vs. offered rate, monthly savings, "Learn more"</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">5.4</td><td><strong>Consolidation View</strong></td><td>Multi-loan analysis</td><td>Loan list, blended rate, consolidated offer, savings projection</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">5.5</td><td><strong>EMI Calendar</strong></td><td>All due dates</td><td>Monthly calendar view, reminders, upcoming EMIs list</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6. FINANCIAL HEALTH SCORE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">6</span> Financial Health Score</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">6.1</td><td><strong>Score Overview</strong></td><td>Show the number</td><td>Big score, month trend, 6 component bars</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">6.2</td><td><strong>Score Breakdown</strong></td><td>Explain the score</td><td>Component cards with weights and current values</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">6.3</td><td><strong>What's Dragging</strong></td><td>Actionable fixes</td><td>Issues list with point impact and suggested actions</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">6.4</td><td><strong>Score History</strong></td><td>Month-on-month</td><td>Line chart, key changes, downloadable report</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7. MARKETPLACE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">7</span> Marketplace</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">7.1</td><td><strong>Recommendations Feed</strong></td><td>Curated offers</td><td>Cards (loans, insurance, cards, MF), matched to user profile</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">7.2</td><td><strong>Product Detail</strong></td><td>Full offer view</td><td>Benefits, rates, fees, eligibility, "Learn more" CTA (not "Apply")</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">7.3</td><td><strong>Compare</strong></td><td>Side-by-side</td><td>Two or three products, sortable columns</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+      <tr><td class="num-col">7.4</td><td><strong>Referral Handoff</strong></td><td>Open partner link</td><td>Redirect modal with disclosure, tracked click</td><td class="phase-col"><span class="legend-pill pill-p3">P3</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 8. GOALS PLANNER -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">8</span> Goals Planner</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">8.1</td><td><strong>Goals Overview</strong></td><td>All goals at a glance</td><td>Goal cards with progress bars, total progress</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">8.2</td><td><strong>Create Goal</strong></td><td>Setup wizard</td><td>Goal type, target amount, timeline, auto-calculated monthly savings</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">8.3</td><td><strong>Goal Detail</strong></td><td>Single goal view</td><td>Progress chart, current balance, monthly commitment, adjustments</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">8.4</td><td><strong>Gap Analysis</strong></td><td>Explain shortfalls</td><td>Monthly gap, suggested sources (cut spending, reallocate)</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 9. INVESTMENT HUB -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">9</span> Investment Hub</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">9.1</td><td><strong>Portfolio Overview</strong></td><td>All holdings</td><td>Total value, XIRR, allocation donut, top holdings</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">9.2</td><td><strong>Holdings Detail</strong></td><td>By asset class</td><td>Tabs: Equity, Debt, Gold, Alternatives, each with holding list</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">9.3</td><td><strong>XIRR Calculator</strong></td><td>Performance view</td><td>Portfolio XIRR, benchmark comparison, per-fund XIRR</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">9.4</td><td><strong>Tax Impact</strong></td><td>Yearly tax view</td><td>LTCG, STCG, dividend tax estimates, downloadable summary</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+      <tr><td class="num-col">9.5</td><td><strong>Diversification</strong></td><td>Allocation vs. target</td><td>Current vs. target allocation, drift indicators</td><td class="phase-col"><span class="legend-pill pill-p4">P4</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 10. PREMIUM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">10</span> Premium Tier</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">10.1</td><td><strong>Premium Teaser</strong></td><td>Upsell in context</td><td>Soft prompt on gated screens — "Unlock with Premium"</td><td class="phase-col"><span class="legend-pill pill-p5">P5</span></td></tr>
+      <tr><td class="num-col">10.2</td><td><strong>Premium Plans</strong></td><td>Pricing page</td><td>Monthly (₹299), annual (₹2,499), features list</td><td class="phase-col"><span class="legend-pill pill-p5">P5</span></td></tr>
+      <tr><td class="num-col">10.3</td><td><strong>Payment</strong></td><td>Checkout</td><td>Razorpay/UPI integration, secure badge</td><td class="phase-col"><span class="legend-pill pill-p5">P5</span></td></tr>
+      <tr><td class="num-col">10.4</td><td><strong>Premium Confirmation</strong></td><td>Success + activation</td><td>Receipt, activated benefits, "Explore premium"</td><td class="phase-col"><span class="legend-pill pill-p5">P5</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 11. SETTINGS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">11</span> Settings &amp; Profile</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">11.1</td><td><strong>Profile</strong></td><td>User info</td><td>Name, email, phone, Aadhaar-verified badge</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.2</td><td><strong>Linked Accounts</strong></td><td>Manage AA consents</td><td>List of linked institutions, expiry dates, "Revoke consent" per institution</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.3</td><td><strong>Notifications</strong></td><td>Push preferences</td><td>Toggle categories (alerts, tips, marketing)</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.4</td><td><strong>Language</strong></td><td>App language</td><td>English, Hindi (extensible)</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.5</td><td><strong>Security</strong></td><td>Device + session</td><td>Biometric lock toggle, active sessions, log out</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.6</td><td><strong>Privacy &amp; Data</strong></td><td>User rights</td><td>Data summary, download my data, delete my account</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.7</td><td><strong>Help &amp; Support</strong></td><td>Get help</td><td>FAQ, contact, chat with support</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">11.8</td><td><strong>About</strong></td><td>Company info</td><td>Finous version, legal links (Privacy, Terms, Data Usage), contact</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 12. SYSTEM SCREENS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">12</span> System Screens</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Key Elements</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">12.1</td><td><strong>Error — General</strong></td><td>Unexpected error</td><td>Clear message, "Try again" button, report issue link</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">12.2</td><td><strong>Error — Offline</strong></td><td>No internet</td><td>"You're offline" message, retry indicator</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">12.3</td><td><strong>Error — AA Consent Failed</strong></td><td>Consent flow failed</td><td>Retry option, why-it-failed explanation, support link</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">12.4</td><td><strong>Success — Consent Granted</strong></td><td>Post-consent moment</td><td>Celebration, "Your dashboard is ready", "View dashboard"</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+      <tr><td class="num-col">12.5</td><td><strong>Skeleton / Loading</strong></td><td>Loading states</td><td>Shimmer cards, no spinners</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">12.6</td><td><strong>Empty — No Data Yet</strong></td><td>Fresh AA sync</td><td>"Fetching your accounts…" progress</td><td class="phase-col"><span class="legend-pill pill-p2">P2</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- DAY 0 TOOLS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">+</span> Day 0 Tools (Standalone Screens)</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Screen</th><th>Purpose</th><th>Phase</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num-col">D.1</td><td><strong>Tools Hub</strong></td><td>Entry point to all Day 0 tools</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.2</td><td><strong>EMI Calculator</strong></td><td>Loan repayment math</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.3</td><td><strong>SIP Calculator</strong></td><td>Investment projections</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.4</td><td><strong>Loan Eligibility</strong></td><td>FOIR-based estimate</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.5</td><td><strong>Budgeting Tool</strong></td><td>Manual income and expense tracking</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.6</td><td><strong>Blog / Articles</strong></td><td>Financial literacy content</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.7</td><td><strong>Credit Card Comparison</strong></td><td>Affiliate card list</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+      <tr><td class="num-col">D.8</td><td><strong>Waitlist Signup</strong></td><td>Pre-launch email capture</td><td class="phase-col"><span class="legend-pill pill-p1">P1</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PHASE SUMMARY -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">→</span> Phase Summary</h2>
+
+  <div class="phase-summary">
+    <div class="phase-card p-1">
+      <div class="p-phase">Phase 1</div>
+      <div class="p-count">7+8</div>
+      <div class="p-label">Onboarding, Day 0 tools, basic errors</div>
+    </div>
+    <div class="phase-card p-2">
+      <div class="p-phase">Phase 2</div>
+      <div class="p-count">20</div>
+      <div class="p-label">AA dashboard, AI Advisor, Voice, Settings</div>
+    </div>
+    <div class="phase-card p-3">
+      <div class="p-phase">Phase 3</div>
+      <div class="p-count">13</div>
+      <div class="p-label">Loan Suite, Health Score, Marketplace</div>
+    </div>
+    <div class="phase-card p-4">
+      <div class="p-phase">Phase 4</div>
+      <div class="p-count">9</div>
+      <div class="p-label">Goals Planner, Investment Hub</div>
+    </div>
+    <div class="phase-card p-5">
+      <div class="p-phase">Phase 5</div>
+      <div class="p-count">4</div>
+      <div class="p-label">Premium tier</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- NAVIGATION -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">◫</span> Navigation Structure</h2>
+
+  <p style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">Bottom tab bar with 5 primary tabs. Everything else is nested.</p>
+
+  <div class="nav-tabs">
+    <div class="nav-tab">
+      <div class="nt-icon">🏠</div>
+      <div class="nt-name">Home</div>
+      <div class="nt-purpose">Dashboard</div>
+    </div>
+    <div class="nav-tab">
+      <div class="nt-icon">💬</div>
+      <div class="nt-name">Ask</div>
+      <div class="nt-purpose">AI Advisor + Voice (merged)</div>
+    </div>
+    <div class="nav-tab">
+      <div class="nt-icon">🏦</div>
+      <div class="nt-name">Loans</div>
+      <div class="nt-purpose">Loan Suite</div>
+    </div>
+    <div class="nav-tab">
+      <div class="nt-icon">🎯</div>
+      <div class="nt-name">Goals</div>
+      <div class="nt-purpose">Goals + Health Score</div>
+    </div>
+    <div class="nav-tab">
+      <div class="nt-icon">👤</div>
+      <div class="nt-name">Profile</div>
+      <div class="nt-purpose">Settings + Linked accounts</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- DESIGN PRINCIPLES -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">✦</span> Design Principles</h2>
+
+  <ul class="principles">
+    <li><strong>Mobile-first.</strong> Every screen designed for iPhone SE first, then scaled up.</li>
+    <li><strong>One tap to value.</strong> After AA consent, the dashboard must load in under 3 seconds.</li>
+    <li><strong>No dead ends.</strong> Every error screen offers a clear next step.</li>
+    <li><strong>No fake numbers.</strong> Empty states show real placeholders, not mock data.</li>
+    <li><strong>Information, not advice.</strong> Every AI output ends with a one-line disclaimer.</li>
+    <li><strong>Read-only framing.</strong> Reinforce that Finous cannot move money — the user stays in control.</li>
+  </ul>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- WHAT'S NOT INCLUDED -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">×</span> What's Not in the PWA (Deliberate)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>Why Not</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Bill payments</strong></td><td>Requires additional licences (BBPS)</td></tr>
+      <tr><td><strong>Transactions</strong></td><td>AA is read-only</td></tr>
+      <tr><td><strong>Account creation</strong></td><td>AA is not a banking service</td></tr>
+      <tr><td><strong>Direct investment purchase</strong></td><td>Requires AMFI ARN or SEBI RIA</td></tr>
+      <tr><td><strong>Insurance purchase</strong></td><td>Requires IRDAI POSP</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>These can be added later</strong> as referrals or licensed features — once the core product has traction and the necessary licences are in place.
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- BUILD ORDER -->
+  <!-- ══════════════════════════════════════════════ -->
+  <h2><span class="h2-num">1→6</span> Recommended Build Order</h2>
+
+  <table>
+    <thead>
+      <tr><th>Sequence</th><th>What to Build</th><th>Why First</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>1</strong></td><td>P1 screens — onboarding, Day 0 tools, waitlist</td><td>Can ship in 3 weeks, no licence needed</td></tr>
+      <tr><td><strong>2</strong></td><td>P2 dashboard + AI Advisor</td><td>Core product. Depends on FIU registration.</td></tr>
+      <tr><td><strong>3</strong></td><td>P2 settings + system screens</td><td>Production readiness</td></tr>
+      <tr><td><strong>4</strong></td><td>P3 Loan Suite + Health Score</td><td>Revenue and retention</td></tr>
+      <tr><td><strong>5</strong></td><td>P4 Goals + Investment Hub</td><td>Depth features</td></tr>
+      <tr><td><strong>6</strong></td><td>P5 Premium tier</td><td>Only after the free product retains</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-blue">
+    <strong>Note:</strong> Phase 1 and Phase 2 can run partially in parallel. The onboarding and Day 0 tools are license-free and can ship immediately, while the AA-dependent screens wait for FIU registration.
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>Confidential · Finous by Nidhiverse Private Limited · 2026</span>
+    <span>B2C PWA Screen Inventory · v1.0</span>
+  </div>
+
+</div>
+
+</body>
+</html>

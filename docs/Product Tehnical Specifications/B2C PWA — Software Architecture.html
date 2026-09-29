@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finous — B2C PWA Architecture v1.1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f7;
+    color: #1a1a2e;
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    padding: 16px;
+  }
+
+  .page {
+    max-width: 1160px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 40px 48px 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    border: 1px solid #e4e9f0;
+  }
+
+  @media print {
+    body { background: #ffffff; padding: 0; font-size: 11px; }
+    .page { border-radius: 0; box-shadow: none; border: none; padding: 0.4in; margin: 0; max-width: 100%; }
+    h2 { page-break-after: avoid; }
+    .layer { page-break-inside: avoid; }
+  }
+
+  .doc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #0f1f3d;
+    margin-bottom: 28px;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 40px; height: 40px;
+    background: #c9a227;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 18px; color: #ffffff;
+  }
+  .logo-text { font-size: 20px; font-weight: 800; color: #0f1f3d; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 11px; color: #9aa3b3; letter-spacing: 0.3px; }
+  .doc-badge {
+    font-size: 10px; font-weight: 700;
+    color: #c9a227;
+    background: rgba(201,162,39,0.1);
+    border: 1px solid rgba(201,162,39,0.25);
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.6px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 28px;
+    line-height: 1.65;
+    max-width: 780px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 12px 18px;
+    background: #f8f9fc;
+    border: 1px solid #e8ecf2;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5568;
+  }
+  .legend-swatch {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .sw-client { background: #e6efff; border: 1.5px solid #1a4fa0; }
+  .sw-gateway { background: #fff4e0; border: 1.5px solid #a8871f; }
+  .sw-backend { background: #f3e8ff; border: 1.5px solid #7b3fa0; }
+  .sw-ai { background: #fce8e8; border: 1.5px solid #b8390e; }
+  .sw-data { background: #e8f5ec; border: 1.5px solid #2e7d4f; }
+  .sw-external { background: #f0f2f7; border: 1.5px dashed #6b7280; }
+
+  .layer { margin-bottom: 20px; }
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .layer-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    background: #0f1f3d;
+    color: #c9a227;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .layer-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.2px;
+  }
+  .layer-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: #eef2f7;
+    color: #6b7280;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  .components {
+    display: grid;
+    gap: 10px;
+    padding: 16px;
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 12px;
+  }
+  .components.cols-1 { grid-template-columns: 1fr; }
+  .components.cols-2 { grid-template-columns: 1fr 1fr; }
+  .components.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .components.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .components.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+  .comp {
+    background: #ffffff;
+    border: 1px solid #e0e5ee;
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .comp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .comp-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f1f3d;
+    letter-spacing: -0.1px;
+  }
+  .comp-tag {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag-critical { background: #fce8e8; color: #b8390e; }
+  .tag-new { background: #fff4e0; color: #a8871f; }
+  .tag-split { background: #e6efff; color: #1a4fa0; }
+  .tag-core { background: #e8f5ec; color: #2e7d4f; }
+  .comp-desc {
+    font-size: 11.5px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+  .comp-bullets {
+    list-style: none;
+    padding: 0;
+    margin-top: 6px;
+  }
+  .comp-bullets li {
+    font-size: 11px;
+    color: #5a6272;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+    margin-bottom: 2px;
+  }
+  .comp-bullets li::before {
+    content: "·";
+    position: absolute;
+    left: 4px;
+    top: -1px;
+    color: #c9a227;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .comp.client { border-color: #1a4fa0; background: #f8fbff; }
+  .comp.client .comp-title { color: #1a4fa0; }
+  .comp.gateway { border-color: #a8871f; background: #fffdf7; }
+  .comp.gateway .comp-title { color: #a8871f; }
+  .comp.backend { border-color: #7b3fa0; background: #fcf9ff; }
+  .comp.backend .comp-title { color: #7b3fa0; }
+  .comp.ai { border-color: #b8390e; background: #fff9f7; }
+  .comp.ai .comp-title { color: #b8390e; }
+  .comp.data { border-color: #2e7d4f; background: #f8fdf9; }
+  .comp.data .comp-title { color: #2e7d4f; }
+  .comp.external { border-style: dashed; border-color: #9aa3b3; background: #fdfdfe; }
+
+  .arrow-down {
+    text-align: center;
+    color: #c9a227;
+    font-size: 22px;
+    line-height: 1;
+    margin: 6px 0;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f1f3d;
+    margin: 36px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #c9a227;
+    letter-spacing: -0.2px;
+  }
+
+  .flow {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+  }
+  .flow-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f1f3d;
+    margin-bottom: 10px;
+    letter-spacing: -0.1px;
+  }
+  .flow-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .flow-step {
+    background: #ffffff;
+    border: 1px solid #e0e5ee;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    color: #4a5568;
+    line-height: 1.4;
+    flex: 1 1 auto;
+    min-width: 140px;
+  }
+  .flow-step strong { color: #0f1f3d; display: block; margin-bottom: 2px; font-size: 11px; }
+  .flow-arrow {
+    color: #c9a227;
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .callout {
+    background: #fffbef;
+    border-left: 4px solid #c9a227;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #4a3728;
+    line-height: 1.7;
+  }
+  .callout strong { color: #0f1f3d; }
+
+  .callout-blue {
+    background: #f0f4ff;
+    border-left-color: #1a4fa0;
+    color: #1a2a4a;
+  }
+  .callout-blue strong { color: #1a4fa0; }
+
+  .doc-footer {
+    margin-top: 44px;
+    padding-top: 16px;
+    border-top: 1px solid #e8ecf2;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #9aa3b3;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 800px) {
+    .page { padding: 24px 18px; margin: 10px; }
+    h1 { font-size: 22px; }
+    .components.cols-2,
+    .components.cols-3,
+    .components.cols-4,
+    .components.cols-5 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="doc-header">
+    <div class="logo">
+      <div class="logo-mark">F</div>
+      <div>
+        <div class="logo-text">Finous</div>
+        <div class="logo-sub">by Nidhiverse Private Limited</div>
+      </div>
+    </div>
+    <div class="doc-badge">Architecture v1.1</div>
+  </div>
+
+  <h1>B2C PWA — Software Architecture</h1>
+  <p class="subtitle">
+    Thin-client PWA on Vercel, backend on Azure Central India, modular monolith with AI Service split-ready. Multi-tenant white-labelling with session-scoped tenant routing. Hindi at UI, English at data layer. Voice Agent direct to Deepgram with LLM routed through Finous.
+  </p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch sw-client"></span> Client</div>
+    <div class="legend-item"><span class="legend-swatch sw-gateway"></span> Gateway</div>
+    <div class="legend-item"><span class="legend-swatch sw-backend"></span> Backend Module</div>
+    <div class="legend-item"><span class="legend-swatch sw-ai"></span> AI (split-ready)</div>
+    <div class="legend-item"><span class="legend-swatch sw-data"></span> Data Store</div>
+    <div class="legend-item"><span class="legend-swatch sw-external"></span> External Service</div>
+  </div>
+
+  <!-- LAYER 1 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-num">1</span>
+      <span class="layer-title">Client — Thin PWA</span>
+      <span class="layer-tag">Vercel · CDN</span>
+    </div>
+    <div class="components cols-3">
+      <div class="comp client">
+        <div class="comp-header">
+          <div class="comp-title">React PWA</div>
+        </div>
+        <div class="comp-desc">All 34 screens. No business logic. No financial data stored beyond the active session.</div>
+        <ul class="comp-bullets">
+          <li>i18n: en + hi via react-i18next</li>
+          <li>Session token in memory, refresh token in httpOnly cookie</li>
+          <li>Session tenant resolved from subdomain at gateway</li>
+        </ul>
+      </div>
+      <div class="comp client">
+        <div class="comp-header">
+          <div class="comp-title">Service Worker</div>
+        </div>
+        <div class="comp-desc">App shell cache only. No data cache.</div>
+        <ul class="comp-bullets">
+          <li>Cache: HTML, JS, CSS, icons</li>
+          <li>Offline → "You're offline" screen</li>
+          <li>No financial data cached anywhere</li>
+        </ul>
+      </div>
+      <div class="comp client">
+        <div class="comp-header">
+          <div class="comp-title">Voice Client</div>
+          <div class="comp-tag tag-new">Direct WS</div>
+        </div>
+        <div class="comp-desc">WebSocket to Deepgram using short-lived token from backend.</div>
+        <ul class="comp-bullets">
+          <li>5-min token TTL, obtained per session</li>
+          <li>LLM callback routed to Finous backend</li>
+          <li>Transcript POSTed back on session end</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- LAYER 2 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-num">2</span>
+      <span class="layer-title">Gateway</span>
+      <span class="layer-tag">Azure Front Door + APIM</span>
+    </div>
+    <div class="components cols-4">
+      <div class="comp gateway">
+        <div class="comp-header">
+          <div class="comp-title">Auth</div>
+        </div>
+        <div class="comp-desc">Validates JWT. Refreshes session. Blocks expired tokens.</div>
+      </div>
+      <div class="comp gateway">
+        <div class="comp-header">
+          <div class="comp-title">Tenant Resolution</div>
+          <div class="comp-tag tag-critical">Critical</div>
+        </div>
+        <div class="comp-desc">Maps subdomain → session_tenant_id. Adds header for downstream. Determines AI product routing for the session.</div>
+      </div>
+      <div class="comp gateway">
+        <div class="comp-header">
+          <div class="comp-title">Rate Limiting</div>
+        </div>
+        <div class="comp-desc">Per-user and per-tenant. Protects AI and Voice cost exposure.</div>
+      </div>
+      <div class="comp gateway">
+        <div class="comp-header">
+          <div class="comp-title">Routing</div>
+        </div>
+        <div class="comp-desc">Single entry for PWA. Routes to backend modules. Also receives Deepgram LLM callback.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- LAYER 3 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-num">3</span>
+      <span class="layer-title">Backend — Modular Monolith</span>
+      <span class="layer-tag">Azure Container Apps · Central India</span>
+    </div>
+    <div class="components cols-5">
+      <div class="comp backend">
+        <div class="comp-header">
+          <div class="comp-title">Identity</div>
+        </div>
+        <div class="comp-desc">Phone OTP, Aadhaar eKYC, sessions, user profile.</div>
+        <ul class="comp-bullets">
+          <li>Owns: users, sessions, kyc_events</li>
+        </ul>
+      </div>
+      <div class="comp backend">
+        <div class="comp-header">
+          <div class="comp-title">Account Aggregator</div>
+          <div class="comp-tag tag-critical">Critical</div>
+        </div>
+        <div class="comp-desc">Consent flow, FIP fetch, decryption, normalisation.</div>
+        <ul class="comp-bullets">
+          <li>Owns: consents, fip_fetches</li>
+          <li>Holds FIU credentials in Key Vault</li>
+        </ul>
+      </div>
+      <div class="comp backend">
+        <div class="comp-header">
+          <div class="comp-title">Financial Data</div>
+        </div>
+        <div class="comp-desc">Storage, compute, snapshot generator.</div>
+        <ul class="comp-bullets">
+          <li>Owns: accounts, loans, investments, snapshot</li>
+          <li>Generates Financial Snapshot every 12h</li>
+          <li>User can pull live data on demand</li>
+        </ul>
+      </div>
+      <div class="comp backend">
+        <div class="comp-header">
+          <div class="comp-title">Voice</div>
+        </div>
+        <div class="comp-desc">Deepgram token issuance, session records, transcript storage.</div>
+        <ul class="comp-bullets">
+          <li>Owns: voice_sessions, transcripts</li>
+          <li>Enforces rate limit per user</li>
+        </ul>
+      </div>
+      <div class="comp ai">
+        <div class="comp-header">
+          <div class="comp-title">AI Advisor</div>
+          <div class="comp-tag tag-split">Split-ready</div>
+        </div>
+        <div class="comp-desc">LLM orchestration, prompt assembly, filtering, logging. Own schema, own interfaces.</div>
+        <ul class="comp-bullets">
+          <li>Owns: conversations, ai_logs, prompts</li>
+          <li>Reads Financial Snapshot from Redis</li>
+          <li>Deployable as separate service today</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- LAYER 4 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-num">4</span>
+      <span class="layer-title">Data Layer</span>
+      <span class="layer-tag">Azure Central India</span>
+    </div>
+    <div class="components cols-4">
+      <div class="comp data">
+        <div class="comp-header">
+          <div class="comp-title">PostgreSQL Flexible Server</div>
+        </div>
+        <div class="comp-desc">Single instance. Separate schema per backend module. No cross-schema reads.</div>
+        <ul class="comp-bullets">
+          <li>Field-level encryption for financial values</li>
+          <li>tenant_id on every table</li>
+        </ul>
+      </div>
+      <div class="comp data">
+        <div class="comp-header">
+          <div class="comp-title">Redis Cache</div>
+        </div>
+        <div class="comp-desc">Sessions, rate limit counters, Financial Snapshot (12h TTL).</div>
+        <ul class="comp-bullets">
+          <li>No persistence — cache only</li>
+          <li>Snapshot read on every AI call</li>
+        </ul>
+      </div>
+      <div class="comp data">
+        <div class="comp-header">
+          <div class="comp-title">Blob Storage</div>
+        </div>
+        <div class="comp-desc">Voice transcripts, exported reports. Tenant-scoped containers.</div>
+        <ul class="comp-bullets">
+          <li>Encrypted at rest</li>
+          <li>Deletion pipeline covers blobs</li>
+        </ul>
+      </div>
+      <div class="comp data">
+        <div class="comp-header">
+          <div class="comp-title">Key Vault</div>
+          <div class="comp-tag tag-core">Defense-in-depth</div>
+        </div>
+        <div class="comp-desc">Secrets, API keys, optional per-user keys.</div>
+        <ul class="comp-bullets">
+          <li>FIU credentials, LLM keys</li>
+          <li>Per-user keys optional (see notes)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-down">↓</div>
+
+  <!-- LAYER 5 -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-num">5</span>
+      <span class="layer-title">External Services</span>
+      <span class="layer-tag">Server-side only (except Deepgram)</span>
+    </div>
+    <div class="components cols-5">
+      <div class="comp external">
+        <div class="comp-header">
+          <div class="comp-title">Setu (TSP)</div>
+        </div>
+        <div class="comp-desc">AA consent flow + FIP fetch. Server-side only.</div>
+      </div>
+      <div class="comp external">
+        <div class="comp-header">
+          <div class="comp-title">Deepgram</div>
+          <div class="comp-tag tag-new">Direct</div>
+        </div>
+        <div class="comp-desc">STT + TTS. PWA connects directly with 5-min token. LLM callbacks route to Finous.</div>
+      </div>
+      <div class="comp external">
+        <div class="comp-header">
+          <div class="comp-title">Anthropic / OpenAI</div>
+        </div>
+        <div class="comp-desc">LLM for AI Advisor and Voice. Called only by Finous backend.</div>
+      </div>
+      <div class="comp external">
+        <div class="comp-header">
+          <div class="comp-title">Aadhaar eKYC</div>
+        </div>
+        <div class="comp-desc">Identity verification. Server-side only.</div>
+      </div>
+      <div class="comp external">
+        <div class="comp-header">
+          <div class="comp-title">Razorpay</div>
+          <div class="comp-tag tag-new">Later</div>
+        </div>
+        <div class="comp-desc">Premium tier payments. Order created server-side, checkout on PWA.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TENANT MODEL -->
+  <h2>Tenant Model — Session-Scoped</h2>
+
+  <div class="flow">
+    <div class="flow-title">How tenant routing works (Option B)</div>
+    <div class="flow-steps">
+      <div class="flow-step"><strong>1. Subdomain</strong>User opens bank A's white-label app</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>2. Gateway</strong>Resolves session_tenant = Bank A</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>3. AI Advisor</strong>Routes recommendations to Bank A's products first</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>4. User Settings</strong>Can pin "preferred bank" — overrides routing only, not branding</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>One Finous identity, multiple tenant contexts.</strong> A user has one account. The tenant they arrive through determines which bank's products get priority in AI recommendations. Users can pin a preferred bank in settings — this affects routing across all apps, but branding always follows the app.
+  </div>
+
+  <!-- KEY FLOWS -->
+  <h2>Key Flows</h2>
+
+  <div class="flow">
+    <div class="flow-title">AA Consent &amp; Data Fetch</div>
+    <div class="flow-steps">
+      <div class="flow-step"><strong>1. PWA</strong>User taps "Connect accounts"</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>2. AA Module</strong>Creates consent artefact via Setu</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>3. User</strong>Redirects to AA, approves, returns</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>4. AA Module</strong>Fetches FIP data, decrypts, normalises</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>5. Financial Data</strong>Writes to Postgres, generates Snapshot to Redis</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">AI Advisor Query</div>
+    <div class="flow-steps">
+      <div class="flow-step"><strong>1. PWA</strong>User sends message</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>2. AI Service</strong>Reads Financial Snapshot from Redis</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>3. AI Service</strong>Assembles prompt with session tenant + preferred bank</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>4. AI Service</strong>Filters, logs conversation, returns response</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">Voice Session</div>
+    <div class="flow-steps">
+      <div class="flow-step"><strong>1. PWA</strong>Requests voice token</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>2. Voice Module</strong>Issues 5-min Deepgram token + creates session record</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>3. PWA</strong>Opens WebSocket to Deepgram with token</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>4. Deepgram</strong>Calls Finous /voice/llm for each turn</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>5. PWA</strong>Posts transcript on session end</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">Revoke Consent (Immediate + Backup Window)</div>
+    <div class="flow-steps">
+      <div class="flow-step"><strong>1. PWA</strong>User taps "Revoke"</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>2. Backend</strong>Blocks all access immediately</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>3. Deletion Job</strong>Deletes from Postgres, Redis, Blob within 24h</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>4. Backups</strong>Retained up to 7–14 days (per Deletion Policy)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><strong>5. Audit Log</strong>Keeps only: hashed user_id, action, timestamp</div>
+    </div>
+  </div>
+
+  <!-- CRITICAL NOTES -->
+  <h2>Critical Design Notes</h2>
+
+  <div class="callout">
+    <strong>Data deletion policy.</strong> On revoke, data is removed from the live system within 24 hours. Backup snapshots may retain data for up to 14 days before being overwritten. This window is documented in the Data Deletion Policy and is accepted as compliant under DPDP.
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Per-user encryption keys — optional.</strong> Since the 7–14 day backup window is accepted, per-user keys are not required for compliance. Recommend keeping them as defense-in-depth — cheap to implement, protects against insider access and misconfigured backups. If deprioritised, document the decision.
+  </div>
+
+  <div class="callout">
+    <strong>AI Service split-ready.</strong> The AI module has its own schema, communicates only via internal APIs, and reads context from Redis — not from other modules' databases. It can be deployed as a separate Container App today by changing one line in the deployment manifest.
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Voice LLM callback.</strong> Deepgram supports "bring your own LLM." Configure the session so Deepgram calls <code>api.finous.site/voice/llm</code> for every turn. This keeps AI logic in one place and enforces "information, not advice" consistently across voice and text.
+  </div>
+
+  <div class="callout">
+    <strong>Data residency.</strong> Every Azure service — Postgres, Redis, Blob, Key Vault, Container Apps — must run in Central India. No exceptions. Confirm availability before committing to a service.
+  </div>
+
+  <div class="callout callout-blue">
+    <strong>Tenant isolation.</strong> Every table carries a tenant_id. Every query filters by it. A user's data from Bank A must never leak to Bank B, even if the user is on both. Session tenant is resolved at the gateway and propagated as a header.
+  </div>
+
+  <div class="callout">
+    <strong>Voice session loss.</strong> If the user closes the app mid-session, the WebSocket closes and the conversation is lost. The PWA should display: "Session ended. Tap to start a new conversation." No partial transcripts are saved.
+  </div>
+
+  <div class="doc-footer">
+    <span>Confidential · Finous by Nidhiverse Private Limited · 2026</span>
+    <span>B2C PWA Architecture · v1.1</span>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finous — User Flow Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #eef1f6;
+    color: #1a1a2e;
+    font-size: 9.5px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    padding: 10px;
+  }
+
+  .map {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 16px 20px 14px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e4e9f0;
+  }
+
+  @media print {
+    body { background: #ffffff; padding: 0; font-size: 8.5px; }
+    .map { border-radius: 0; box-shadow: none; border: none; padding: 0; margin: 0; max-width: 100%; }
+    .no-print { display: none; }
+  }
+
+  /* ── Header ── */
+  .hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #0f1f3d;
+    margin-bottom: 12px;
+  }
+  .hdr-left { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 30px; height: 30px;
+    background: #c9a227;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 13px; color: #fff;
+  }
+  .hdr-text-title {
+    font-size: 15px; font-weight: 800; color: #0f1f3d;
+    letter-spacing: -0.3px; line-height: 1.1;
+  }
+  .hdr-text-sub {
+    font-size: 9px; color: #9aa3b3; letter-spacing: 0.2px;
+  }
+  .hdr-badge {
+    font-size: 8px; font-weight: 700;
+    color: #c9a227;
+    background: rgba(201,162,39,0.1);
+    border: 1px solid rgba(201,162,39,0.25);
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 6px 12px;
+    background: #f8f9fc;
+    border: 1px solid #e8ecf2;
+    border-radius: 6px;
+    font-size: 8.5px;
+    margin-bottom: 12px;
+    color: #4a5568;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .leg-dot {
+    width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+  }
+  .leg-start { background: #1a4fa0; }
+  .leg-step { background: #7b3fa0; }
+  .leg-branch { background: #a8871f; }
+  .leg-success { background: #2e7d4f; }
+  .leg-error { background: #b8390e; }
+
+  /* ── Section Header ── */
+  .sec-h {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #c9a227;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin: 12px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e8ecf2;
+  }
+
+  /* ── Entry Layer ── */
+  .entry-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .entry-card {
+    background: #f8fbff;
+    border: 1px solid #c8d8f0;
+    border-left: 3px solid #1a4fa0;
+    border-radius: 6px;
+    padding: 7px 10px;
+  }
+  .entry-title {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #1a4fa0;
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+  .entry-desc {
+    font-size: 8.5px;
+    color: #5a6272;
+    line-height: 1.45;
+  }
+  .entry-arrow {
+    color: #c9a227;
+    font-weight: 800;
+    font-size: 10px;
+    text-align: center;
+    padding: 3px 0;
+    line-height: 1;
+  }
+
+  /* ── Tab Map ── */
+  .tab-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .tab-col {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-top: 3px solid #7b3fa0;
+    border-radius: 6px;
+    padding: 8px 9px 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .tab-col.home { border-top-color: #1a4fa0; }
+  .tab-col.ask { border-top-color: #b8390e; }
+  .tab-col.loans { border-top-color: #a8871f; }
+  .tab-col.goals { border-top-color: #7b3fa0; }
+  .tab-col.profile { border-top-color: #2e7d4f; }
+
+  .tab-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 5px;
+    margin-bottom: 7px;
+    border-bottom: 1px solid #e8ecf2;
+  }
+  .tab-icon { font-size: 14px; line-height: 1; }
+  .tab-name {
+    font-size: 10px;
+    font-weight: 800;
+    color: #0f1f3d;
+    letter-spacing: -0.1px;
+    line-height: 1.1;
+  }
+  .tab-purpose {
+    font-size: 7.5px;
+    color: #9aa3b3;
+    line-height: 1.2;
+    margin-top: 1px;
+  }
+
+  .tab-flow {
+    flex: 1;
+  }
+  .mini-step {
+    font-size: 8.3px;
+    color: #4a5568;
+    padding: 3px 0;
+    line-height: 1.35;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  .mini-step .bullet {
+    color: #c9a227;
+    font-weight: 800;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  .mini-step strong { color: #0f1f3d; font-weight: 600; }
+  .mini-step.branch .bullet { color: #a8871f; }
+  .mini-step.error .bullet { color: #b8390e; }
+  .mini-step.success .bullet { color: #2e7d4f; }
+  .mini-step.terminal {
+    background: #f0f8f4;
+    border-radius: 3px;
+    padding: 3px 6px;
+    margin-top: 3px;
+    color: #2e7d4f;
+    font-weight: 600;
+  }
+  .mini-arrow {
+    font-size: 8px;
+    color: #c9a227;
+    text-align: center;
+    line-height: 1;
+    padding: 1px 0;
+  }
+
+  /* ── Bottom Row ── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .bottom-card {
+    background: #fafbfd;
+    border: 1px solid #e8ecf2;
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .bottom-card.tools { border-top: 3px solid #a8871f; }
+  .bottom-card.system { border-top: 3px solid #b8390e; }
+  .bottom-card.tech { border-top: 3px solid #6b7280; }
+  .bottom-title {
+    font-size: 9px;
+    font-weight: 800;
+    color: #0f1f3d;
+    margin-bottom: 5px;
+    letter-spacing: -0.1px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .bottom-title .icon { font-size: 11px; }
+  .bottom-sub {
+    font-size: 7.5px;
+    color: #9aa3b3;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .bottom-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+  }
+  .chip {
+    font-size: 8px;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: #ffffff;
+    border: 1px solid #e0e5ee;
+    color: #4a5568;
+    font-weight: 500;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+  .chip.chip-start { background: #f8fbff; border-color: #1a4fa0; color: #1a4fa0; font-weight: 700; }
+  .chip.chip-end { background: #f0f8f4; border-color: #2e7d4f; color: #2e7d4f; font-weight: 700; }
+  .chip.chip-warn { background: #fffdf7; border-color: #a8871f; color: #a8871f; font-weight: 600; }
+  .chip.chip-err { background: #fff9f7; border-color: #b8390e; color: #b8390e; font-weight: 600; }
+  .chip-arrow {
+    color: #c9a227;
+    font-weight: 800;
+    font-size: 8px;
+    padding: 0 1px;
+  }
+
+  /* ── Footer ── */
+  .ftr {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #e8ecf2;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: #9aa3b3;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="map">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="logo-mark">F</div>
+      <div>
+        <div class="hdr-text-title">Finous — User Flow Map</div>
+        <div class="hdr-text-sub">B2C PWA · All flows in one view · Nidhiverse Private Limited</div>
+      </div>
+    </div>
+    <div class="hdr-badge">Single-Page Reference</div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><span class="leg-dot leg-start"></span>Entry</div>
+    <div class="legend-item"><span class="leg-dot leg-step"></span>Action</div>
+    <div class="legend-item"><span class="leg-dot leg-branch"></span>Branch</div>
+    <div class="legend-item"><span class="leg-dot leg-success"></span>Success</div>
+    <div class="legend-item"><span class="leg-dot leg-error"></span>Error / Alt</div>
+    <div class="legend-item" style="margin-left:auto; color:#9aa3b3;">→ flow · ↓ transition</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- ENTRY LAYER -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="sec-h">Entry Layer — How users arrive</div>
+
+  <div class="entry-row">
+    <div class="entry-card">
+      <div class="entry-title">1. Direct / Referral</div>
+      <div class="entry-desc">finous.site · referral link · bank subdomain (hdfcbank.finous.site)</div>
+    </div>
+    <div class="entry-card">
+      <div class="entry-title">2. Day 0 Tools</div>
+      <div class="entry-desc">Google search → calculator page · /tools hub · blog article</div>
+    </div>
+    <div class="entry-card">
+      <div class="entry-title">3. Bank White-label</div>
+      <div class="entry-desc">Existing bank app → Finous dashboard link · session tenant resolved at gateway</div>
+    </div>
+    <div class="entry-card">
+      <div class="entry-title">4. Notification</div>
+      <div class="entry-desc">Push · email · SMS from prior session · deep link to relevant screen</div>
+    </div>
+  </div>
+
+  <div class="entry-arrow">↓</div>
+
+  <div class="entry-card" style="background:#fffdf7; border-color:#e0d0a0; border-left-color:#a8871f;">
+    <div class="entry-title" style="color:#a8871f;">Onboarding (first-time only)</div>
+    <div class="entry-desc">
+      <strong>Splash</strong> → <strong>Session check</strong> → if new: <strong>Welcome</strong> → <strong>Phone +91</strong> → <strong>OTP 6-digit</strong> → <strong>Name &amp; Email</strong> → <strong>Home (Empty)</strong> · if existing: skip to <strong>Home</strong>
+    </div>
+  </div>
+
+  <div class="entry-arrow">↓</div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- PRIMARY TABS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="sec-h">Primary Navigation — 5 bottom tabs</div>
+
+  <div class="tab-grid">
+
+    <!-- HOME -->
+    <div class="tab-col home">
+      <div class="tab-head">
+        <div class="tab-icon">🏠</div>
+        <div>
+          <div class="tab-name">Home</div>
+          <div class="tab-purpose">Dashboard</div>
+        </div>
+      </div>
+      <div class="tab-flow">
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Empty state</strong> before AA</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step branch"><span class="bullet">›</span><span><strong>AA Consent</strong> entry point</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Connected dashboard</strong> — net worth, balances, EMI</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span>Tap card → drill down</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Accounts</strong> · <strong>Loans</strong> · <strong>Investments</strong> · <strong>Cards</strong> · <strong>Cash Flow</strong></span></div>
+        <div class="mini-step branch"><span class="bullet">↻</span><span>Pull-to-refresh → live AA fetch</span></div>
+        <div class="mini-step error"><span class="bullet">!</span><span>Snapshot missing → skeleton + background fetch</span></div>
+      </div>
+    </div>
+
+    <!-- ASK -->
+    <div class="tab-col ask">
+      <div class="tab-head">
+        <div class="tab-icon">💬</div>
+        <div>
+          <div class="tab-name">Ask</div>
+          <div class="tab-purpose">AI + Voice</div>
+        </div>
+      </div>
+      <div class="tab-flow">
+        <div class="mini-step"><span class="bullet">›</span><span><strong>AI Chat</strong> · greeting + 3 suggested Qs</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span>User message → AI Service</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span>Read Financial Snapshot · assemble prompt</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step branch"><span class="bullet">◆</span><span>Safe? Yes → response · No → reframe</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step success terminal"><span>Response + disclaimer</span></div>
+        <div class="mini-step" style="margin-top:5px;"><span class="bullet">›</span><span><strong>Voice mode</strong> · mic → Deepgram</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span>Idle → Listening → Thinking → Speaking</span></div>
+        <div class="mini-step error"><span class="bullet">!</span><span>App closed → session lost · restart prompt</span></div>
+        <div class="mini-step error"><span class="bullet">!</span><span>Token expires 5min → auto-refresh or end</span></div>
+      </div>
+    </div>
+
+    <!-- LOANS -->
+    <div class="tab-col loans">
+      <div class="tab-head">
+        <div class="tab-icon">🏦</div>
+        <div>
+          <div class="tab-name">Loans</div>
+          <div class="tab-purpose">Loan Suite</div>
+        </div>
+      </div>
+      <div class="tab-flow">
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Loan Hub</strong> — all loans from AA</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step branch"><span class="bullet">◆</span><span>Which tool?</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Prepayment Calculator</strong> → savings shown</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Refinancing Alert</strong> → rate comparison</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Consolidation View</strong> → blended rate</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>EMI Calendar</strong> → all due dates</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step branch"><span class="bullet">◆</span><span>"Learn more" → partner handoff (DSA tracked)</span></div>
+        <div class="mini-step success terminal"><span>Informational. Never directive.</span></div>
+      </div>
+    </div>
+
+    <!-- GOALS -->
+    <div class="tab-col goals">
+      <div class="tab-head">
+        <div class="tab-icon">🎯</div>
+        <div>
+          <div class="tab-name">Goals</div>
+          <div class="tab-purpose">Score + Planner</div>
+        </div>
+      </div>
+      <div class="tab-flow">
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Health Score</strong> — 300–900 scale</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step branch"><span class="bullet">◆</span><span>Premium?</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span>Yes → full breakdown · No → number only + upsell</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span>Tap component → drill-down</span></div>
+        <div class="mini-step success terminal"><span>"Pay Axis below 30% → ~40 points"</span></div>
+        <div class="mini-step" style="margin-top:5px;"><span class="bullet">›</span><span><strong>Goals Planner</strong> — create goal</span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step branch"><span class="bullet">◆</span><span>Feasible?</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span>Yes → create + track · No → gap analysis</span></div>
+        <div class="mini-step error"><span class="bullet">!</span><span>Gap → extend timeline / reduce target / reallocate</span></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="tab-col profile">
+      <div class="tab-head">
+        <div class="tab-icon">👤</div>
+        <div>
+          <div class="tab-name">Profile</div>
+          <div class="tab-purpose">Settings</div>
+        </div>
+      </div>
+      <div class="tab-flow">
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Profile</strong> — name, email, phone, KYC badge</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Linked Accounts</strong> — consents, expiry, revoke</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Notifications</strong> — alerts, tips, marketing toggles</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Language</strong> — English / Hindi</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Security</strong> — biometric, sessions, logout all</span></div>
+        <div class="mini-step branch"><span class="bullet">◆</span><span><strong>Privacy &amp; Data</strong></span></div>
+        <div class="mini-arrow">↓</div>
+        <div class="mini-step"><span class="bullet">›</span><span>Download my data</span></div>
+        <div class="mini-step error"><span class="bullet">!</span><span>Delete account → confirm "DELETE" → logout</span></div>
+        <div class="mini-step error"><span class="bullet">!</span><span>Live delete &lt;24h · backups clear 7–14 days</span></div>
+        <div class="mini-step"><span class="bullet">›</span><span><strong>Help</strong> · <strong>About</strong> · legal links</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- BOTTOM ROW -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="bottom-grid">
+
+    <!-- DAY 0 TOOLS -->
+    <div class="bottom-card tools">
+      <div class="bottom-title"><span class="icon">🧰</span>Day 0 Tools (Phase 1 — live before AA)</div>
+      <div class="bottom-sub">Standalone, license-free, SEO-driven. Primary acquisition channel.</div>
+      <div class="bottom-flow">
+        <span class="chip chip-start">Google search</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">EMI Calculator</span>
+        <span class="chip">SIP Calculator</span>
+        <span class="chip">Loan Eligibility</span>
+        <span class="chip">Budgeting Tool</span>
+        <span class="chip">Blog</span>
+        <span class="chip">Credit Card Comparison</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip chip-warn">Waitlist signup</span>
+        <span class="chip">OR</span>
+        <span class="chip">Affiliate click</span>
+      </div>
+    </div>
+
+    <!-- SYSTEM FLOWS -->
+    <div class="bottom-card system">
+      <div class="bottom-title"><span class="icon">⚙️</span>System Flows</div>
+      <div class="bottom-sub">Cross-cutting states that affect every screen.</div>
+      <div class="bottom-flow">
+        <span class="chip chip-warn">Consent expiry</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">Reconnect banner</span>
+        <span class="chip-arrow">|</span>
+        <span class="chip chip-err">Revoke consent</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">Delete within 24h</span>
+        <span class="chip-arrow">|</span>
+        <span class="chip">Session lost mid-voice</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip chip-err">Restart prompt</span>
+        <span class="chip-arrow">|</span>
+        <span class="chip">Offline</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip chip-err">"You're offline"</span>
+        <span class="chip-arrow">|</span>
+        <span class="chip">AA fetch fails</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">Partial data + retry</span>
+      </div>
+    </div>
+
+    <!-- KEY TECH FLOWS -->
+    <div class="bottom-card tech">
+      <div class="bottom-title"><span class="icon">🔗</span>Key Technical Flows</div>
+      <div class="bottom-sub">Backend flows that users experience indirectly.</div>
+      <div class="bottom-flow">
+        <span class="chip chip-start">AA consent artefact</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">FIP fetch + decrypt</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">Normalise + store</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip chip-end">Snapshot to Redis (12h)</span>
+        <span class="chip-arrow">|</span>
+        <span class="chip chip-start">Voice token (5 min)</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">Deepgram WS</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">LLM callback to Finous</span>
+        <span class="chip-arrow">|</span>
+        <span class="chip chip-start">Gateway</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip">Session tenant resolved</span>
+        <span class="chip-arrow">→</span>
+        <span class="chip chip-end">Routed to backend</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ftr">
+    <span>Confidential · Finous by Nidhiverse Private Limited · 2026</span>
+    <span>User Flow Map · Condensed · v1.0</span>
+  </div>
+
+</div>
+
+</body>
+</html>
