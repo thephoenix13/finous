@@ -27,13 +27,6 @@
     --r-card: 12px;
     --r-btn: 10px;
     --r-pill: 100px;
-
-    --s-1: 4px;
-    --s-2: 8px;
-    --s-3: 12px;
-    --s-4: 16px;
-    --s-5: 24px;
-    --s-6: 32px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -119,18 +112,10 @@
     z-index: 5;
     letter-spacing: -0.01em;
   }
-  .status-bar .sb-r {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-  }
+  .status-bar .sb-r { display: flex; gap: 5px; align-items: center; }
   .status-bar svg { display: block; }
 
-  .screens {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-  }
+  .screens { flex: 1; position: relative; overflow: hidden; }
 
   .screen {
     position: absolute;
@@ -183,9 +168,7 @@
   .tab.active svg { stroke-width: 1.8; }
   .tab svg { stroke: currentColor; }
 
-  /* ═══════════════════════════════════════════════════
-     TRANSITIONS
-     ═══════════════════════════════════════════════════ */
+  /* Transitions */
   @keyframes pushIn {
     from { transform: translate3d(100%, 0, 0); }
     to { transform: translate3d(0, 0, 0); }
@@ -210,10 +193,7 @@
     from { transform: translate3d(14%, 0, 0); opacity: 0; }
     to { transform: translate3d(0, 0, 0); opacity: 1; }
   }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
   .screen.push-in { animation: pushIn 260ms cubic-bezier(0.32, 0.72, 0, 1); }
   .screen.push-out { animation: pushOut 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards; }
@@ -223,25 +203,13 @@
   .screen.tab-r-in { animation: tabRIn 180ms ease-out; }
   .screen.fade-in { animation: fadeIn 240ms ease-out; }
 
-  /* ═══════════════════════════════════════════════════
-     TYPOGRAPHY
-     ═══════════════════════════════════════════════════ */
+  /* Typography */
   .eyebrow {
     font-size: 11px;
     font-weight: 600;
     color: var(--ink-3);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-  }
-  .serif {
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-  .serif-i {
-    font-family: 'Instrument Serif', Georgia, serif;
-    font-style: italic;
-    font-weight: 400;
   }
   .h-40 { font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.05; }
   .h-28 { font-family: 'Instrument Serif', Georgia, serif; font-size: 28px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.15; }
@@ -257,16 +225,8 @@
   .neg { color: var(--brick); }
   .burnt { color: var(--burnt); }
 
-  /* ═══════════════════════════════════════════════════
-     LAYOUT HELPERS
-     ═══════════════════════════════════════════════════ */
+  /* Layout helpers */
   .pad { padding-left: 20px; padding-right: 20px; }
-  .pad-t-4 { padding-top: 16px; }
-  .pad-t-5 { padding-top: 24px; }
-  .pad-t-6 { padding-top: 32px; }
-  .pad-b-4 { padding-bottom: 16px; }
-  .pad-b-5 { padding-bottom: 24px; }
-  .pad-b-6 { padding-bottom: 32px; }
   .flex { display: flex; }
   .col { flex-direction: column; }
   .between { justify-content: space-between; }
@@ -281,16 +241,14 @@
   .mt-4 { margin-top: 16px; }
   .mt-5 { margin-top: 24px; }
   .mt-6 { margin-top: 32px; }
+  .mb-2 { margin-bottom: 8px; }
   .mb-3 { margin-bottom: 12px; }
   .mb-4 { margin-bottom: 16px; }
   .mb-5 { margin-bottom: 24px; }
 
-  .divider { height: 1px; background: var(--border); }
   .hr-24 { height: 1px; background: var(--border); margin: 24px 0; }
 
-  /* ═══════════════════════════════════════════════════
-     COMPONENTS
-     ═══════════════════════════════════════════════════ */
+  /* Buttons */
   .btn {
     display: flex;
     align-items: center;
@@ -311,16 +269,10 @@
   .btn:active { opacity: 0.85; }
   .btn-primary { background: var(--ink-deep); color: #FFFFFF; }
   .btn-accent { background: var(--burnt); color: #FFFFFF; }
-  .btn-ghost {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--border);
-  }
-  .btn-quiet {
-    background: var(--bone-2);
-    color: var(--ink);
-  }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn-quiet { background: var(--bone-2); color: var(--ink); }
 
+  /* Field */
   .field {
     display: flex;
     align-items: center;
@@ -338,25 +290,11 @@
   .field.focus { border-color: var(--ink-deep); background: var(--bone); }
   .field svg { stroke: var(--ink-3); flex-shrink: 0; }
 
-  .card {
-    background: var(--bone);
-    border: 1px solid var(--border);
-    border-radius: var(--r-card);
-    padding: 20px;
-  }
-  .card-flat {
-    background: var(--bone-2);
-    border-radius: var(--r-card);
-    padding: 16px 18px;
-    border: 1px solid transparent;
-  }
-  .card-shadow {
-    background: var(--bone);
-    border-radius: var(--r-card);
-    padding: 20px;
-    box-shadow: var(--shadow);
-  }
+  /* Card */
+  .card { background: var(--bone); border: 1px solid var(--border); border-radius: var(--r-card); padding: 20px; }
+  .card-flat { background: var(--bone-2); border-radius: var(--r-card); padding: 16px 18px; border: 1px solid transparent; }
 
+  /* Row */
   .row {
     display: flex;
     align-items: center;
@@ -369,11 +307,8 @@
   .row + .row { border-top: 1px solid var(--border); }
 
   .row-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
     background: var(--bone-2);
     border-radius: 10px;
     flex-shrink: 0;
@@ -385,6 +320,7 @@
   .row-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .row-chev svg { stroke: var(--ink-3); }
 
+  /* Nav */
   .nav {
     display: flex;
     align-items: center;
@@ -393,11 +329,8 @@
     flex-shrink: 0;
   }
   .nav-back {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
     background: none;
     border: none;
     cursor: pointer;
@@ -405,37 +338,7 @@
   }
   .nav-back:active { background: var(--bone-2); }
   .nav-back svg { stroke: var(--ink); }
-  .nav-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    letter-spacing: -0.005em;
-  }
-
-  /* Tab bar dots for charts */
-  .legend {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12.5px;
-    color: var(--ink-2);
-    font-weight: 500;
-  }
-  .legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
-
-  /* ═══════════════════════════════════════════════════
-     SPECIFIC SCREENS
-     ═══════════════════════════════════════════════════ */
+  .nav-title { font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
 
   /* Splash */
   .splash-wrap {
@@ -455,8 +358,7 @@
     color: var(--ink);
   }
   .splash-loader {
-    width: 40px;
-    height: 1px;
+    width: 40px; height: 1px;
     background: var(--border);
     border-radius: 1px;
     overflow: hidden;
@@ -471,18 +373,10 @@
     background: var(--ink);
     animation: load 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   }
-  @keyframes load {
-    0% { left: -40%; }
-    100% { left: 100%; }
-  }
+  @keyframes load { 0% { left: -40%; } 100% { left: 100%; } }
 
   /* Welcome */
-  .welcome {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 24px 20px 32px;
-  }
+  .welcome { flex: 1; display: flex; flex-direction: column; padding: 24px 20px 32px; }
 
   /* Consent */
   .consent-line {
@@ -493,13 +387,10 @@
   }
   .consent-line:last-child { border-bottom: none; }
   .consent-check {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     border-radius: 50%;
     background: var(--ink-deep);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     margin-top: 3px;
   }
@@ -509,17 +400,11 @@
   .consent-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
 
   /* OTP */
-  .otp-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 28px;
-  }
+  .otp-row { display: flex; gap: 10px; margin-top: 28px; }
   .otp-cell {
     flex: 1;
     height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     background: var(--bone-2);
     border: 1px solid transparent;
     border-radius: 10px;
@@ -533,8 +418,7 @@
 
   /* Sync */
   .sync-ring {
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     border-radius: 50%;
     border: 1px solid var(--border);
     border-top-color: var(--ink);
@@ -553,8 +437,7 @@
   }
   .sync-item:last-child { border-bottom: none; }
   .sync-item .dot {
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     border-radius: 50%;
     background: var(--forest);
     flex-shrink: 0;
@@ -563,10 +446,7 @@
   .sync-item.pending { color: var(--ink-3); }
 
   /* Home */
-  .home-hero {
-    padding: 24px 20px 20px;
-    border-bottom: 1px solid var(--border);
-  }
+  .home-hero { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
   .home-nw-label {
     font-size: 11px;
     font-weight: 600;
@@ -595,11 +475,7 @@
   }
   .home-nw-delta.neg { color: var(--brick); }
 
-  .kv-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
+  .kv-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .kv-l { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
   .kv-v { font-size: 17px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 
@@ -624,8 +500,7 @@
   .look-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.005em; line-height: 1.4; }
   .look-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
 
-  /* Charts */
-  .chart-wrap { width: 100%; }
+  /* Chart */
   .chart-svg { width: 100%; display: block; }
   .chart-axis {
     display: flex;
@@ -639,51 +514,12 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Segmented */
-  .seg {
-    display: flex;
-    background: var(--bone-2);
-    border-radius: 10px;
-    padding: 3px;
-    gap: 2px;
-  }
-  .seg-item {
-    flex: 1;
-    text-align: center;
-    padding: 8px 0;
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--ink-2);
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .seg-item.active {
-    background: var(--bone);
-    color: var(--ink);
-    box-shadow: var(--shadow);
-  }
-
   /* Slider */
-  .slider-lbl {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 12px;
-  }
+  .slider-lbl { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
   .slider-lbl .l { font-size: 13px; color: var(--ink-2); font-weight: 500; }
   .slider-lbl .v { font-size: 16px; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-  .slider-track {
-    height: 2px;
-    background: var(--border);
-    border-radius: 2px;
-    position: relative;
-    margin-bottom: 6px;
-  }
-  .slider-fill {
-    position: absolute; left: 0; top: 0; height: 100%;
-    background: var(--ink);
-    border-radius: 2px;
-  }
+  .slider-track { height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 6px; }
+  .slider-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--ink); border-radius: 2px; }
   .slider-thumb {
     position: absolute; top: 50%; transform: translate(-50%, -50%);
     width: 20px; height: 20px;
@@ -692,7 +528,7 @@
     border-radius: 50%;
   }
 
-  /* Big number result */
+  /* Result */
   .result-num {
     font-family: 'Instrument Serif', Georgia, serif;
     font-size: 44px;
@@ -717,16 +553,11 @@
     margin-top: 24px;
     border-top: 1px solid var(--border);
   }
-  .result-split-item { }
   .result-split-item .k { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
   .result-split-item .v { font-size: 15px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
 
-  /* Health score */
-  .score-top {
-    padding: 24px 20px 20px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
+  /* Score */
+  .score-top { padding: 24px 20px 20px; text-align: center; border-bottom: 1px solid var(--border); }
   .score-num {
     font-family: 'Instrument Serif', Georgia, serif;
     font-size: 88px;
@@ -736,14 +567,7 @@
     color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
-  .score-den {
-    font-size: 12px;
-    color: var(--ink-3);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-weight: 500;
-    margin-top: 10px;
-  }
+  .score-den { font-size: 12px; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; margin-top: 10px; }
   .score-row {
     display: grid;
     grid-template-columns: 1fr 80px 44px;
@@ -754,36 +578,17 @@
   }
   .score-row:last-child { border-bottom: none; }
   .score-row .sl { font-size: 14px; font-weight: 500; color: var(--ink); }
-  .score-row .st {
-    height: 2px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
+  .score-row .st { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .score-row .sf { height: 100%; background: var(--ink); border-radius: 2px; }
-  .score-row .sv {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink-2);
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-  }
+  .score-row .sv { font-size: 13px; font-weight: 500; color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; }
 
-  /* Recommendation card */
-  .rec-card {
-    display: block;
-    padding: 20px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-  }
+  /* Recommendation */
+  .rec-card { display: block; padding: 20px; border-bottom: 1px solid var(--border); cursor: pointer; }
   .rec-card:last-child { border-bottom: none; }
   .rec-card:active { background: var(--bone-2); }
   .rec-rank {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
     background: var(--bone-2);
     border-radius: 50%;
     font-size: 11px;
@@ -795,55 +600,23 @@
   .rec-title { font-size: 16px; font-weight: 500; color: var(--ink); line-height: 1.4; margin-bottom: 6px; letter-spacing: -0.005em; }
   .rec-reason { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
   .rec-meta { display: flex; gap: 20px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
-  .rec-meta-item { }
   .rec-meta-k { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
   .rec-meta-v { font-size: 14px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
 
   /* Chat */
-  .chat-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px 20px 20px;
-    scrollbar-width: none;
-  }
+  .chat-scroll { flex: 1; overflow-y: auto; padding: 8px 20px 20px; scrollbar-width: none; }
   .chat-scroll::-webkit-scrollbar { display: none; }
   .chat-msg { max-width: 84%; margin-bottom: 16px; }
   .chat-msg.user { margin-left: auto; }
-  .chat-msg .bubble {
-    padding: 12px 16px;
-    border-radius: 18px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  .chat-msg.user .bubble {
-    background: var(--ink-deep);
-    color: #FFFFFF;
-    border-bottom-right-radius: 4px;
-  }
-  .chat-msg.ai .bubble {
-    background: var(--bone-2);
-    color: var(--ink);
-    border-bottom-left-radius: 4px;
-  }
-  .chat-msg .meta {
-    font-size: 11px;
-    color: var(--ink-3);
-    margin-top: 6px;
-    padding: 0 4px;
-  }
-  .chat-msg.ai .meta { }
+  .chat-msg .bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+  .chat-msg.user .bubble { background: var(--ink-deep); color: #FFFFFF; border-bottom-right-radius: 4px; }
+  .chat-msg.ai .bubble { background: var(--bone-2); color: var(--ink); border-bottom-left-radius: 4px; }
+  .chat-msg .meta { font-size: 11px; color: var(--ink-3); margin-top: 6px; padding: 0 4px; }
   .chat-msg.user .meta { text-align: right; }
 
-  .chat-suggestions {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .chat-suggestions { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
   .suggest {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: flex; align-items: center; gap: 12px;
     padding: 16px;
     background: var(--bone-2);
     border-radius: 12px;
@@ -860,18 +633,11 @@
   .suggest:active { background: var(--border); }
   .suggest svg { stroke: var(--ink-3); flex-shrink: 0; }
 
-  .chat-input {
-    padding: 12px 20px 16px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
+  .chat-input { padding: 12px 20px 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
   .chat-field {
     flex: 1;
     height: 48px;
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     padding: 0 18px;
     background: var(--bone-2);
     border-radius: 24px;
@@ -879,13 +645,10 @@
     color: var(--ink-3);
   }
   .chat-send {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: var(--ink-deep);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     border: none;
     cursor: pointer;
@@ -893,23 +656,12 @@
   .chat-send svg { stroke: #FFFFFF; }
 
   /* Voice */
-  .voice-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    text-align: center;
-  }
+  .voice-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
   .voice-mic {
-    width: 108px;
-    height: 108px;
+    width: 108px; height: 108px;
     border-radius: 50%;
     border: 1.5px solid var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     margin-bottom: 32px;
     background: var(--bone);
   }
@@ -917,19 +669,8 @@
   .voice-status { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.005em; }
   .voice-sub { font-size: 13px; color: var(--ink-2); max-width: 240px; line-height: 1.5; }
 
-  .voice-wave {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    height: 40px;
-    margin-bottom: 32px;
-  }
-  .vw {
-    width: 2px;
-    background: var(--ink);
-    border-radius: 1px;
-    animation: vw 1s ease-in-out infinite;
-  }
+  .voice-wave { display: flex; align-items: center; gap: 3px; height: 40px; margin-bottom: 32px; }
+  .vw { width: 2px; background: var(--ink); border-radius: 1px; animation: vw 1s ease-in-out infinite; }
   .vw:nth-child(1) { height: 8px; animation-delay: 0s; }
   .vw:nth-child(2) { height: 20px; animation-delay: 0.08s; }
   .vw:nth-child(3) { height: 30px; animation-delay: 0.16s; }
@@ -943,22 +684,9 @@
   }
 
   /* Sources */
-  .source-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .source-row { display: flex; align-items: flex-start; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--border); }
   .source-row:last-child { border-bottom: none; }
-  .source-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--ink);
-    flex-shrink: 0;
-    margin-top: 8px;
-  }
+  .source-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink); flex-shrink: 0; margin-top: 8px; }
   .source-t { font-size: 14px; color: var(--ink); font-weight: 500; margin-bottom: 2px; }
   .source-d { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
 
@@ -971,13 +699,10 @@
     gap: 16px;
   }
   .profile-av {
-    width: 56px;
-    height: 56px;
+    width: 56px; height: 56px;
     border-radius: 50%;
     background: var(--bone-2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-family: 'Instrument Serif', Georgia, serif;
     font-size: 24px;
     color: var(--ink);
@@ -987,9 +712,7 @@
   .profile-name { font-size: 17px; font-weight: 500; color: var(--ink); letter-spacing: -0.005em; }
   .profile-meta { font-size: 13px; color: var(--ink-3); margin-top: 3px; }
   .verify-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+    display: inline-flex; align-items: center; gap: 5px;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -999,10 +722,9 @@
   }
   .verify-chip svg { stroke: var(--forest); }
 
-  /* Toggle switch */
+  /* Switch */
   .switch {
-    width: 40px;
-    height: 24px;
+    width: 40px; height: 24px;
     background: var(--border);
     border-radius: 12px;
     position: relative;
@@ -1013,10 +735,8 @@
   .switch::after {
     content: '';
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 18px;
-    height: 18px;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
     background: var(--bone);
     border-radius: 50%;
     transition: transform 0.15s;
@@ -1024,7 +744,7 @@
   .switch.on { background: var(--ink-deep); }
   .switch.on::after { transform: translateX(16px); }
 
-  /* Pill tag */
+  /* Tag */
   .tag {
     display: inline-flex;
     align-items: center;
@@ -1041,9 +761,7 @@
   .tag-burnt { background: rgba(192,86,33,0.08); color: var(--burnt); }
   .tag-quiet { background: var(--bone-2); color: var(--ink-2); }
 
-  /* ═══════════════════════════════════════════════════
-     RESPONSIVE
-     ═══════════════════════════════════════════════════ */
+  /* Responsive */
   @media (max-width: 520px) {
     .stage { padding: 0; gap: 0; min-height: 100dvh; background: var(--bone); }
     .caption { display: none; }
@@ -1057,7 +775,6 @@
     .app { position: relative; inset: auto; height: 100%; }
   }
 
-  /* Utility — quiet mono numerals */
   .mono {
     font-family: 'Inter', system-ui, sans-serif;
     font-variant-numeric: tabular-nums;
@@ -1121,14 +838,13 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ICONS (Lucide-inspired, 1.5px stroke, geometric)
+   ICONS
    ═══════════════════════════════════════════════════════════════ */
 const S = (w, h, d) => `<svg width="${w}" height="${h}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const I = {
   back: (s=22) => S(s,s,'<path d="m15 6-6 6 6 6"/>'),
   chev: (s=18) => S(s,s,'<path d="m9 6 6 6-6 6"/>'),
   arrowUp: (s=14) => S(s,s,'<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>'),
-  arrowDown: (s=14) => S(s,s,'<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>'),
   check: (s=12) => S(s,s,'<path d="m5 12 5 5L20 7"/>'),
   bank: (s=22) => S(s,s,'<path d="M3 10 12 3l9 7"/><path d="M5 10v10"/><path d="M9 10v10"/><path d="M15 10v10"/><path d="M19 10v10"/><path d="M3 20h18"/>'),
   card: (s=22) => S(s,s,'<rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/>'),
@@ -1154,6 +870,8 @@ const I = {
   refresh: (s=18) => S(s,s,'<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>'),
   wifiOff: (s=36) => S(s,s,'<path d="m2 2 20 20"/><path d="M8.5 8.5a11 11 0 0 1 7 0"/><path d="M5 12a16 16 0 0 1 3-1.8"/><path d="M16 10.2a16 16 0 0 1 3 1.8"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r=".5" fill="currentColor"/>'),
   plus: (s=20) => S(s,s,'<path d="M12 5v14"/><path d="M5 12h14"/>'),
+  search: (s=20) => S(s,s,'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'),
+  target: (s=22) => S(s,s,'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>'),
 };
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1168,14 +886,14 @@ const D = {
   saved: '₹53,600',
   savedDelta: '₹14,400',
   accounts: [
-    { id: 'hdfc', name: 'HDFC Bank', sub: 'Savings · •4821', balance: '₹2,84,000', letter: 'H' },
-    { id: 'sbi', name: 'State Bank of India', sub: 'Savings · •7723', balance: '₹1,36,000', letter: 'S' },
+    { id: 'hdfc', name: 'HDFC Bank', sub: 'Savings · •4821', balance: '₹2,84,000' },
+    { id: 'sbi', name: 'State Bank of India', sub: 'Savings · •7723', balance: '₹1,36,000' },
   ],
   loans: [
-    { id: 'hdfc-home', name: 'HDFC Home Loan', sub: '18 years · since Mar 2021', rate: '8.9%', rateTag: 'quiet', outstanding: '₹62,00,000', emi: '₹58,400', progress: 38, progressLabel: '38% repaid · 11 years left' },
+    { id: 'hdfc-home', name: 'HDFC Home Loan', sub: '18 years · since Mar 2021', rate: '8.9%', outstanding: '₹62,00,000', emi: '₹58,400', progress: 38, progressLabel: '38% repaid · 11 years left' },
   ],
   cards: [
-    { id: 'icici-cc', name: 'ICICI Amazon Pay', sub: 'On ₹3L limit', rate: '42%', rateTag: 'brick', outstanding: '₹18,400', utilisation: 6 },
+    { id: 'icici-cc', name: 'ICICI Amazon Pay', sub: 'On ₹3L limit', outstanding: '₹18,400' },
   ],
   investments: [
     { id: 'groww', name: 'Groww Mutual Funds', sub: '9 active SIPs', value: '₹24,80,000' },
@@ -1185,10 +903,11 @@ const D = {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   SCREEN TEMPLATES
+   SCREENS
    ═══════════════════════════════════════════════════════════════ */
 const SCREENS = {
-  /* ─── JOURNEY 1: FIRST OPEN ─── */
+
+  /* ─── JOURNEY 1 ─── */
   splash: {
     caption: ['Splash', 'Brand mark, loader. 1.2s, then auto-advance.'],
     body: () => `
@@ -1318,13 +1037,18 @@ const SCREENS = {
       </div>`,
   },
 
-  /* ─── JOURNEY 2: THE DAILY GLANCE ─── */
+  /* ─── JOURNEY 2: DAILY GLANCE ─── */
   home: {
     tab: 'home',
     caption: ['Home', 'Net worth, quiet chart, two things to look at.'],
     body: () => `
+      <div class="nav" style="justify-content: flex-end; padding-right: 12px;">
+        <button class="nav-back" onclick="go('search','push')">
+          ${I.search(20)}
+        </button>
+      </div>
       <div class="screen-scroll">
-        <div class="pad" style="padding-top: 8px; padding-bottom: 12px;">
+        <div class="pad" style="padding-top: 0; padding-bottom: 12px;">
           <div class="eyebrow">Monday, 29 September</div>
           <div class="h-28 mt-2">Good morning, ${D.user.first}.</div>
         </div>
@@ -1364,6 +1088,12 @@ const SCREENS = {
             <div class="kv-v mono">${D.saved}</div>
             <div class="sm mt-2" style="color: var(--forest);">${D.savedDelta} more than last month</div>
           </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <button class="btn btn-ghost" onclick="go('recap','push')" style="height: 44px; font-size: 13.5px;">
+            See September recap
+          </button>
         </div>
 
         <div style="margin-top: 32px;">
@@ -1428,7 +1158,7 @@ const SCREENS = {
         <div class="pad" style="padding-top: 24px;">
           <div class="eyebrow mb-3">Cards</div>
           ${D.cards.map(c => `
-            <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('card-detail','push')">
               <div class="row-icon">${I.card()}</div>
               <div class="grow">
                 <div class="row-title">${c.name}</div>
@@ -1442,7 +1172,7 @@ const SCREENS = {
         <div class="pad" style="padding-top: 24px;">
           <div class="eyebrow mb-3">Investments</div>
           ${D.investments.map(i => `
-            <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('investment-detail','push')">
               <div class="row-icon">${I.trend()}</div>
               <div class="grow">
                 <div class="row-title">${i.name}</div>
@@ -1473,41 +1203,206 @@ const SCREENS = {
 
         <div class="pad" style="padding-bottom: 16px;">
           <div class="eyebrow mb-3">Recent</div>
-          <div class="row" style="padding-left: 0; padding-right: 0;">
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
             <div class="grow">
               <div class="row-title">Salary credit</div>
               <div class="row-sub">Today · 10:24 AM</div>
             </div>
             <div class="mono pos" style="font-size: 14px; font-weight: 500;">+₹2,40,000</div>
           </div>
-          <div class="row" style="padding-left: 0; padding-right: 0;">
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
             <div class="grow">
               <div class="row-title">Home loan EMI</div>
               <div class="row-sub">Yesterday · 06:00 AM</div>
             </div>
             <div class="mono" style="font-size: 14px; font-weight: 500;">−₹58,400</div>
           </div>
-          <div class="row" style="padding-left: 0; padding-right: 0;">
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
             <div class="grow">
               <div class="row-title">SIP — Parag Parikh Flexi Cap</div>
               <div class="row-sub">Yesterday · 07:00 AM</div>
             </div>
             <div class="mono" style="font-size: 14px; font-weight: 500;">−₹15,000</div>
           </div>
-          <div class="row" style="padding-left: 0; padding-right: 0;">
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
             <div class="grow">
               <div class="row-title">Swiggy</div>
               <div class="row-sub">Yesterday · 9:12 PM</div>
             </div>
             <div class="mono" style="font-size: 14px; font-weight: 500;">−₹842</div>
           </div>
-          <div class="row" style="padding-left: 0; padding-right: 0;">
+          <div class="row" style="padding-left: 0; padding-right: 0;" onclick="go('txn-detail','push')">
             <div class="grow">
               <div class="row-title">Blinkit</div>
               <div class="row-sub">Sun · 7:42 PM</div>
             </div>
             <div class="mono" style="font-size: 14px; font-weight: 500;">−₹1,240</div>
           </div>
+        </div>
+      </div>`,
+  },
+
+  'txn-detail': {
+    tab: 'home',
+    caption: ['Transaction', 'Amount, counterparty, source. Recategorise or report.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Transaction</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Amount</div>
+          <div class="result-num mt-3 mono">₹842</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">Debited from HDFC •4821</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="row" style="padding-left: 0; padding-right: 0; border-top: 1px solid var(--border);">
+            <div class="grow"><div class="row-sub">Counterparty</div><div class="row-title mt-2">Swiggy</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Date</div><div class="row-title mt-2 mono">28 September 2026 · 9:12 PM</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Category</div><div class="row-title mt-2">Food and dining</div></div>
+            <div class="row-chev">${I.edit(18)}</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Reference</div><div class="row-title mt-2 mono">UPI/4291038472</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Similar transactions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Zomato</div><div class="row-sub">26 Sep</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹1,240</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Swiggy</div><div class="row-sub">24 Sep</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹576</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost">Report an issue</button>
+        </div>
+      </div>`,
+  },
+
+  'card-detail': {
+    tab: 'home',
+    caption: ['Card detail', 'Statement cycle, utilisation, auto-pay status.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">ICICI Amazon Pay</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="card" style="padding: 22px;">
+            <div class="flex between center">
+              <div>
+                <div class="eyebrow">ICICI Bank</div>
+                <div class="h-15 mt-2">Amazon Pay</div>
+              </div>
+              <div class="mono" style="font-size: 14px; font-weight: 500; letter-spacing: 0.14em; color: var(--ink-2);">••4419</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Outstanding</div>
+          <div class="result-num mt-3 mono">₹18,400</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">of ₹3,00,000 limit · 6% used</div>
+          <div style="height: 2px; background: var(--border); border-radius: 2px; margin-top: 20px; position: relative;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 6%; background: var(--ink); border-radius: 2px;"></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Cycle</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Statement date</div><div class="row-sub">5th of every month</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">5 Oct</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Payment due</div><div class="row-sub">25th of every month</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">25 Oct</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Minimum due</div><div class="row-sub">10% of outstanding</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹1,840</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Auto-pay</div><div class="row-sub">Not set up</div></div>
+            <span class="tag tag-burnt">Off</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">12-month utilisation</div>
+          <div class="flex" style="gap: 4px; align-items: flex-end; height: 60px;">
+            ${[12, 22, 18, 34, 28, 42, 38, 25, 18, 22, 30, 6].map(h => `
+              <div style="flex: 1; height: ${h}%; background: var(--ink); border-radius: 2px; min-height: 3px;"></div>
+            `).join('')}
+          </div>
+          <div class="chart-axis">
+            <span>Oct</span><span>Jan</span><span>Apr</span><span>Jul</span><span>Sep</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost">${I.plus(18)} Set up auto-pay</button>
+        </div>
+      </div>`,
+  },
+
+  'investment-detail': {
+    tab: 'home',
+    caption: ['Investment detail', 'Invested, current, XIRR, benchmark.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Parag Parikh Flexi Cap</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Current value</div>
+          <div class="result-num mt-3 mono">₹8,42,000</div>
+          <div class="sm mt-3" style="color: var(--forest);">+₹1,82,000 · 27.6% total return</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Invested</div><div class="row-title mt-2 mono">₹6,60,000</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">XIRR · since Mar 2021</div><div class="row-title mt-2 mono">14.2%</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Nifty 500 · same period</div><div class="row-title mt-2 mono" style="color: var(--ink-2);">13.1%</div></div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-sub">Expense ratio</div><div class="row-title mt-2 mono">0.62%</div></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Contributions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Monthly SIP</div><div class="row-sub">Auto-debit on 5th</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹15,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Total instalments</div><div class="row-sub">Since Mar 2021</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">44</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost">Pause SIP</button>
         </div>
       </div>`,
   },
@@ -1640,6 +1535,125 @@ const SCREENS = {
             <div class="eyebrow mb-2">Insight</div>
             <div class="body-ink">Dining is 22% higher than your 6-month average. Nothing alarming — but worth a look.</div>
           </div>
+        </div>
+      </div>`,
+  },
+
+  recap: {
+    tab: 'home',
+    caption: ['September recap', 'What changed, what improved, what regressed.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">September</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow">Saved this month</div>
+          <div class="result-num mt-3 mono">₹53,600</div>
+          <div class="sm mt-3" style="color: var(--forest);">Your best month this year</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="kv-split">
+            <div>
+              <div class="kv-l">In</div>
+              <div class="kv-v mono">₹2,40,000</div>
+            </div>
+            <div>
+              <div class="kv-l">Out</div>
+              <div class="kv-v mono">₹1,86,400</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">What changed</div>
+          <div class="row" style="padding-left: 0; padding-right: 0; align-items: flex-start;">
+            <div style="width: 3px; height: 3px; border-radius: 50%; background: var(--forest); margin-top: 9px; flex-shrink: 0;"></div>
+            <div class="grow" style="margin-left: 12px;">
+              <div class="row-title">Home loan rate reset</div>
+              <div class="row-sub">From 8.6% to 8.9%. EMI unchanged, tenure extended by 3 months.</div>
+            </div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0; align-items: flex-start;">
+            <div style="width: 3px; height: 3px; border-radius: 50%; background: var(--forest); margin-top: 9px; flex-shrink: 0;"></div>
+            <div class="grow" style="margin-left: 12px;">
+              <div class="row-title">Card utilisation dropped to 6%</div>
+              <div class="row-sub">Best it's been in 12 months. ICICI outstanding down to ₹18,400.</div>
+            </div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0; align-items: flex-start;">
+            <div style="width: 3px; height: 3px; border-radius: 50%; background: var(--brick); margin-top: 9px; flex-shrink: 0;"></div>
+            <div class="grow" style="margin-left: 12px;">
+              <div class="row-title">Dining up 22% over 6-month average</div>
+              <div class="row-sub">₹18,200 this month. Nothing alarming.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-4">Spend by category</div>
+          <div class="flex" style="gap: 3px; align-items: flex-end; height: 48px; margin-bottom: 12px;">
+            <div style="flex: 5; height: 100%; background: var(--ink); border-radius: 2px;"></div>
+            <div style="flex: 3; height: 60%; background: var(--ink); border-radius: 2px; opacity: 0.5;"></div>
+            <div style="flex: 2; height: 40%; background: var(--ink); border-radius: 2px; opacity: 0.4;"></div>
+            <div style="flex: 2; height: 32%; background: var(--ink); border-radius: 2px; opacity: 0.3;"></div>
+            <div style="flex: 3; height: 52%; background: var(--ink); border-radius: 2px; opacity: 0.6;"></div>
+          </div>
+          <div class="xs">EMI · SIPs · Rent · Food · Other</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-ghost" onclick="go('recommendations','push')">See what to do next</button>
+        </div>
+      </div>`,
+  },
+
+  search: {
+    tab: 'home',
+    caption: ['Search', 'Find any transaction across every account.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Search</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="field focus">
+            ${I.search(18)}
+            <span>swiggy</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Recent</div>
+          <div class="flex" style="gap: 8px; flex-wrap: wrap;">
+            <span class="tag tag-quiet">Swiggy</span>
+            <span class="tag tag-quiet">Rent</span>
+            <span class="tag tag-quiet">SIP</span>
+            <span class="tag tag-quiet">Zomato</span>
+          </div>
+        </div>
+
+        <div style="padding-top: 32px;">
+          <div class="pad mb-3"><div class="eyebrow">3 results · Sep 2026</div></div>
+          <div class="row" onclick="go('txn-detail','push')">
+            <div class="grow"><div class="row-title">Swiggy</div><div class="row-sub">28 Sep · HDFC •4821</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹842</div>
+          </div>
+          <div class="row" onclick="go('txn-detail','push')">
+            <div class="grow"><div class="row-title">Swiggy</div><div class="row-sub">24 Sep · ICICI •4419</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹576</div>
+          </div>
+          <div class="row" onclick="go('txn-detail','push')">
+            <div class="grow"><div class="row-title">Swiggy Instamart</div><div class="row-sub">19 Sep · HDFC •4821</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">−₹1,284</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="xs">Searches transactions across all linked accounts and cards. Refreshed 2 hours ago.</div>
         </div>
       </div>`,
   },
@@ -2036,6 +2050,202 @@ const SCREENS = {
       </div>`,
   },
 
+  /* ─── JOURNEY 4b: GOALS ─── */
+  goals: {
+    tab: 'plans',
+    caption: ['Goals', 'Long-horizon savings, funded and tracked.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Goals</div>
+        <div class="row-right">
+          <button class="nav-back" onclick="go('goal-new','push')" style="margin-right: -8px;">${I.plus(20)}</button>
+        </div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2); max-width: 32ch;">
+            Three active goals. Funded from your linked accounts.
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <div class="rec-card" onclick="go('goal-detail','push')">
+            <div class="eyebrow mb-3">Home upgrade · Dec 2027</div>
+            <div class="h-17" style="margin-bottom: 16px;">₹8,40,000 of ₹30,00,000</div>
+            <div style="height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 8px;">
+              <div style="position: absolute; left: 0; top: 0; height: 100%; width: 28%; background: var(--ink); border-radius: 2px;"></div>
+            </div>
+            <div class="flex between center">
+              <div class="xs">28% funded</div>
+              <div class="xs">₹1,76,000/mo needed</div>
+            </div>
+          </div>
+
+          <div class="rec-card" onclick="go('goal-detail','push')">
+            <div class="eyebrow mb-3">Emergency fund · Mar 2027</div>
+            <div class="h-17" style="margin-bottom: 16px;">₹4,20,000 of ₹7,20,000</div>
+            <div style="height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 8px;">
+              <div style="position: absolute; left: 0; top: 0; height: 100%; width: 58%; background: var(--ink); border-radius: 2px;"></div>
+            </div>
+            <div class="flex between center">
+              <div class="xs">58% funded</div>
+              <div class="xs">₹50,000/mo needed</div>
+            </div>
+          </div>
+
+          <div class="rec-card" onclick="go('goal-detail','push')">
+            <div class="eyebrow mb-3">Daughter's education · Jun 2038</div>
+            <div class="h-17" style="margin-bottom: 16px;">₹6,20,000 of ₹50,00,000</div>
+            <div style="height: 2px; background: var(--border); border-radius: 2px; position: relative; margin-bottom: 8px;">
+              <div style="position: absolute; left: 0; top: 0; height: 100%; width: 12%; background: var(--ink); border-radius: 2px;"></div>
+            </div>
+            <div class="flex between center">
+              <div class="xs">12% funded</div>
+              <div class="xs">₹22,400/mo needed</div>
+            </div>
+          </div>
+        </div>
+        <div style="height: 24px;"></div>
+      </div>`,
+  },
+
+  'goal-detail': {
+    tab: 'plans',
+    caption: ['Goal detail', 'Progress, funding, what to add next.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Home upgrade</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow">Funded</div>
+          <div class="result-num mt-3 mono">₹8,40,000</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">of ₹30,00,000 target · Dec 2027</div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div style="height: 3px; background: var(--border); border-radius: 2px; position: relative;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 28%; background: var(--ink); border-radius: 2px;"></div>
+          </div>
+          <div class="flex between center mt-3">
+            <div class="xs">28% funded</div>
+            <div class="xs">15 months remaining</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Contributions</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Groww — Parag Parikh Flexi Cap</div><div class="row-sub">₹15,000/month since Apr 2024</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹7,20,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">HDFC — Recurring deposit</div><div class="row-sub">₹10,000/month since Aug 2025</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹1,20,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">On track?</div>
+            <div class="body-ink">At current pace you'll reach ₹22.4L by Dec 2027. You need ₹1,76,000/month more to hit ₹30L. Extending the goal to mid-2029 closes the gap without changing monthly savings.</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary">${I.plus(18)} Add to this goal</button>
+        </div>
+      </div>`,
+  },
+
+  'goal-new': {
+    tab: 'plans',
+    caption: ['New goal', 'Name it, size it, date it.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">New goal</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="eyebrow mb-3">What for</div>
+          <div class="field"><span>Home upgrade</span></div>
+
+          <div class="eyebrow mb-3" style="margin-top: 24px;">Target amount</div>
+          <div class="field"><span class="mono">₹30,00,000</span></div>
+
+          <div class="eyebrow mb-3" style="margin-top: 24px;">Target date</div>
+          <div class="field"><span class="mono">December 2027</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="goBack()">Create goal</button>
+        </div>
+      </div>`,
+  },
+
+  /* ─── TAX ─── */
+  tax: {
+    tab: 'plans',
+    caption: ['Tax', 'Section 80C, 80D, home loan interest. What\'s left to do.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Tax · FY 2025–26</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow">Section 80C · used ₹94,000 of ₹1,50,000</div>
+          <div class="result-num mt-3 mono">₹56,000</div>
+          <div class="sm mt-3" style="color: var(--ink-2);">Left to invest before 31 March</div>
+          <div style="height: 2px; background: var(--border); border-radius: 2px; margin-top: 20px; position: relative;">
+            <div style="position: absolute; left: 0; top: 0; height: 100%; width: 63%; background: var(--ink); border-radius: 2px;"></div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">80C breakdown</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">PPF contribution</div><div class="row-sub">HDFC · auto-debit</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹42,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">ELSS SIP</div><div class="row-sub">Parag Parikh Tax Saver · ₹2,500/month</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹30,000</div>
+          </div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Life insurance premium</div><div class="row-sub">HDFC Life · annual</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹22,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px;">
+          <div class="eyebrow mb-3">Section 80D · health insurance</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Self and family</div><div class="row-sub">Limit ₹25,000</div></div>
+            <div class="mono" style="font-size: 14px; font-weight: 500;">₹14,000</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Section 24b · home loan interest</div>
+          <div class="row" style="padding-left: 0; padding-right: 0;">
+            <div class="grow"><div class="row-title">Interest paid this year</div><div class="row-sub">Capped at ₹2,00,000</div></div>
+            <div class="mono pos" style="font-size: 14px; font-weight: 500;">₹5,51,800</div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="card-flat">
+            <div class="eyebrow mb-2">What's left</div>
+            <div class="body-ink">₹56,000 in 80C room. A lumpsum ELSS of ₹56,000 saves ₹17,360 in tax at the 30% bracket.</div>
+          </div>
+        </div>
+      </div>`,
+  },
+
   /* ─── JOURNEY 5: ADVISOR ─── */
   advisor: {
     tab: 'advisor',
@@ -2105,7 +2315,7 @@ const SCREENS = {
             I don't recommend. But the tradeoff is: prepayment improves your net worth by ₹1.4L over 11 years. Keeping the buffer protects you against a job change or medical expense over the next 6 months.<br><br>
             Most people in your band do both — add ₹5K/month to savings and prepay in 8 months once the buffer is 5 months.
           </div>
-          <div class="meta">See sources · Tap to open</div>
+          <div class="meta" style="cursor: pointer;" onclick="go('advisor-sources','push')">See sources · Tap to open</div>
         </div>
       </div>
       <div class="chat-input">
@@ -2226,6 +2436,14 @@ const SCREENS = {
             </div>
             <div class="row-chev">${I.chev()}</div>
           </div>
+          <div class="row" onclick="go('language','push')">
+            <div class="row-icon">${I.globe()}</div>
+            <div class="grow">
+              <div class="row-title">Language</div>
+              <div class="row-sub">English</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
           <div class="row" onclick="go('privacy','push')">
             <div class="row-icon">${I.lock()}</div>
             <div class="grow">
@@ -2234,11 +2452,19 @@ const SCREENS = {
             </div>
             <div class="row-chev">${I.chev()}</div>
           </div>
-          <div class="row" onclick="go('offline','push')">
+          <div class="row" onclick="go('sync-partial','push')">
             <div class="row-icon">${I.refresh()}</div>
             <div class="grow">
               <div class="row-title">Connection status</div>
               <div class="row-sub">Online</div>
+            </div>
+            <div class="row-chev">${I.chev()}</div>
+          </div>
+          <div class="row" onclick="go('profile','push')">
+            <div class="row-icon">${I.user()}</div>
+            <div class="grow">
+              <div class="row-title">Profile</div>
+              <div class="row-sub">Name, email, phone</div>
             </div>
             <div class="row-chev">${I.chev()}</div>
           </div>
@@ -2299,7 +2525,54 @@ const SCREENS = {
         </div>
 
         <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
-          <button class="btn btn-ghost">${I.plus(18)} Add an account</button>
+          <button class="btn btn-ghost" onclick="go('add-account','push')">${I.plus(18)} Add an account</button>
+        </div>
+      </div>`,
+  },
+
+  'add-account': {
+    tab: 'you',
+    caption: ['Add account', 'For assets not on AA — FD, gold, property.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Add an account</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2);">
+            Some assets aren't on Account Aggregator yet. Add them manually — you can update the value anytime.
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Type</div>
+          <div class="flex" style="gap: 8px; flex-wrap: wrap;">
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Fixed deposit</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Recurring deposit</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Gold</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Property</span>
+            <span class="tag tag-quiet" style="padding: 8px 14px; height: auto;">Other</span>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Name</div>
+          <div class="field"><span class="placeholder">e.g. HDFC FD</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Current value</div>
+          <div class="field"><span class="placeholder">₹</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow mb-3">Notes · optional</div>
+          <div class="field"><span class="placeholder">Maturity date, co-owner, anything</span></div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-primary" onclick="goBack()">Add to my net worth</button>
         </div>
       </div>`,
   },
@@ -2496,6 +2769,111 @@ const SCREENS = {
       </div>`,
   },
 
+  language: {
+    tab: 'you',
+    caption: ['Language', 'App language. Not AI response language.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Language</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 12px;">
+          <div class="body" style="color: var(--ink-2);">
+            Changes the app interface. Your advisor still answers in whichever language you write in.
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">English</div>
+              <div class="row-sub">Current</div>
+            </div>
+            <div class="row-right" style="color: var(--ink);">${I.check(18)}</div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">हिन्दी</div>
+              <div class="row-sub">Hindi</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="grow">
+              <div class="row-title">ಕನ್ನಡ</div>
+              <div class="row-sub">Kannada</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <div class="xs">More languages coming. Tell us which one matters to you at hello@finous.site.</div>
+        </div>
+      </div>`,
+  },
+
+  'sync-partial': {
+    tab: 'you',
+    caption: ['Partial sync', 'One connection failed. Everything else is fine.'],
+    body: () => `
+      <div class="nav">
+        <button class="nav-back" onclick="goBack()">${I.back()}</button>
+        <div class="nav-title">Sync status</div>
+      </div>
+      <div class="screen-scroll">
+        <div class="pad" style="padding-top: 24px;">
+          <div class="eyebrow">Almost done</div>
+          <div class="h-28 mt-3">4 of 5 accounts updated.</div>
+          <p class="body mt-4" style="color: var(--ink-2); max-width: 34ch;">
+            ICICI didn't respond. It usually comes back within a few minutes. Nothing else is affected.
+          </p>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">HDFC Bank</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">State Bank of India</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">Groww</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--forest);">${I.check(18)}</div>
+            <div class="grow">
+              <div class="row-title">Zerodha</div>
+              <div class="row-sub">Updated 2 minutes ago</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-icon" style="color: var(--burnt);">${I.refresh(18)}</div>
+            <div class="grow">
+              <div class="row-title">ICICI Amazon Pay</div>
+              <div class="row-sub">Last synced 6 hours ago</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" style="padding-top: 32px; padding-bottom: 24px;">
+          <button class="btn btn-accent">Retry ICICI</button>
+          <button class="btn btn-ghost mt-3" onclick="goBack()">Continue anyway</button>
+        </div>
+      </div>`,
+  },
+
   offline: {
     tab: 'you',
     caption: ['Offline', 'Clear recovery path. No cached nonsense.'],
@@ -2521,6 +2899,74 @@ const SCREENS = {
         </div>
       </div>`,
   },
+
+  'plans-hub': {
+    tab: 'plans',
+    caption: ['Plans', 'Tools and score. One entry per intent.'],
+    body: () => `
+      <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
+        <div class="eyebrow mb-3">Plans</div>
+        <div class="h-28">What do you want to figure out?</div>
+      </div>
+      <div class="mt-2">
+        <div class="row" onclick="go('health','push')">
+          <div class="row-icon">${I.compass()}</div>
+          <div class="grow">
+            <div class="row-title">Health score</div>
+            <div class="row-sub">Where you stand, in six numbers</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('goals','push')">
+          <div class="row-icon">${I.target()}</div>
+          <div class="grow">
+            <div class="row-title">Goals</div>
+            <div class="row-sub">3 active · home, emergency, education</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('tax','push')">
+          <div class="row-icon">${I.doc()}</div>
+          <div class="grow">
+            <div class="row-title">Tax</div>
+            <div class="row-sub">₹56,000 left in 80C</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('prepay','push')">
+          <div class="row-icon">${I.trend()}</div>
+          <div class="grow">
+            <div class="row-title">Prepay home loan</div>
+            <div class="row-sub">What if I pay ₹50K extra</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('refinance','push')">
+          <div class="row-icon">${I.chart()}</div>
+          <div class="grow">
+            <div class="row-title">Refinance check</div>
+            <div class="row-sub">Should I switch my home loan</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('afford','push')">
+          <div class="row-icon">${I.calc()}</div>
+          <div class="grow">
+            <div class="row-title">Affordability check</div>
+            <div class="row-sub">Can I buy a ₹40L car</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+        <div class="row" onclick="go('emi','push')">
+          <div class="row-icon">${I.calc()}</div>
+          <div class="grow">
+            <div class="row-title">EMI calculator</div>
+            <div class="row-sub">Any loan, any rate</div>
+          </div>
+          <div class="row-chev">${I.chev()}</div>
+        </div>
+      </div>`,
+  },
 };
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2539,77 +2985,30 @@ const state = {
 };
 
 const TAB_OF_SCREEN = {
-  home: 'home', accounts: 'home', 'account-detail': 'home', 'net-worth': 'home', cashflow: 'home', notifications: 'home',
-  emi: 'plans', prepay: 'plans', refinance: 'plans', afford: 'plans', health: 'plans', 'health-breakdown': 'plans', recommendations: 'plans', action: 'plans', confirmation: 'plans', 'plans-hub': 'plans',
-  advisor: 'advisor', 'advisor-chat': 'advisor', 'advisor-voice': 'advisor', 'advisor-sources': 'advisor',
-  you: 'you', linked: 'you', 'consent-mgr': 'you', privacy: 'you', profile: 'you', 'notif-prefs': 'you', offline: 'you',
+  /* home tab */
+  home: 'home', accounts: 'home', 'account-detail': 'home', 'txn-detail': 'home',
+  'card-detail': 'home', 'investment-detail': 'home', 'net-worth': 'home',
+  cashflow: 'home', recap: 'home', search: 'home', notifications: 'home',
+  /* plans tab */
+  'plans-hub': 'plans', emi: 'plans', prepay: 'plans', refinance: 'plans',
+  afford: 'plans', health: 'plans', 'health-breakdown': 'plans',
+  recommendations: 'plans', action: 'plans', confirmation: 'plans',
+  goals: 'plans', 'goal-detail': 'plans', 'goal-new': 'plans', tax: 'plans',
+  /* advisor tab */
+  advisor: 'advisor', 'advisor-chat': 'advisor', 'advisor-voice': 'advisor',
+  'advisor-sources': 'advisor',
+  /* you tab */
+  you: 'you', linked: 'you', 'add-account': 'you', 'consent-mgr': 'you',
+  privacy: 'you', profile: 'you', 'notif-prefs': 'you', language: 'you',
+  'sync-partial': 'you', offline: 'you',
 };
 
 const TAB_ORDER = ['home', 'advisor', 'plans', 'you'];
-
-/* Add a Plans hub screen */
-SCREENS['plans-hub'] = {
-  tab: 'plans',
-  caption: ['Plans', 'Tools and score. One entry per intent.'],
-  body: () => `
-    <div class="pad" style="padding-top: 24px; padding-bottom: 24px;">
-      <div class="eyebrow mb-3">Plans</div>
-      <div class="h-28">What do you want to figure out?</div>
-    </div>
-    <div class="mt-2">
-      <div class="row" onclick="go('health','push')">
-        <div class="row-icon">${I.compass()}</div>
-        <div class="grow">
-          <div class="row-title">Health score</div>
-          <div class="row-sub">Where you stand, in six numbers</div>
-        </div>
-        <div class="row-chev">${I.chev()}</div>
-      </div>
-      <div class="row" onclick="go('prepay','push')">
-        <div class="row-icon">${I.trend()}</div>
-        <div class="grow">
-          <div class="row-title">Prepay home loan</div>
-          <div class="row-sub">What if I pay ₹50K extra</div>
-        </div>
-        <div class="row-chev">${I.chev()}</div>
-      </div>
-      <div class="row" onclick="go('refinance','push')">
-        <div class="row-icon">${I.chart()}</div>
-        <div class="grow">
-          <div class="row-title">Refinance check</div>
-          <div class="row-sub">Should I switch my home loan</div>
-        </div>
-        <div class="row-chev">${I.chev()}</div>
-      </div>
-      <div class="row" onclick="go('afford','push')">
-        <div class="row-icon">${I.calc()}</div>
-        <div class="grow">
-          <div class="row-title">Affordability check</div>
-          <div class="row-sub">Can I buy a ₹40L car</div>
-        </div>
-        <div class="row-chev">${I.chev()}</div>
-      </div>
-      <div class="row" onclick="go('emi','push')">
-        <div class="row-icon">${I.calc()}</div>
-        <div class="grow">
-          <div class="row-title">EMI calculator</div>
-          <div class="row-sub">Any loan, any rate</div>
-        </div>
-        <div class="row-chev">${I.chev()}</div>
-      </div>
-    </div>`,
-};
 
 const screensEl = document.getElementById('screens');
 const tabbarEl = document.getElementById('tabbar');
 const capName = document.getElementById('cap-name');
 const capDesc = document.getElementById('cap-desc');
-
-function currentScreenId() {
-  if (state.mode === 'onboarding') return state.obStep;
-  const stack = state.stacks[state.activeTab];
-  return stack[stack.length - 1];
-}
 
 function screenMeta(id) {
   const s = SCREENS[id];
@@ -2622,7 +3021,6 @@ function renderChrome(id) {
   capName.textContent = s.caption[0];
   capDesc.textContent = s.caption[1];
 
-  // Tab bar visibility
   if (state.mode === 'onboarding') {
     tabbarEl.classList.add('hidden');
   } else {
@@ -2644,10 +3042,10 @@ function renderScreen(id, animation) {
   if (old) {
     if (animation === 'push-in') old.classList.add('push-out');
     else if (animation === 'pop-in') old.classList.add('pop-out');
-    else if (animation === 'tab-l-in' || animation === 'tab-r-in') old.remove();
-    else old.remove();
-    if (old.parentNode) {
-      setTimeout(() => { try { old.remove(); } catch(e){} }, animation === 'push-in' || animation === 'pop-in' ? 280 : 0);
+    if (animation === 'push-in' || animation === 'pop-in') {
+      setTimeout(() => { try { old.remove(); } catch(e){} }, 280);
+    } else {
+      old.remove();
     }
   }
 
@@ -2664,16 +3062,13 @@ function go(id, animation = 'push-in') {
     }
     return;
   }
-  // Determine which tab this screen belongs to
   const tab = TAB_OF_SCREEN[id];
   if (!tab) {
-    // treat as push in current tab
     state.stacks[state.activeTab].push(id);
     renderScreen(id, animation);
     return;
   }
   if (tab !== state.activeTab) {
-    // Cross-tab navigation: push onto that tab's stack, switch tab
     state.stacks[tab].push(id);
     switchTab(tab);
     return;
@@ -2691,7 +3086,6 @@ function goBack() {
 
 function switchTab(tab) {
   if (tab === state.activeTab) {
-    // Already on this tab — pop to root
     state.stacks[tab] = [state.stacks[tab][0]];
     renderScreen(state.stacks[tab][0], 'fade-in');
     return;
@@ -2709,15 +3103,10 @@ function enterApp() {
   renderScreen('home', 'fade-in');
 }
 
-// Tab bar listeners
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => switchTab(t.dataset.tab));
 });
 
-// Browser back support (in case)
-window.addEventListener('popstate', () => goBack());
-
-// Initial render
 renderScreen('splash', 'fade-in');
 setTimeout(() => { if (state.obStep === 'splash') go('welcome', 'fade-in'); }, 1200);
 </script>
