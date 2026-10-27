@@ -1,5 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { formatDayMonth, formatMonthYear, percent, toLakhs } from "./format";
+import { formatDayMonth, formatList, formatMonthYear, percent, toLakhs } from "./format";
+
+describe("formatList", () => {
+  it("joins two with 'and'", () => {
+    expect(formatList(["Emergency fund", "Diversification"])).toBe("Emergency fund and Diversification");
+  });
+
+  it("joins three the way English does, with a comma before 'and'", () => {
+    expect(formatList(["a", "b", "c"], "en")).toBe("a, b, and c");
+  });
+
+  it("leaves one item alone and an empty list empty", () => {
+    expect(formatList(["Diversification"])).toBe("Diversification");
+    expect(formatList([])).toBe("");
+  });
+
+  it("uses Hindi's own word for 'and'", () => {
+    expect(formatList(["आपातकालीन निधि", "विविधीकरण"], "hi")).toBe("आपातकालीन निधि और विविधीकरण");
+    expect(formatList(["क", "ख", "ग"], "hi")).toBe("क, ख, और ग"); // CLDR puts a comma before "और" from three items up
+  });
+
+  it("is English when no locale is given", () => {
+    expect(formatList(["a", "b"])).toBe(formatList(["a", "b"], "en"));
+  });
+});
 
 describe("formatDayMonth", () => {
   it("writes English from a fixed table, with the full month and no year", () => {

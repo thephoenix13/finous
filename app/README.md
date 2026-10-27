@@ -77,7 +77,7 @@ accessible names and a clean axe run (`src/test/a11y.ts`; colour contrast is che
 | Component | Notes |
 | --- | --- |
 | `Button`, `ButtonLink` | `primary`, `accent`, `ghost`, `quiet`; `md` (52px) or `sm` (44px). Defaults to `type="button"`. `loading` keeps the label and blocks repeat taps. `ButtonLink` is a real link styled the same. |
-| `HeroCard` | Tinted card with the one big number. Colours come from `data-domain`. |
+| `HeroCard` | Tinted card with the one big number. `size` is `xl` (a score), `lg` (Home) or `md` (results); `align="center"` centres it. Colours come from `data-domain`. |
 | `Card` | `raised` (shadow) or `outline` (hairline). |
 | `Row`, `RowGroup` | Renders a real `<button>` (`onClick`), a real link (`to`) or plain content. |
 | `Tag` | `neutral`, `positive`, `warning`, `negative`. Text carries the meaning. |
@@ -212,7 +212,22 @@ only the small sums done on the client (what is left in 80C, and the saving from
 - **Dates** without a year go through `formatDayMonth(iso, i18n.resolvedLanguage)` ("31 March", "31 मार्च").
 - **Find rows by their link target in tests, not by position:** every new tool row shifts the others.
 
-Done: EMI, prepay, refinance, affordability, the goal calculator and tax. Still to build: the health score and the Goals list and form.
+**A score and its breakdown** (the health score, `pages/Health.tsx` and `pages/HealthBreakdown.tsx`) is two screens over one
+`getHealthScore()`, each loading it through the shared `loadHealth`. Going from one to the next is a real link, and Back on the
+breakdown returns to the score, not the hub.
+
+- **A bar can show something other than the value.** Debt to income reads 24%, but a low debt load is a good score, so its bar is 78%
+  full: the bar is the component's `score`, the text is its `value`. Each bar is a `Progress` carrying the name and the value for
+  assistive technology, and the visible name and value beside it are `aria-hidden`, so nothing is read twice.
+- **Name what is dragging in the language's own words**: `formatList(items, lang)` (Intl.ListFormat) gives "A and B" in English and
+  "A और B" in Hindi, and the singular reads "The drag is" and not "The drags are". Cover no drags at all.
+- **Leave out what the data does not say.** The prototype's "Repayment is clean.", its "fixable in about six months" and its
+  "See 3 actions" button each need something the Api does not give (a list of strengths, a time to fix, a recommendations
+  screen), so none is faked. They arrive with the data or screen that backs them.
+- **Do not name a file by case alone.** `health.ts` beside `Health.tsx` is one name on Windows and macOS, so `import "./pages/Health"`
+  could pick the wrong file while Linux CI would not. The shared loader is `healthData.ts`.
+
+Done: all of Plans except Goals: the health score and breakdown, tax, and the five calculators. Still to build: the Goals list and form.
 Not on the refinance screen: "Ask HDFC for a quote". That is the Home action flow (an offer, then a confirmation), a later milestone.
 
 ## Layout
@@ -225,7 +240,7 @@ src/
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, Tax, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, Health, HealthBreakdown, Tax, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -235,5 +250,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 is under way: the Plans hub, all five calculators (EMI, prepay, refinance, affordability, goal) and the tax screen are live; the health score and Goals are still to come. The rest run on `lib/finance` and the mock.
+M2 is nearly done: the Plans hub, all five calculators (EMI, prepay, refinance, affordability, goal), the tax screen and the health score with its breakdown are live; only the Goals list and form are still to come. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

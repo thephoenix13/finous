@@ -4,6 +4,13 @@ import PlaceholderPage from "../components/PlaceholderPage";
 import { Row, RowGroup } from "../components/ui";
 import { inr } from "../lib/format";
 
+const CompassIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="m15 9-4 6-2-2 6-4" />
+  </svg>
+);
+
 const DocIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
@@ -62,6 +69,7 @@ export default function Plans() {
     <>
       <PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />
       <RowGroup className="mb-6">
+        <Row to="/plans/health" icon={<CompassIcon />} title={t("plans.tools.health.title")} subtitle={t("plans.tools.health.subtitle")} />
         <Row to="/plans/tax" icon={<DocIcon />} title={t("plans.tools.tax.title")} subtitle={taxSubtitle} />
         <Row to="/plans/prepay" icon={<TrendIcon />} title={t("plans.tools.prepay.title")} subtitle={t("plans.tools.prepay.subtitle")} />
         <Row to="/plans/refinance" icon={<ChartIcon />} title={t("plans.tools.refinance.title")} subtitle={t("plans.tools.refinance.subtitle")} />
