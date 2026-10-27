@@ -16,12 +16,12 @@ import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { CHROME_START_TIMEOUT_MS, sleep, waitFor, watchProcess } from "./lib/wait.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const PREVIEW_PORT = 4173;
 const DEBUG_PORT = 9333;
 const BASE = `http://localhost:${PREVIEW_PORT}`;
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const results = [];
 function check(name, ok, detail = "") {
@@ -42,19 +42,6 @@ function findChrome() {
     "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
   ].filter(Boolean);
   return candidates.find((p) => existsSync(p));
-}
-
-async function waitFor(fn, what, tries = 60) {
-  for (let i = 0; i < tries; i++) {
-    try {
-      const v = await fn();
-      if (v) return v;
-    } catch {
-      /* not ready yet */
-    }
-    await sleep(250);
-  }
-  throw new Error(`timed out waiting for ${what}`);
 }
 
 if (!existsSync(join(root, "dist", "sw.js"))) {
@@ -89,8 +76,10 @@ async function cleanup() {
 try {
   // Serve the production build. Run vite directly (not via npx) so killing it really stops it.
   const viteBin = join(root, "node_modules", "vite", "bin", "vite.js");
-  children.push(spawn(process.execPath, [viteBin, "preview", "--port", String(PREVIEW_PORT), "--strictPort"], { cwd: root, stdio: "ignore" }));
-  await waitFor(() => fetch(BASE).then((r) => r.ok), "the preview server");
+  const preview = spawn(process.execPath, [viteBin, "preview", "--port", String(PREVIEW_PORT), "--strictPort"], { cwd: root, stdio: ["ignore", "ignore", "pipe"] });
+  children.push(preview);
+  // If the server dies (the port is taken, say), say so now rather than after the wait.
+  await waitFor(() => fetch(BASE, { signal: AbortSignal.timeout(2_000) }).then((r) => r.ok), "the preview server", watchProcess(preview, "The preview server"));
 
   const chromeArgs = [
     `--remote-debugging-port=${DEBUG_PORT}`,
@@ -102,12 +91,19 @@ try {
     ...(process.env.CI ? ["--no-sandbox"] : []),
     "about:blank",
   ];
-  children.push(spawn(chromePath, chromeArgs, { stdio: "ignore" }));
+  const chrome = spawn(chromePath, chromeArgs, { stdio: ["ignore", "ignore", "pipe"] });
+  children.push(chrome);
 
-  const wsUrl = await waitFor(async () => {
-    const list = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json`)).json();
-    return list.find((t) => t.type === "page")?.webSocketDebuggerUrl;
-  }, "Chrome's debugging port");
+  // A cold start on a shared CI runner can be slow, so Chrome gets 30 seconds. If it has already died, stop at once and
+  // say how, with its last words, instead of waiting out the clock and reporting only "timed out".
+  const wsUrl = await waitFor(
+    async () => {
+      const list = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json`, { signal: AbortSignal.timeout(2_000) })).json();
+      return list.find((t) => t.type === "page")?.webSocketDebuggerUrl;
+    },
+    "Chrome's debugging port",
+    { timeoutMs: CHROME_START_TIMEOUT_MS, ...watchProcess(chrome, "Chrome") },
+  );
 
   ws = new WebSocket(wsUrl);
   await new Promise((resolveOpen, rejectOpen) => {
