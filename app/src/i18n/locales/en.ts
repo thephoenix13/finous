@@ -219,12 +219,42 @@ export const en = {
     tenureValue_one: "{{count}} year",
     tenureValue_other: "{{count}} years",
   },
-  pages: {
-    home: {
-      eyebrow: "Home",
-      title: "Every account. One number.",
-      note: "Net worth, cash flow and what to look at. Arrives in M4.",
+  home: {
+    greeting: { morning: "Good morning, {{name}}.", afternoon: "Good afternoon, {{name}}.", evening: "Good evening, {{name}}." },
+    netWorth: "Net worth",
+    changeUp: "↑ {{amount}} this month",
+    changeDown: "↓ {{amount}} this month",
+    thisMonth: "This month",
+    in: "In",
+    out: "Out",
+    saved: "Saved",
+    savedMore: "{{amount}} more than last month",
+    savedLess: "{{amount}} less than last month",
+    savedSame: "The same as last month",
+    lookAt: "Look at this",
+    lookAtNone: "Nothing needs your attention right now.",
+  },
+  insights: {
+    homeLoanFallback: "home loan",
+    refinance: {
+      title: "Your {{loan}} rate is above market",
+      body: "Current {{current}}. Market offers {{market}}. Refinancing could save {{saving}}/month.",
     },
+    deposit: {
+      title: "{{amount}} of your savings could earn more",
+      body: "Moving it to a term deposit could earn {{extra}} more per year.",
+    },
+    emergencyFund: {
+      title: "Build your emergency fund",
+      body: "You hold {{held}} of a {{target}} target. {{monthly}} a month gets you there by {{date}}.",
+    },
+  },
+  notFound: {
+    title: "We couldn't find that page.",
+    body: "The link may be old or mistyped.",
+    home: "Go to Home",
+  },
+  pages: {
     advisor: {
       eyebrow: "Advisor",
       title: "Ask about any transaction.",

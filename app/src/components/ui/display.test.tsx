@@ -31,7 +31,7 @@ describe("HeroCard", () => {
 
   it.each([
     ["xl", "text-[88px]"],
-    ["lg", "text-[52px]"],
+    ["lg", "@[18rem]:text-[52px]"],
     ["md", "text-[44px]"],
   ] as const)("sizes the number %s as %s", (size, cls) => {
     render(<HeroCard eyebrow="Health score" value="742" size={size} />);
@@ -40,7 +40,12 @@ describe("HeroCard", () => {
 
   it("defaults to the large number", () => {
     render(<HeroCard eyebrow="Net worth" value="₹76.4L" />);
-    expect(screen.getByText("₹76.4L")).toHaveClass("text-[52px]");
+    expect(screen.getByText("₹76.4L")).toHaveClass("@[18rem]:text-[52px]");
+  });
+
+  it("shrinks the large number in a narrow card, so seven digits fit at 320px", () => {
+    render(<HeroCard eyebrow="Net worth" value="₹76,41,600" />);
+    expect(screen.getByText("₹76,41,600")).toHaveClass("text-[44px]");
   });
 
   it("starts the text at the start by default, and can centre it", () => {

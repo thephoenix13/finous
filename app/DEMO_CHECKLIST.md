@@ -1,0 +1,55 @@
+# Demo-ready checklist
+
+Goal: a stable PWA the partners can open on a phone and click through end to end, in English and Hindi, with no dead ends.
+Everything runs on the mock persona (Aarav Mehta). No paid service is used. Tick a box only when it is merged **and** live.
+
+## 0. Blocker: production deploys
+- [ ] `finous-app` redeploy after Vercel's rate limit lifts (about 21:33 UTC, 28 Oct 2026). Merged code is not live until then.
+- [x] Leftover projects `finous_app` and `finous-l4x6` deleted; `finous` skips app-only pushes.
+
+## 1. Screens (prototype order)
+Each screen: built to the prototype, English + Hindi, tests, axe check, checked at 375px and 320px.
+
+**Home tab**
+- [x] Home: net worth, month cash flow, "worth a look" (two insights). Links to Accounts, recap, search, notifications and the insight detail are added as those screens land
+- [ ] Accounts: list by type, then account detail
+- [ ] Cash flow
+- [ ] Monthly recap
+- [ ] Search transactions
+- [ ] Notifications
+- [ ] Recommendations (the ranked actions), action detail, confirmation
+
+**Advisor tab**
+- [ ] Advisor chat UI on a scripted, offline responder (the real AI is a paid service: not included)
+- [ ] Milestone / stacks screens that need no writes
+
+**Plans tab**
+- [x] Plans hub, EMI, prepay, refinance, affordability, goal calculator, tax, health score + breakdown, goals + detail
+
+**You tab**
+- [ ] You: profile summary, links
+- [ ] Linked accounts and consents (read only)
+- [ ] Privacy
+- [ ] Profile
+- [ ] Language (already a switcher; give it its own screen)
+
+**First run (mock only, no real KYC or bank calls)**
+- [ ] Splash, welcome, consent, Aadhaar step, sync step, then Home
+
+## 2. Stability
+- [x] A "page not found" screen (unknown addresses were blank)
+- [ ] Every tab and link in the app leads somewhere real; no placeholder hero left
+- [ ] Error and empty states on every screen (the pattern exists: `DataState`)
+- [ ] Offline screen reachable and honest; installed PWA opens offline
+- [ ] No console errors on any route (add a route-walk test)
+
+## 3. Demo polish
+- [ ] Hindi copy reviewed by a native speaker (written by Claude, not yet reviewed)
+- [ ] Decision on the 12-month net-worth history (none is invented; Home shows no chart until decided)
+- [ ] Decision on the tax ELSS SIP figure (prototype ₹30,000 vs ₹15,000)
+- [ ] App icon, splash colour, install prompt checked on a real Android and iPhone
+- [ ] Lighthouse PWA and accessibility pass on production
+- [ ] A one-page demo script: the click path, what is real, what is mock
+
+## 4. Not in scope without a paid service
+- Real AI advisor (model API), voice (Deepgram), real Aadhaar eKYC, real Account Aggregator, push notifications backend.

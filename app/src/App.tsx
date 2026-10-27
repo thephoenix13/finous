@@ -10,6 +10,8 @@ import GoalDetail from "./pages/GoalDetail";
 import Goals from "./pages/Goals";
 import Health from "./pages/Health";
 import HealthBreakdown from "./pages/HealthBreakdown";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import RefinanceCheck from "./pages/RefinanceCheck";
@@ -26,10 +28,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Shell />}>
-          <Route
-            index
-            element={<PlaceholderPage eyebrow={t("pages.home.eyebrow")} title={t("pages.home.title")} note={t("pages.home.note")} />}
-          />
+          <Route index element={<Home />} />
           <Route
             path="advisor"
             element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
@@ -66,6 +65,7 @@ export default function App() {
               }
             />
           )}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

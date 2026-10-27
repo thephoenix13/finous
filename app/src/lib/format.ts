@@ -37,6 +37,21 @@ export function formatDayMonth(isoDate: string, locale?: string): string {
   return `${day} ${MONTHS_LONG[month - 1]}`;
 }
 
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+/**
+ * "Tuesday, 29 September" from "2026-09-29". English uses fixed tables; another language uses Intl ("मंगलवार, 29 सितंबर").
+ * Built from UTC, so no time zone can move the day.
+ */
+export function formatWeekdayDate(isoDate: string, locale?: string): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (locale && !locale.toLowerCase().startsWith("en")) {
+    return new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(date);
+  }
+  return `${WEEKDAYS[date.getUTCDay()]}, ${day} ${MONTHS_LONG[month - 1]}`;
+}
+
 /**
  * "A and B", "A, B, and C": a list in the language's own words, through Intl.ListFormat ("हिंदी" says "और").
  * An empty list is an empty string.
