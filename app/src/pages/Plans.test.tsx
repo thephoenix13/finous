@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import App from "../App";
+import { ApiProvider, createMockApi } from "../api";
 import { createI18n, type Language } from "../i18n";
 import { expectAccessible } from "../test/a11y";
 import { renderWithI18n } from "../test/renderWithI18n";
@@ -18,6 +19,18 @@ describe("Plans", () => {
     const link = screen.getByRole("link", { name: new RegExp(title) });
     expect(link).toHaveAttribute("href", "/plans/emi");
     expect(link).toHaveTextContent(subtitle);
+  });
+
+  it.each([
+    ["en", "Prepay home loan", "What if I pay ₹50K extra"],
+    ["hi", "होम लोन का प्रीपेमेंट", "अगर मैं ₹50K ज़्यादा चुकाऊँ"],
+  ] as const)("offers the prepay calculator in %s, ahead of the EMI calculator as in the prototype", (lng, title, subtitle) => {
+    renderWithI18n(<Plans />, { lng });
+    const links = screen.getAllByRole("link");
+    expect(links[0]).toHaveAttribute("href", "/plans/prepay");
+    expect(links[0]).toHaveTextContent(title);
+    expect(links[0]).toHaveTextContent(subtitle);
+    expect(links[1]).toHaveAttribute("href", "/plans/emi");
   });
 
   it("keeps the Plans hero above the tools", () => {
@@ -37,7 +50,9 @@ describe("Plans to EMI calculator, in the real app", () => {
     window.history.pushState({}, "", path);
     return render(
       <I18nextProvider i18n={createI18n(lng)}>
-        <App />
+        <ApiProvider api={createMockApi()}>
+          <App />
+        </ApiProvider>
       </I18nextProvider>,
     );
   };
@@ -56,6 +71,26 @@ describe("Plans to EMI calculator, in the real app", () => {
     await user.click(screen.getByRole("link", { name: "Back" }));
     expect(window.location.pathname).toBe("/plans");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("opens the prepay calculator from the Plans tab, loads the loan, and comes back with Back", async () => {
+    const user = userEvent.setup();
+    open("/plans");
+    await user.click(screen.getByRole("link", { name: /Prepay home loan/ }));
+    expect(window.location.pathname).toBe("/plans/prepay");
+    expect(await screen.findByRole("slider", { name: "Prepay amount" })).toBeInTheDocument();
+    expect(screen.getByText("₹1,83,378")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("loads the prepay calculator straight from a deep link, in Hindi", async () => {
+    open("/plans/prepay", "hi");
+    expect(await screen.findByRole("slider", { name: "प्रीपेमेंट राशि" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("होम लोन का प्रीपेमेंट");
   });
 
   it("keeps the Plans tab highlighted on the calculator", () => {

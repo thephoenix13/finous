@@ -25,11 +25,28 @@ export const en = {
   },
   common: {
     back: "Back",
+    loading: "Loading",
+    loadError: "We couldn't load this. Check your connection and try again.",
+    retry: "Try again",
   },
   plans: {
     tools: {
+      prepay: { title: "Prepay home loan", subtitle: "What if I pay ₹50K extra" },
       emi: { title: "EMI calculator", subtitle: "Any loan, any rate" },
     },
+  },
+  prepay: {
+    title: "Prepay home loan",
+    interestSaved: "Interest saved",
+    monthsSaved: "Months saved",
+    newClose: "New close",
+    amount: "Prepay amount",
+    whereTitle: "Where this sits",
+    whereBody_one:
+      "You have {{savings}} in savings in {{count}} bank. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
+    whereBody_other:
+      "You have {{savings}} in savings across {{count}} banks. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
+    noLoan: "We don't see a home loan in your linked accounts.",
   },
   emi: {
     title: "EMI calculator",

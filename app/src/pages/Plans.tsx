@@ -9,13 +9,21 @@ const CalcIcon = () => (
   </svg>
 );
 
-/** The Plans hub. One row per tool; rows are added as each M2 calculator lands. */
+const TrendIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m3 17 6-6 4 4 8-8" />
+    <path d="M15 7h6v6" />
+  </svg>
+);
+
+/** The Plans hub. One row per tool, in the prototype's order; rows are added as each M2 calculator lands. */
 export default function Plans() {
   const { t } = useTranslation();
   return (
     <>
       <PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />
       <RowGroup className="mb-6">
+        <Row to="/plans/prepay" icon={<TrendIcon />} title={t("plans.tools.prepay.title")} subtitle={t("plans.tools.prepay.subtitle")} />
         <Row to="/plans/emi" icon={<CalcIcon />} title={t("plans.tools.emi.title")} subtitle={t("plans.tools.emi.subtitle")} />
       </RowGroup>
     </>

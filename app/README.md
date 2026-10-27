@@ -146,19 +146,32 @@ calculator (`pages/EmiCalculator.tsx`) is the pattern to copy:
 - **Tests** pin results to the prototype or to an independent calculation, cover the slider ranges and extremes, the
   principal + interest = total identity to the rupee, Hindi, axe, and the route from the Plans tab and back.
 
-Done: EMI calculator. Still to build: prepay, refinance, affordability, goal calculator, then tax, health score and goals.
+**Screens that read the user's own data** (prepay and, next, refinance, affordability and goals) follow `pages/PrepayCalculator.tsx`:
+
+- **Load with `useApiData(load)`** inside an `ApiProvider` (wrapped around the app in `main.tsx`). It gives `loading`, `ready` or
+  `error` plus `retry`, and cancels a load when the screen goes away or is retried. `load` must be a function declared outside
+  the component. Show `LoadingCard`, `LoadError` (with the retry) and, when the data is legitimately empty (no home loan), a plain message.
+- **Split the screen in two:** an outer component that loads and picks the state, and an inner form that receives the data as props.
+- **Test it** with `renderWithI18n(ui, { api })`. Use `api.failNext(new ApiError("unavailable"))` for the error and retry path,
+  and a small wrapper that returns a changed persona (no loan, one bank, a tiny loan) for the edge cases.
+- **Derive, don't copy.** The prepay screen takes the loan, savings and essentials from the API; nothing persona-specific is
+  hard-coded in the page. It computes the EMI from the loan's schedule (balance, rate, months left), not the whole-rupee instalment
+  the bank debits, because that matches the prototype's ₹1,83,378 to the rupee; the rounded EMI gives ₹1,83,382.
+- **Dates** go through `formatMonthYear(ym, i18n.resolvedLanguage)`: a fixed English table, Intl for Hindi (`नव॰ 2043`).
+
+Done: EMI and prepay calculators. Still to build: refinance, affordability, goal calculator, then tax, health score and goals.
 
 ## Layout
 
 ```
 src/
-  api/          types (the contract), mock, persona, errors, contract.suite
-  components/   Shell, TabBar, PageHeader, OfflineScreen, UpdatePrompt, PlaceholderPage, LanguageSwitcher
+  api/          types (the contract), mock, persona, errors, contract.suite, ApiProvider, useApiData
+  components/   Shell, TabBar, PageHeader, DataState, OfflineScreen, UpdatePrompt, PlaceholderPage, LanguageSwitcher
   components/ui/ shared library: Button, HeroCard, Card, Row, Tag, Switch, Slider, Field, Toast
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, EmiCalculator, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, EmiCalculator, PrepayCalculator, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -168,4 +181,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 (calculators) is under way: the Plans hub and the EMI calculator are live. The rest run on `lib/finance` and the mock.
+M2 (calculators) is under way: the Plans hub, the EMI calculator and the prepay calculator are live. The rest run on `lib/finance` and the mock.
+Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

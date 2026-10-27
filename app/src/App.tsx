@@ -5,6 +5,7 @@ import Shell from "./components/Shell";
 import PlaceholderPage from "./components/PlaceholderPage";
 import EmiCalculator from "./pages/EmiCalculator";
 import Plans from "./pages/Plans";
+import PrepayCalculator from "./pages/PrepayCalculator";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -26,6 +27,7 @@ export default function App() {
             element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
           />
           <Route path="plans" element={<Plans />} />
+          <Route path="plans/prepay" element={<PrepayCalculator />} />
           <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
           {DevComponents && (

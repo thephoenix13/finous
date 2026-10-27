@@ -12,8 +12,14 @@ export function inr(amount: number): string {
   return amount < 0 && rounded !== 0 ? `−${text}` : text;
 }
 
-/** "Mar 2044". Does not depend on the user's locale. */
-export function formatMonthYear({ year, month }: YearMonth): string {
+/**
+ * "Mar 2044". English uses a fixed table, so it never depends on the runtime's locale data
+ * (en-IN spells September "Sept"). Another language, for example "hi", uses Intl: "नव॰ 2043".
+ */
+export function formatMonthYear({ year, month }: YearMonth, locale?: string): string {
+  if (locale && !locale.toLowerCase().startsWith("en")) {
+    return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(year, month - 1, 1)));
+  }
   return `${MONTHS[month - 1]} ${year}`;
 }
 
