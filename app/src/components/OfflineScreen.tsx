@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next";
+
 type Props = { onRetry: () => void };
 
 /** Architecture v1.1: offline shows this screen. No cached balances, ever. */
 export default function OfflineScreen({ onRetry }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="px-5 pt-20 text-center" role="alert">
       <div className="mb-6 flex justify-center text-ink" aria-hidden="true">
@@ -14,16 +17,14 @@ export default function OfflineScreen({ onRetry }: Props) {
           <circle cx="12" cy="20" r=".5" fill="currentColor" />
         </svg>
       </div>
-      <h1 className="font-display text-[22px] leading-tight tracking-tight">You're offline</h1>
-      <p className="mx-auto mt-3 max-w-[30ch] text-ink-2">
-        We don't show cached balances. When you're back online, we'll fetch fresh data.
-      </p>
+      <h1 className="font-display text-[22px] leading-tight tracking-tight">{t("offline.title")}</h1>
+      <p className="mx-auto mt-3 max-w-[30ch] text-ink-2">{t("offline.body")}</p>
       <button
         type="button"
         onClick={onRetry}
         className="mt-12 h-[52px] w-full rounded-btn bg-brand font-medium text-on-brand shadow-brand active:opacity-85"
       >
-        Retry
+        {t("offline.retry")}
       </button>
     </div>
   );

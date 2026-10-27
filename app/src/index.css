@@ -86,6 +86,22 @@
   }
 }
 
+/*
+ * Devanagari needs room: negative tracking breaks up conjuncts and 1.15 leading clips the headmarks (matras).
+ * Deliberately outside any @layer so it beats Tailwind's tracking-* and leading-* utilities.
+ */
+html:lang(hi) body,
+html:lang(hi) * {
+  letter-spacing: normal;
+}
+html:lang(hi) h1,
+html:lang(hi) h2 {
+  line-height: 1.4;
+}
+html:lang(hi) body {
+  line-height: 1.65;
+}
+
 @layer base {
   html,
   body,
