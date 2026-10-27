@@ -181,7 +181,16 @@ number from the Api (the monthly headroom, `getCashFlow().saved`) and does the r
   pick the price is a product decision, not a build detail.
 - **Lakhs** go through `toLakhs()` (the number only: 40, 8.8); the unit is in the string, since Hindi says "लाख".
 
-Done: EMI, prepay, refinance and affordability. Still to build: the goal calculator, then tax, health score and goals.
+**A worked example with nothing to load** (the goal calculator, `pages/GoalCalculator.tsx`) is the simplest shape: constants for
+the example, `monthlyContributionForGoal` from `lib/finance`, no `useApiData`, so no loading or error state. It shows the answer to
+the nearest ₹100 and says so in a footnote, and writes durations through plurals (`years_one`, `years_other`).
+
+- **No "Create this goal" button yet.** The prototype has one, but there is no Goals list or form to land on and no write in the
+  Api contract. A button that said "Goal created" and created nothing would be a false promise. It arrives with the Goals screens
+  and a `createGoal` write.
+- **Inputs are a product decision.** Like the affordability check, the prototype shows one fixed example, so that is what is built.
+
+Done: EMI, prepay, refinance, affordability and the goal calculator. M2's calculators are complete. Still to build: tax, health score and goals.
 Not on the refinance screen: "Ask HDFC for a quote". That is the Home action flow (an offer, then a confirmation), a later milestone.
 
 ## Layout
@@ -194,7 +203,7 @@ src/
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -204,5 +213,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 (calculators) is under way: the Plans hub, the EMI calculator, the prepay calculator, the refinance check and the affordability check are live. The rest run on `lib/finance` and the mock.
+M2 (calculators) is under way: the Plans hub and all five calculators (EMI, prepay, refinance, affordability, goal) are live; tax, the health score and goals are still to come. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

@@ -5,6 +5,7 @@ import Shell from "./components/Shell";
 import PlaceholderPage from "./components/PlaceholderPage";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
 import EmiCalculator from "./pages/EmiCalculator";
+import GoalCalculator from "./pages/GoalCalculator";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import RefinanceCheck from "./pages/RefinanceCheck";
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="plans/prepay" element={<PrepayCalculator />} />
           <Route path="plans/refinance" element={<RefinanceCheck />} />
           <Route path="plans/afford" element={<AffordabilityCheck />} />
+          <Route path="plans/goal-calc" element={<GoalCalculator />} />
           <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
           {DevComponents && (
