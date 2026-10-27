@@ -82,6 +82,7 @@ export function createMockApi({ latencyMs = 0 }: MockApiOptions = {}): MockApi {
         if (!goal) throw new ApiError("not_found", `No goal with id "${id}"`);
         return goal;
       }),
+    getTaxSummary: (o) => respond(o, () => persona.tax),
     listConsents: (o) => respond(o, () => persona.consents),
   };
 }

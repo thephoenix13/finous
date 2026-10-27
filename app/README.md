@@ -74,6 +74,7 @@ accessible names and a clean axe run (`src/test/a11y.ts`; colour contrast is che
 | `Row`, `RowGroup` | Renders a real `<button>` (`onClick`), a real link (`to`) or plain content. |
 | `Tag` | `neutral`, `positive`, `warning`, `negative`. Text carries the meaning. |
 | `Switch` | `<button role="switch">`. `label` is required. Controlled or uncontrolled. |
+| `Progress` | A thin `progressbar` for how much of a limit or target is used (0 to 100, held to the ends). `label` is required; `valueText` is what is read aloud. Colours from `data-domain`. |
 | `Slider` | Native range input with a label, formatted live value and `aria-valuetext`. 44px touch target. |
 | `Field` | Always-visible label, hint and error wired with `aria-describedby`, forwards its ref. |
 | `ToastProvider`, `useToast` | One polite live-region message at a time. Wrapped around the app in `main.tsx`. |
@@ -117,7 +118,7 @@ const home = await api.getHome();
 ```
 
 - **Contract:** `types.ts` is the whole surface (profile, home, accounts, transactions, net worth, cash flow, insights,
-  health score, goals, consents), documented with the REST route each method will call. Money is whole rupees, spending is
+  health score, goals, tax, consents), documented with the REST route each method will call. Money is whole rupees, spending is
   negative, dates are ISO. The backend sends numbers and a `kind`, never display text: the client formats and translates.
 - **One suite for every implementation:** `contract.suite.ts` checks what any backend must guarantee (net worth is assets
   minus liabilities, endpoints agree with each other, newest-first order, errors, cancellation). Run it against the HTTP
@@ -190,7 +191,20 @@ the nearest ₹100 and says so in a footnote, and writes durations through plura
   and a `createGoal` write.
 - **Inputs are a product decision.** Like the affordability check, the prototype shows one fixed example, so that is what is built.
 
-Done: EMI, prepay, refinance, affordability and the goal calculator. M2's calculators are complete. Still to build: tax, health score and goals.
+**A summary the backend assembles** (the tax screen, `pages/Tax.tsx`) is read in one call, `getTaxSummary()`, and shown as it is, with
+only the small sums done on the client (what is left in 80C, and the saving from `taxSaving`).
+
+- **Contract rules, as for every endpoint:** 80C `used` is the sum of its `items`; the deductible home loan interest is the lesser of
+  paid and the cap; the financial year ends on 31 March after today; a SIP carries its monthly amount and nothing else does.
+- **Cover the cases the prototype does not draw.** Over-investing in 80C leaves ₹0 of room, not a negative figure, and the bar is held
+  full; a 0% rate makes no promise of a saving; interest under the cap does not say "capped". "For information only" stays on the card.
+- **A fixed `data-domain`** colours the whole screen (`tax` is gold). The Plans row for Tax shows a **live subtitle** ("₹56,000 left in
+  80C") loaded on its own: it describes the screen until the figure arrives, and goes on describing it if the load fails or nothing is left,
+  so the hub never shows an error for a detail.
+- **Dates** without a year go through `formatDayMonth(iso, i18n.resolvedLanguage)` ("31 March", "31 मार्च").
+- **Find rows by their link target in tests, not by position:** every new tool row shifts the others.
+
+Done: EMI, prepay, refinance, affordability, the goal calculator and tax. Still to build: the health score and the Goals list and form.
 Not on the refinance screen: "Ask HDFC for a quote". That is the Home action flow (an offer, then a confirmation), a later milestone.
 
 ## Layout
@@ -203,7 +217,7 @@ src/
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, Tax, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -213,5 +227,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 (calculators) is under way: the Plans hub and all five calculators (EMI, prepay, refinance, affordability, goal) are live; tax, the health score and goals are still to come. The rest run on `lib/finance` and the mock.
+M2 is under way: the Plans hub, all five calculators (EMI, prepay, refinance, affordability, goal) and the tax screen are live; the health score and Goals are still to come. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

@@ -285,6 +285,49 @@ describe("persona: goals (prototype Goals screens)", () => {
   });
 });
 
+describe("persona: tax (prototype Tax screen, FY 2026-27)", () => {
+  it("is the 2026-27 year, ending on 31 March 2027, at the 30% rate", async () => {
+    expect(await api.getTaxSummary()).toMatchObject({ financialYear: "2026-27", deadline: "2027-03-31", slabPercent: 30 });
+  });
+
+  it("has used ₹94,000 of the ₹1,50,000 80C limit, leaving ₹56,000", async () => {
+    const { section80C } = await api.getTaxSummary();
+    expect(section80C).toMatchObject({ limit: 150_000, used: 94_000 });
+    expect(section80C.limit - section80C.used).toBe(56_000);
+    expect(Math.round((section80C.used / section80C.limit) * 100)).toBe(63); // the prototype's bar
+  });
+
+  it("builds the 80C total from PPF ₹42,000, an ELSS SIP ₹30,000 and life insurance ₹22,000", async () => {
+    const { section80C } = await api.getTaxSummary();
+    expect(section80C.items.map((i) => [i.kind, i.provider, i.amount, i.schedule])).toEqual([
+      ["ppf", "HDFC", 42_000, "auto-debit"],
+      ["elss", "Parag Parikh Tax Saver", 30_000, "sip"],
+      ["life-insurance", "HDFC Life", 22_000, "annual"],
+    ]);
+    expect(section80C.items[1].monthlyAmount).toBe(2_500);
+  });
+
+  it("agrees with the PPF the prototype's Notifications screen mentions: ₹42,000 contributed", async () => {
+    const ppf = (await api.getTaxSummary()).section80C.items.find((i) => i.kind === "ppf");
+    expect(ppf?.amount).toBe(42_000);
+    expect((await api.listAccounts()).investments.find((a) => a.instrument === "ppf")?.institution).toBe(ppf?.provider);
+  });
+
+  it("has spent ₹14,000 of the ₹25,000 health insurance limit", async () => {
+    expect((await api.getTaxSummary()).section80D).toEqual({ limit: 25_000, used: 14_000 });
+  });
+
+  it("paid ₹5,51,800 of home loan interest, and may deduct ₹2,00,000", async () => {
+    expect((await api.getTaxSummary()).homeLoanInterest).toEqual({ paid: 551_800, cap: 200_000, deductible: 200_000 });
+  });
+
+  it("has paid about a year of interest on the ₹62L loan: ₹5,51,800 is within 1% of 8.9% of it", async () => {
+    const [loan] = (await api.listAccounts()).loans;
+    const yearOfInterest = (loan.outstanding * loan.ratePercent) / 100; // ₹5,51,800
+    expect(Math.abs((await api.getTaxSummary()).homeLoanInterest.paid - yearOfInterest) / yearOfInterest).toBeLessThan(0.01);
+  });
+});
+
 describe("persona: consents (prototype Consent manager)", () => {
   it("has two active 12-month consents expiring 24 Sep 2027, refreshed every 12 hours", async () => {
     const consents = await api.listConsents();

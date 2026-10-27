@@ -25,6 +25,7 @@ import type {
   MonthString,
   NetWorth,
   Profile,
+  TaxSummary,
   Transaction,
 } from "./types";
 
@@ -281,6 +282,30 @@ const goals: Goal[] = [
   goal({ id: "daughters-education", name: "Daughter's education", targetAmount: 5_000_000, fundedAmount: 620_000, targetDate: "2038-06", assumedReturnPercent: 6 }),
 ];
 
+/* ── Tax (financial year 2026-27) ─────────────────────────────────────────────────────────────── */
+
+const items80C: TaxSummary["section80C"]["items"] = [
+  { id: "ppf", kind: "ppf", provider: "HDFC", amount: 42_000, schedule: "auto-debit" },
+  { id: "elss", kind: "elss", provider: "Parag Parikh Tax Saver", amount: 30_000, schedule: "sip", monthlyAmount: 2_500 },
+  { id: "life", kind: "life-insurance", provider: "HDFC Life", amount: 22_000, schedule: "annual" },
+];
+const HOME_LOAN_INTEREST_PAID = 551_800;
+const HOME_LOAN_INTEREST_CAP = 200_000;
+
+const tax: TaxSummary = {
+  financialYear: "2026-27",
+  asOf: PERSONA_TODAY,
+  deadline: "2027-03-31",
+  slabPercent: 30,
+  section80C: { limit: 150_000, used: items80C.reduce((sum, i) => sum + i.amount, 0), items: items80C },
+  section80D: { limit: 25_000, used: 14_000 },
+  homeLoanInterest: {
+    paid: HOME_LOAN_INTEREST_PAID,
+    cap: HOME_LOAN_INTEREST_CAP,
+    deductible: Math.min(HOME_LOAN_INTEREST_PAID, HOME_LOAN_INTEREST_CAP),
+  },
+};
+
 /* ── Consents ─────────────────────────────────────────────────────────────────────────────────── */
 
 const consents: Consent[] = [
@@ -318,5 +343,6 @@ export const persona = {
   home,
   health,
   goals,
+  tax,
   consents,
 };

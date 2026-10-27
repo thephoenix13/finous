@@ -32,6 +32,7 @@ export const en = {
   },
   plans: {
     tools: {
+      tax: { title: "Tax", subtitle: "Section 80C, 80D, home loan interest", left: "{{left}} left in 80C" },
       prepay: { title: "Prepay home loan", subtitle: "What if I pay ₹50K extra" },
       refinance: { title: "Refinance check", subtitle: "Should I switch my home loan" },
       afford: { title: "Affordability check", subtitle: "Can I buy a ₹40L car" },
@@ -50,6 +51,37 @@ export const en = {
       "You have {{savings}} in savings in {{count}} bank. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
     whereBody_other:
       "You have {{savings}} in savings across {{count}} banks. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
+  },
+  tax: {
+    title: "Tax",
+    titleFy: "Tax · FY {{fy}}",
+    section80C: "Section 80C · used {{used}} of {{limit}}",
+    leftToInvest: "Left to invest before {{date}}",
+    progress: "Section 80C limit used",
+    progressText: "{{used}} of {{limit}}",
+    breakdown: "80C breakdown",
+    kind: {
+      ppf: "PPF contribution",
+      elss: "ELSS SIP",
+      "life-insurance": "Life insurance premium",
+    },
+    schedule: {
+      "auto-debit": "{{provider}} · auto-debit",
+      sip: "{{provider}} · {{monthly}}/month",
+      annual: "{{provider}} · annual",
+    },
+    health: "Section 80D · health insurance",
+    selfFamily: "Self and family",
+    limitNote: "Limit {{limit}}",
+    homeLoan: "Section 24b · home loan interest",
+    deductible: "Deductible interest",
+    interestCapped: "{{paid}} paid · capped at {{cap}}",
+    interestPaid: "{{paid}} paid",
+    leftTitle: "What's left",
+    leftSaving:
+      "{{room}} in 80C room. Using the full {{room}} on an 80C option such as ELSS would save about {{saving}} in tax at the {{slab}} bracket. For information only.",
+    leftNoSaving: "{{room}} in 80C room. For information only.",
+    leftNone: "You've used the whole 80C limit. For information only.",
   },
   goalCalc: {
     title: "Goal calculator",

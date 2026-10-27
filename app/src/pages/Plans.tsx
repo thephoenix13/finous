@@ -1,6 +1,21 @@
 import { useTranslation } from "react-i18next";
+import { useApiData, type Api, type RequestOptions } from "../api";
 import PlaceholderPage from "../components/PlaceholderPage";
 import { Row, RowGroup } from "../components/ui";
+import { inr } from "../lib/format";
+
+const DocIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <path d="M14 3v5h5M9 13h6M9 17h6" />
+  </svg>
+);
+
+/** What is left in the Section 80C limit, for the Tax row's subtitle. */
+const loadRoom80C = async (api: Api, options: RequestOptions): Promise<number> => {
+  const { section80C } = await api.getTaxSummary(options);
+  return Math.max(0, section80C.limit - section80C.used);
+};
 
 const CalcIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -40,10 +55,14 @@ const TargetIcon = () => (
 /** The Plans hub. One row per tool, in the prototype's order; rows are added as each M2 calculator lands. */
 export default function Plans() {
   const { t } = useTranslation();
+  // The Tax row shows what is left in 80C once that is known. Until then, or if it cannot be loaded, it describes the screen.
+  const room = useApiData(loadRoom80C);
+  const taxSubtitle = room.status === "ready" && room.data > 0 ? t("plans.tools.tax.left", { left: inr(room.data) }) : t("plans.tools.tax.subtitle");
   return (
     <>
       <PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />
       <RowGroup className="mb-6">
+        <Row to="/plans/tax" icon={<DocIcon />} title={t("plans.tools.tax.title")} subtitle={taxSubtitle} />
         <Row to="/plans/prepay" icon={<TrendIcon />} title={t("plans.tools.prepay.title")} subtitle={t("plans.tools.prepay.subtitle")} />
         <Row to="/plans/refinance" icon={<ChartIcon />} title={t("plans.tools.refinance.title")} subtitle={t("plans.tools.refinance.subtitle")} />
         <Row to="/plans/afford" icon={<CheckIcon />} title={t("plans.tools.afford.title")} subtitle={t("plans.tools.afford.subtitle")} />
