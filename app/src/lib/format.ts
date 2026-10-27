@@ -23,6 +23,20 @@ export function formatMonthYear({ year, month }: YearMonth, locale?: string): st
   return `${MONTHS[month - 1]} ${year}`;
 }
 
+const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+/**
+ * "31 March" from "2027-03-31", with no year. English uses a fixed table, so it never depends on the runtime's locale data;
+ * another language, for example "hi", uses Intl: "31 मार्च". Built from UTC, so no time zone can move the day.
+ */
+export function formatDayMonth(isoDate: string, locale?: string): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  if (locale && !locale.toLowerCase().startsWith("en")) {
+    return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(year, month - 1, day)));
+  }
+  return `${day} ${MONTHS_LONG[month - 1]}`;
+}
+
 /** A rate or share without trailing zeros, to at most two decimals: 8.9 is "8.9%", 9 is "9%", 8.256 is "8.26%". */
 export function percent(value: number, maxDecimals = 2): string {
   return `${Number(value.toFixed(maxDecimals))}%`;

@@ -257,6 +257,47 @@ export type Goal = {
   currentMonthlyContribution?: Rupees;
 };
 
+/* ── Tax ──────────────────────────────────────────────────────────────────────────────────────── */
+
+/** One thing counted towards the Section 80C limit. */
+export type Deduction80C = {
+  id: string;
+  kind: "ppf" | "elss" | "life-insurance";
+  /** Who holds it: a bank, a fund or an insurer. A proper noun, shown as it is. */
+  provider: string;
+  /** Contributed this financial year. */
+  amount: Rupees;
+  schedule: "auto-debit" | "sip" | "annual";
+  /** The monthly instalment, for a SIP. */
+  monthlyAmount?: Rupees;
+};
+
+/** GET /v1/tax. The current financial year (April to March). */
+export type TaxSummary = {
+  /** "2026-27". */
+  financialYear: string;
+  asOf: IsoDate;
+  /** The last day to invest for this year's deductions: 31 March. */
+  deadline: IsoDate;
+  /** The marginal rate the saving estimates use. */
+  slabPercent: number;
+  section80C: {
+    limit: Rupees;
+    /** The sum of `items`. May be above `limit`; only `limit` is deductible. */
+    used: Rupees;
+    items: Deduction80C[];
+  };
+  /** Health insurance for self and family. */
+  section80D: { limit: Rupees; used: Rupees };
+  /** Section 24(b), interest on a home loan. */
+  homeLoanInterest: {
+    paid: Rupees;
+    cap: Rupees;
+    /** The lesser of `paid` and `cap`. */
+    deductible: Rupees;
+  };
+};
+
 /* ── Consent ──────────────────────────────────────────────────────────────────────────────────── */
 
 export type Consent = {
@@ -300,6 +341,8 @@ export interface Api {
   listGoals(options?: RequestOptions): Promise<Goal[]>;
   /** GET /v1/goals/:id. Rejects with ApiError "not_found" for an unknown id. */
   getGoal(id: string, options?: RequestOptions): Promise<Goal>;
+  /** GET /v1/tax */
+  getTaxSummary(options?: RequestOptions): Promise<TaxSummary>;
   /** GET /v1/consents */
   listConsents(options?: RequestOptions): Promise<Consent[]>;
 }

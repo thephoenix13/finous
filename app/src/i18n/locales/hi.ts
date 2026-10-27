@@ -35,6 +35,7 @@ export const hi: Messages = {
   },
   plans: {
     tools: {
+      tax: { title: "टैक्स", subtitle: "धारा 80C, 80D, होम लोन ब्याज", left: "80C में {{left}} बाकी" },
       prepay: { title: "होम लोन का प्रीपेमेंट", subtitle: "अगर मैं ₹50K ज़्यादा चुकाऊँ" },
       refinance: { title: "रिफाइनेंस जाँच", subtitle: "क्या मुझे अपना होम लोन बदलना चाहिए" },
       afford: { title: "खरीद की क्षमता की जाँच", subtitle: "क्या मैं ₹40 लाख की कार खरीद सकता हूँ" },
@@ -53,6 +54,37 @@ export const hi: Messages = {
       "आपके पास {{count}} बैंक में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
     whereBody_other:
       "आपके पास {{count}} बैंकों में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
+  },
+  tax: {
+    title: "टैक्स",
+    titleFy: "टैक्स · वित्त वर्ष {{fy}}",
+    section80C: "धारा 80C · {{limit}} में से {{used}} इस्तेमाल",
+    leftToInvest: "{{date}} से पहले निवेश के लिए बाकी",
+    progress: "धारा 80C की सीमा का उपयोग",
+    progressText: "{{limit}} में से {{used}}",
+    breakdown: "80C का ब्योरा",
+    kind: {
+      ppf: "PPF योगदान",
+      elss: "ELSS SIP निवेश",
+      "life-insurance": "जीवन बीमा प्रीमियम",
+    },
+    schedule: {
+      "auto-debit": "{{provider}} · ऑटो-डेबिट",
+      sip: "{{provider}} · {{monthly}}/महीना",
+      annual: "{{provider}} · सालाना",
+    },
+    health: "धारा 80D · स्वास्थ्य बीमा",
+    selfFamily: "स्वयं और परिवार",
+    limitNote: "सीमा {{limit}}",
+    homeLoan: "धारा 24b · होम लोन ब्याज",
+    deductible: "कटौती योग्य ब्याज",
+    interestCapped: "{{paid}} चुकाया · {{cap}} पर सीमित",
+    interestPaid: "{{paid}} चुकाया",
+    leftTitle: "अभी क्या बाकी है",
+    leftSaving:
+      "80C में {{room}} की गुंजाइश है। पूरे {{room}} को ELSS जैसे किसी 80C विकल्प में लगाने पर {{slab}} ब्रैकेट में लगभग {{saving}} टैक्स बचेगा। सिर्फ़ जानकारी के लिए।",
+    leftNoSaving: "80C में {{room}} की गुंजाइश है। सिर्फ़ जानकारी के लिए।",
+    leftNone: "आप 80C की पूरी सीमा इस्तेमाल कर चुके हैं। सिर्फ़ जानकारी के लिए।",
   },
   goalCalc: {
     title: "लक्ष्य कैलकुलेटर",

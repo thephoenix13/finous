@@ -1,5 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { formatMonthYear, percent, toLakhs } from "./format";
+import { formatDayMonth, formatMonthYear, percent, toLakhs } from "./format";
+
+describe("formatDayMonth", () => {
+  it("writes English from a fixed table, with the full month and no year", () => {
+    expect(formatDayMonth("2027-03-31")).toBe("31 March");
+    expect(formatDayMonth("2026-09-05")).toBe("5 September");
+    expect(formatDayMonth("2026-01-01")).toBe("1 January");
+    expect(formatDayMonth("2026-12-25", "en-IN")).toBe("25 December");
+  });
+
+  it("names every English month in full", () => {
+    const names = Array.from({ length: 12 }, (_, i) => formatDayMonth(`2027-${String(i + 1).padStart(2, "0")}-15`).split(" ")[1]);
+    expect(names).toEqual(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+  });
+
+  it("writes Hindi with Devanagari month names and Western digits for the day", () => {
+    expect(formatDayMonth("2027-03-31", "hi")).toBe("31 मार्च");
+    expect(formatDayMonth("2026-09-05", "hi")).toBe("5 सितंबर");
+  });
+
+  it("does not move the day across a time zone", () => {
+    expect(formatDayMonth("2027-01-01", "hi")).toBe("1 जनवरी");
+    expect(formatDayMonth("2027-12-31", "hi")).toBe("31 दिसंबर");
+  });
+
+  it("uses English when no locale is given", () => {
+    expect(formatDayMonth("2027-03-31", undefined)).toBe("31 March");
+    expect(formatDayMonth("2027-03-31", "")).toBe("31 March");
+  });
+});
 
 describe("toLakhs", () => {
   it.each([

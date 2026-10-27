@@ -9,6 +9,7 @@ import GoalCalculator from "./pages/GoalCalculator";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import RefinanceCheck from "./pages/RefinanceCheck";
+import Tax from "./pages/Tax";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -30,6 +31,7 @@ export default function App() {
             element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
           />
           <Route path="plans" element={<Plans />} />
+          <Route path="plans/tax" element={<Tax />} />
           <Route path="plans/prepay" element={<PrepayCalculator />} />
           <Route path="plans/refinance" element={<RefinanceCheck />} />
           <Route path="plans/afford" element={<AffordabilityCheck />} />

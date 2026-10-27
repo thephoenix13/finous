@@ -268,6 +268,53 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
       });
     });
 
+    describe("tax", () => {
+      it("counts towards 80C exactly what its items add up to, in whole rupees, with unique ids", async () => {
+        const { section80C } = await makeApi().getTaxSummary();
+        expect(section80C.items.reduce((sum, i) => sum + i.amount, 0)).toBe(section80C.used);
+        expect(new Set(section80C.items.map((i) => i.id)).size).toBe(section80C.items.length);
+        for (const i of section80C.items) expect(Number.isInteger(i.amount) && i.amount >= 0).toBe(true);
+        expect(section80C.limit).toBeGreaterThan(0);
+      });
+
+      it("gives a SIP its monthly instalment and nothing else one", async () => {
+        const { section80C } = await makeApi().getTaxSummary();
+        for (const i of section80C.items) {
+          if (i.schedule === "sip") expect(i.monthlyAmount).toBeGreaterThan(0);
+          else expect(i.monthlyAmount).toBeUndefined();
+        }
+      });
+
+      it("deducts the lesser of the home loan interest paid and the cap", async () => {
+        const { homeLoanInterest: h } = await makeApi().getTaxSummary();
+        expect(h.deductible).toBe(Math.min(h.paid, h.cap));
+        expect(h.paid).toBeGreaterThanOrEqual(0);
+        expect(h.cap).toBeGreaterThan(0);
+      });
+
+      it("keeps the health insurance limit and spend sensible", async () => {
+        const { section80D } = await makeApi().getTaxSummary();
+        expect(section80D.limit).toBeGreaterThan(0);
+        expect(section80D.used).toBeGreaterThanOrEqual(0);
+      });
+
+      it("names the financial year, and ends it on 31 March after today", async () => {
+        const t = await makeApi().getTaxSummary();
+        expect(t.financialYear).toMatch(/^\d{4}-\d{2}$/);
+        const [start, end] = [Number(t.financialYear.slice(0, 4)), Number(t.financialYear.slice(5))];
+        expect(end).toBe((start + 1) % 100);
+        expect(t.deadline).toBe(`${start + 1}-03-31`);
+        expect(t.deadline > t.asOf).toBe(true);
+        expect(t.asOf >= `${start}-04-01`).toBe(true);
+      });
+
+      it("uses a tax rate between 0 and 100", async () => {
+        const { slabPercent } = await makeApi().getTaxSummary();
+        expect(slabPercent).toBeGreaterThanOrEqual(0);
+        expect(slabPercent).toBeLessThanOrEqual(100);
+      });
+    });
+
     describe("consents", () => {
       it("expires after it was granted, by its stated duration", async () => {
         for (const c of await makeApi().listConsents()) {
@@ -310,6 +357,7 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
           ["getHealthScore", () => api.getHealthScore({ signal })],
           ["listGoals", () => api.listGoals({ signal })],
           ["getGoal", () => api.getGoal(goalId, { signal })],
+          ["getTaxSummary", () => api.getTaxSummary({ signal })],
           ["listConsents", () => api.listConsents({ signal })],
         ];
         for (const [method, call] of calls) {
