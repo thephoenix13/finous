@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Shell from "./components/Shell";
 import PlaceholderPage from "./components/PlaceholderPage";
+import EmiCalculator from "./pages/EmiCalculator";
+import Plans from "./pages/Plans";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -23,10 +25,8 @@ export default function App() {
             path="advisor"
             element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
           />
-          <Route
-            path="plans"
-            element={<PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />}
-          />
+          <Route path="plans" element={<Plans />} />
+          <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
           {DevComponents && (
             <Route
