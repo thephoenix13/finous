@@ -53,7 +53,7 @@ Not set up yet: a Content-Security-Policy (needs the final API, Deepgram and ten
 ## Finance maths
 
 `src/lib/finance.ts` is pure and dependency-free: `emi`, `monthsToClose`, `loanSummary`, `prepay`, `refinance`,
-`futureValue`, `monthlyContributionForGoal`, `bufferMonths`, `taxSaving`, `addMonths`. `src/lib/format.ts` has `inr`
+`futureValue`, `monthlyContributionForGoal`, `bufferMonths`, `taxSaving`, `carAffordability`, `addMonths`. `src/lib/format.ts` has `inr`
 (Indian digit grouping), `formatMonthYear` and `roundTo`.
 
 - Money is plain rupees and is never rounded inside the module. Round when you display.
@@ -169,7 +169,19 @@ a slider: it shows the backend's `RefinanceInsight` instead of recomputing it, s
   and the contract suite checks the costs add up to `upfrontCost`, the offer quotes the named loan's rate, and the yearly saving is
   twelve times the monthly. A real backend has to meet the same rules.
 
-Done: EMI, prepay and refinance. Still to build: affordability, goal calculator, then tax, health score and goals.
+**A scenario that compares the user's budget with a purchase** (the affordability check, `pages/AffordabilityCheck.tsx`) reads one
+number from the Api (the monthly headroom, `getCashFlow().saved`) and does the rest in `lib/finance` (`carAffordability`).
+
+- **Round what is an estimate, not the verdict.** The prototype shows ₹67,200 and ₹72,000 where the exact figures are ₹67,206 and
+  ₹72,006: planning estimates, to the nearest ₹100 (`roundTo(x, 100)`). The yes or no uses the exact comparison. A shortfall is
+  never shown as ₹0 (floor ₹100), nor the down payment as ₹0L (floor ₹0.1L).
+- **Handle the answer the prototype never shows.** The prototype only says "Not yet". Once the data can differ, "Yes" (with what is
+  left over) is needed, and so is "more headroom, and no down payment alone would fix it" (when the running cost is above the headroom).
+- **The scenario is fixed** (a ₹40L car, 20% down, 9.5% over 60 months, ₹4,800 a month of insurance), as in the prototype. Letting the user
+  pick the price is a product decision, not a build detail.
+- **Lakhs** go through `toLakhs()` (the number only: 40, 8.8); the unit is in the string, since Hindi says "लाख".
+
+Done: EMI, prepay, refinance and affordability. Still to build: the goal calculator, then tax, health score and goals.
 Not on the refinance screen: "Ask HDFC for a quote". That is the Home action flow (an offer, then a confirmation), a later milestone.
 
 ## Layout
@@ -182,7 +194,7 @@ src/
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, EmiCalculator, PrepayCalculator, RefinanceCheck, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -192,5 +204,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 (calculators) is under way: the Plans hub, the EMI calculator, the prepay calculator and the refinance check are live. The rest run on `lib/finance` and the mock.
+M2 (calculators) is under way: the Plans hub, the EMI calculator, the prepay calculator, the refinance check and the affordability check are live. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

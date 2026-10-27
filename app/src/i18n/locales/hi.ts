@@ -37,6 +37,7 @@ export const hi: Messages = {
     tools: {
       prepay: { title: "होम लोन का प्रीपेमेंट", subtitle: "अगर मैं ₹50K ज़्यादा चुकाऊँ" },
       refinance: { title: "रिफाइनेंस जाँच", subtitle: "क्या मुझे अपना होम लोन बदलना चाहिए" },
+      afford: { title: "खरीद की क्षमता की जाँच", subtitle: "क्या मैं ₹40 लाख की कार खरीद सकता हूँ" },
       emi: { title: "EMI कैलकुलेटर", subtitle: "कोई भी लोन, कोई भी दर" },
     },
   },
@@ -51,6 +52,25 @@ export const hi: Messages = {
       "आपके पास {{count}} बैंक में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
     whereBody_other:
       "आपके पास {{count}} बैंकों में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
+  },
+  afford: {
+    title: "खरीद की क्षमता",
+    eyebrow: "₹{{lakhs}} लाख की कार",
+    notYet: "अभी नहीं",
+    yes: "हाँ",
+    shortfall: "आपको हर महीने {{gap}} और गुंजाइश चाहिए, या लगभग ₹{{lakhs}} लाख ज़्यादा डाउन पेमेंट।",
+    shortfallOnly: "आपको हर महीने {{gap}} और गुंजाइश चाहिए। सिर्फ़ बड़ा डाउन पेमेंट इसे पूरा नहीं करेगा।",
+    spare: "कार के बाद भी आपके पास हर महीने लगभग {{spare}} बचेंगे।",
+    assumptions: "मान्यताएँ",
+    downPayment: "डाउन पेमेंट",
+    downPaymentNote: "₹{{lakhs}} लाख का {{percent}}",
+    loan: "{{rate}} पर लोन",
+    loanNote_one: "{{count}} महीना",
+    loanNote_other: "{{count}} महीने",
+    outflow: "कुल मासिक खर्च",
+    outflowNote: "बीमा सहित",
+    headroomTitle: "आपकी गुंजाइश",
+    headroomBody: "EMI, SIP और रोज़मर्रा के खर्चों के बाद आपके पास अभी हर महीने {{free}} बचते हैं। ₹{{lakhs}} लाख की कार के लिए {{needs}} चाहिए।",
   },
   refinance: {
     title: "रिफाइनेंस जाँच",

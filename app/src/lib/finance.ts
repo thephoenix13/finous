@@ -172,6 +172,66 @@ export function taxSaving(deduction: number, slabPct: number, cessPct = 4): numb
   return (deduction * slabPct) / 100 * (1 + cessPct / 100);
 }
 
+export type AffordabilityInput = {
+  /** What the purchase costs. */
+  price: number;
+  /** Share of the price paid up front, 0 to 100. The rest is borrowed. */
+  downPaymentPct: number;
+  annualRatePct: number;
+  months: number;
+  /** Monthly running cost on top of the EMI, for example car insurance. */
+  insurancePerMonth: number;
+  /** What is left each month after EMIs, SIPs and living expenses. May be negative. */
+  monthlyHeadroom: number;
+};
+
+export type AffordabilityResult = {
+  downPayment: number;
+  loanAmount: number;
+  emi: number;
+  /** EMI plus the running cost: what the purchase adds to every month. */
+  monthlyOutflow: number;
+  affordable: boolean;
+  /** How much more headroom a month the purchase needs. Zero when affordable. */
+  shortfall: number;
+  /** What is left over each month after the purchase. Zero when not affordable. */
+  spare: number;
+  /**
+   * Extra down payment that would close the shortfall, at this loan's rate and term. Null when no down payment
+   * could, because the running cost alone is more than the headroom.
+   */
+  extraDownPayment: number | null;
+};
+
+/** Can the monthly budget carry a purchase bought partly on a loan? */
+export function carAffordability({ price, downPaymentPct, annualRatePct, months, insurancePerMonth, monthlyHeadroom }: AffordabilityInput): AffordabilityResult {
+  assertPositive("price", price);
+  assertPositive("months", months);
+  assertRate("annualRatePct", annualRatePct);
+  assertRate("insurancePerMonth", insurancePerMonth);
+  if (!Number.isFinite(downPaymentPct) || downPaymentPct < 0 || downPaymentPct > 100) throw new RangeError("downPaymentPct must be between 0 and 100");
+  if (!Number.isFinite(monthlyHeadroom)) throw new RangeError("monthlyHeadroom must be a number");
+
+  const downPayment = (price * downPaymentPct) / 100;
+  const loanAmount = price - downPayment;
+  const monthlyEmi = loanAmount > 0 ? emi(loanAmount, annualRatePct, months) : 0;
+  const monthlyOutflow = monthlyEmi + insurancePerMonth;
+  const affordable = monthlyHeadroom >= monthlyOutflow;
+  const shortfall = affordable ? 0 : monthlyOutflow - monthlyHeadroom;
+  // The EMI is proportional to the amount borrowed, so each rupee of extra down payment saves emi / loanAmount a month.
+  const extra = shortfall > 0 && monthlyEmi > 0 ? (shortfall * loanAmount) / monthlyEmi : 0;
+  return {
+    downPayment,
+    loanAmount,
+    emi: monthlyEmi,
+    monthlyOutflow,
+    affordable,
+    shortfall,
+    spare: affordable ? monthlyHeadroom - monthlyOutflow : 0,
+    extraDownPayment: shortfall === 0 ? 0 : extra > 0 && extra < loanAmount ? extra : null,
+  };
+}
+
 export type YearMonth = { year: number; month: number };
 
 /** Calendar month `monthsAhead` after `from`. `month` is 1 to 12. Fractions round to the nearest month. */

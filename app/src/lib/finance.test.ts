@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   addMonths,
   bufferMonths,
+  carAffordability,
   emi,
   futureValue,
   loanSummary,
@@ -260,5 +261,117 @@ describe("roundTo", () => {
   it("rounds to the nearest step", () => {
     expect(roundTo(31_399.4, 100)).toBe(31_400);
     expect(roundTo(134_827, 1_000)).toBe(135_000);
+  });
+});
+
+describe("carAffordability (prototype Affordability screen: a ₹40L car)", () => {
+  // 20% down, the rest on a 9.5% loan over 60 months, ₹4,800 a month of insurance. Headroom is the persona's ₹53,600.
+  const CAR = { price: 4_000_000, downPaymentPct: 20, annualRatePct: 9.5, months: 60, insurancePerMonth: 4_800 };
+  const run = (monthlyHeadroom: number, over: Partial<typeof CAR> = {}) => carAffordability({ ...CAR, ...over, monthlyHeadroom });
+
+  it("pays ₹8,00,000 up front and borrows ₹32,00,000", () => {
+    const r = run(53_600);
+    expect(r.downPayment).toBe(800_000);
+    expect(r.loanAmount).toBe(3_200_000);
+  });
+
+  it("the EMI is ₹67,206, which the prototype rounds to ₹67,200; with insurance ₹72,006, shown as ₹72,000", () => {
+    const r = run(53_600);
+    expect(Math.round(r.emi)).toBe(67_206);
+    expect(roundTo(r.emi, 100)).toBe(67_200);
+    expect(r.emi).toBeCloseTo(emi(3_200_000, 9.5, 60), 9);
+    expect(Math.round(r.monthlyOutflow)).toBe(72_006);
+    expect(roundTo(r.monthlyOutflow, 100)).toBe(72_000);
+  });
+
+  it("is not yet affordable on ₹53,600: short by ₹18,406 a month, shown as ₹18,400", () => {
+    const r = run(53_600);
+    expect(r.affordable).toBe(false);
+    expect(Math.round(r.shortfall)).toBe(18_406);
+    expect(roundTo(r.shortfall, 100)).toBe(18_400);
+    expect(r.spare).toBe(0);
+  });
+
+  it("would need about ₹8.8L more down payment to close that gap", () => {
+    const r = run(53_600);
+    // Two ways to the same number: the shortfall scaled by loan over EMI, and the ₹32L loan less the loan a ₹48,800 EMI can carry.
+    expect(Math.round(r.extraDownPayment!)).toBe(876_396);
+    const loanPerRupeeOfEmi = 3_200_000 / emi(3_200_000, 9.5, 60);
+    expect(3_200_000 - (53_600 - 4_800) * loanPerRupeeOfEmi).toBeCloseTo(r.extraDownPayment!, 6);
+    expect((r.extraDownPayment! / 100_000).toFixed(1)).toBe("8.8");
+  });
+
+  it("an extra down payment of that size makes the purchase exactly affordable", () => {
+    const r = run(53_600);
+    const pct = 20 + (r.extraDownPayment! / CAR.price) * 100;
+    const closed = run(53_600, { downPaymentPct: pct });
+    expect(closed.shortfall).toBeCloseTo(0, 6);
+    expect(closed.monthlyOutflow).toBeCloseTo(53_600, 6);
+  });
+
+  it("is affordable once the headroom covers the outflow, and says what is left over", () => {
+    const r = run(100_000);
+    expect(r.affordable).toBe(true);
+    expect(r.shortfall).toBe(0);
+    expect(r.extraDownPayment).toBe(0);
+    expect(Math.round(r.spare)).toBe(27_994);
+  });
+
+  it("is affordable with nothing to spare when the headroom is exactly the outflow", () => {
+    const outflow = run(0).monthlyOutflow;
+    const r = run(outflow);
+    expect(r.affordable).toBe(true);
+    expect(r.spare).toBe(0);
+    expect(r.shortfall).toBe(0);
+  });
+
+  it("is not affordable by a hair when the headroom is a rupee short", () => {
+    const outflow = run(0).monthlyOutflow;
+    const r = run(outflow - 1);
+    expect(r.affordable).toBe(false);
+    expect(r.shortfall).toBeCloseTo(1, 9);
+  });
+
+  it("a bigger down payment lowers the EMI and the outflow", () => {
+    expect(run(0, { downPaymentPct: 40 }).emi).toBeLessThan(run(0, { downPaymentPct: 20 }).emi);
+    expect(run(0, { downPaymentPct: 40 }).monthlyOutflow).toBeLessThan(run(0, { downPaymentPct: 20 }).monthlyOutflow);
+  });
+
+  it("says no down payment can help when the running cost alone is more than the headroom", () => {
+    // Headroom of ₹4,000 is below the ₹4,800 insurance, so the shortfall is bigger than the whole EMI.
+    const r = run(4_000);
+    expect(r.affordable).toBe(false);
+    expect(r.shortfall).toBeGreaterThan(r.emi);
+    expect(r.extraDownPayment).toBeNull();
+  });
+
+  it("copes with a negative headroom (spending more than earning)", () => {
+    const r = run(-10_000);
+    expect(r.affordable).toBe(false);
+    expect(Math.round(r.shortfall)).toBe(82_006);
+    expect(r.extraDownPayment).toBeNull();
+  });
+
+  it("borrows nothing at 100% down, so only the insurance is left to cover", () => {
+    expect(run(10_000, { downPaymentPct: 100 })).toMatchObject({ loanAmount: 0, emi: 0, monthlyOutflow: 4_800, affordable: true, spare: 5_200 });
+    const short = run(3_000, { downPaymentPct: 100 });
+    expect(short.affordable).toBe(false);
+    expect(short.shortfall).toBe(1_800);
+    expect(short.extraDownPayment).toBeNull(); // nothing left to put down
+  });
+
+  it("is straight division at a zero rate", () => {
+    expect(run(0, { annualRatePct: 0 }).emi).toBe(3_200_000 / 60);
+  });
+
+  it("rejects input that makes no sense", () => {
+    expect(() => run(0, { price: 0 })).toThrow(RangeError);
+    expect(() => run(0, { months: 0 })).toThrow(RangeError);
+    expect(() => run(0, { downPaymentPct: -1 })).toThrow(RangeError);
+    expect(() => run(0, { downPaymentPct: 101 })).toThrow(RangeError);
+    expect(() => run(0, { annualRatePct: -1 })).toThrow(RangeError);
+    expect(() => run(0, { insurancePerMonth: -1 })).toThrow(RangeError);
+    expect(() => run(Number.NaN)).toThrow(RangeError);
+    expect(() => run(Number.POSITIVE_INFINITY)).toThrow(RangeError);
   });
 });
