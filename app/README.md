@@ -158,8 +158,19 @@ calculator (`pages/EmiCalculator.tsx`) is the pattern to copy:
   hard-coded in the page. It computes the EMI from the loan's schedule (balance, rate, months left), not the whole-rupee instalment
   the bank debits, because that matches the prototype's ₹1,83,378 to the rupee; the rounded EMI gives ₹1,83,382.
 - **Dates** go through `formatMonthYear(ym, i18n.resolvedLanguage)`: a fixed English table, Intl for Hindi (`नव॰ 2043`).
+  Rates and shares go through `percent()` (no trailing zeros, at most two decimals: 8.9 is "8.9%", 9 is "9%").
 
-Done: EMI and prepay calculators. Still to build: refinance, affordability, goal calculator, then tax, health score and goals.
+**A read-out of something the backend worked out** (the refinance check, `pages/RefinanceCheck.tsx`) uses the same shape without
+a slider: it shows the backend's `RefinanceInsight` instead of recomputing it, so there is one source of truth for the numbers.
+
+- **Tell the empty cases apart.** "No home loan" (`common.noHomeLoan`) and "there is a loan but no offer" (switching would not
+  help) are different messages. An offer only counts if its `loanId` is the loan on screen.
+- **Put what the screen shows in the contract.** The cost breakdown (processing fee, documentation) lives in `RefinanceInsight.costs`,
+  and the contract suite checks the costs add up to `upfrontCost`, the offer quotes the named loan's rate, and the yearly saving is
+  twelve times the monthly. A real backend has to meet the same rules.
+
+Done: EMI, prepay and refinance. Still to build: affordability, goal calculator, then tax, health score and goals.
+Not on the refinance screen: "Ask HDFC for a quote". That is the Home action flow (an offer, then a confirmation), a later milestone.
 
 ## Layout
 
@@ -171,7 +182,7 @@ src/
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, EmiCalculator, PrepayCalculator, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, EmiCalculator, PrepayCalculator, RefinanceCheck, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -181,5 +192,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 (calculators) is under way: the Plans hub, the EMI calculator and the prepay calculator are live. The rest run on `lib/finance` and the mock.
+M2 (calculators) is under way: the Plans hub, the EMI calculator, the prepay calculator and the refinance check are live. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

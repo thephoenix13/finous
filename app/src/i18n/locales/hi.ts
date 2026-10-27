@@ -31,10 +31,12 @@ export const hi: Messages = {
     loading: "लोड हो रहा है",
     loadError: "यह लोड नहीं हो सका। अपना कनेक्शन जाँचें और फिर कोशिश करें।",
     retry: "फिर कोशिश करें",
+    noHomeLoan: "आपके लिंक किए गए खातों में कोई होम लोन नहीं दिखा।",
   },
   plans: {
     tools: {
       prepay: { title: "होम लोन का प्रीपेमेंट", subtitle: "अगर मैं ₹50K ज़्यादा चुकाऊँ" },
+      refinance: { title: "रिफाइनेंस जाँच", subtitle: "क्या मुझे अपना होम लोन बदलना चाहिए" },
       emi: { title: "EMI कैलकुलेटर", subtitle: "कोई भी लोन, कोई भी दर" },
     },
   },
@@ -49,7 +51,23 @@ export const hi: Messages = {
       "आपके पास {{count}} बैंक में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
     whereBody_other:
       "आपके पास {{count}} बैंकों में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
-    noLoan: "आपके लिंक किए गए खातों में कोई होम लोन नहीं दिखा।",
+  },
+  refinance: {
+    title: "रिफाइनेंस जाँच",
+    monthlySaving: "मासिक बचत",
+    yourRate: "आपकी दर",
+    market: "बाज़ार",
+    breakEven: "ब्रेक-ईवन",
+    breakEvenValue: "{{months}} माह",
+    involves: "इसमें क्या शामिल है",
+    processingFee: "प्रोसेसिंग शुल्क",
+    processingFeeNote: "बकाया राशि का लगभग {{percent}}",
+    documentation: "दस्तावेज़ीकरण",
+    documentationNote: "स्टैम्प, कानूनी, वैल्यूएशन",
+    totalUpfront: "कुल शुरुआती खर्च",
+    recoveredIn_one: "{{count}} महीने में वसूल",
+    recoveredIn_other: "{{count}} महीने में वसूल",
+    noSaving: "अभी बदलने से कोई बचत नहीं होगी: आपकी दर बैंकों की पेशकश के बराबर या उससे कम है।",
   },
   emi: {
     title: "EMI कैलकुलेटर",

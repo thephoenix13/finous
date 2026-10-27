@@ -1,5 +1,30 @@
 import { describe, expect, it } from "vitest";
-import { formatMonthYear } from "./format";
+import { formatMonthYear, percent } from "./format";
+
+describe("percent", () => {
+  it.each([
+    [8.9, "8.9%"],
+    [8.5, "8.5%"],
+    [9, "9%"],
+    [8.25, "8.25%"],
+    [8.256, "8.26%"],
+    [0.5, "0.5%"],
+    [0, "0%"],
+    [14, "14%"],
+  ])("writes %s as %s", (value, shown) => {
+    expect(percent(value)).toBe(shown);
+  });
+
+  it("can allow more or fewer decimals", () => {
+    expect(percent(8.256, 1)).toBe("8.3%");
+    expect(percent(8.256, 0)).toBe("8%");
+    expect(percent(8.256, 3)).toBe("8.256%");
+  });
+
+  it("does not leave a stray minus on a rate that rounds to zero", () => {
+    expect(percent(-0.001)).toBe("0%");
+  });
+});
 
 describe("formatMonthYear", () => {
   it("writes English from a fixed table: three letters, September is Sep", () => {

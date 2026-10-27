@@ -43,7 +43,7 @@ export default function PrepayCalculator() {
         (result.data ? (
           <PrepayForm inputs={result.data} />
         ) : (
-          <p className="px-5 pt-16 text-center text-ink-2">{t("prepay.noLoan")}</p>
+          <p className="px-5 pt-16 text-center text-ink-2">{t("common.noHomeLoan")}</p>
         ))}
     </>
   );

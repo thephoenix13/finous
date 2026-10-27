@@ -187,6 +187,33 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
           expect(Number.isFinite(insight.breakEvenMonths)).toBe(true);
         }
       });
+
+      it("makes a refinance's costs add up to its upfront cost, in whole rupees", async () => {
+        for (const insight of await makeApi().listInsights()) {
+          if (insight.kind !== "refinance") continue;
+          const { processingFee, documentation } = insight.costs;
+          expect(Number.isInteger(processingFee) && processingFee >= 0).toBe(true);
+          expect(Number.isInteger(documentation) && documentation >= 0).toBe(true);
+          expect(processingFee + documentation).toBe(insight.upfrontCost);
+        }
+      });
+
+      it("quotes a refinance against the rate of the loan it names, at a lower market rate", async () => {
+        const api = makeApi();
+        const loans = (await api.listAccounts()).loans;
+        for (const insight of await api.listInsights()) {
+          if (insight.kind !== "refinance") continue;
+          expect(insight.currentRatePercent).toBe(loans.find((l) => l.id === insight.loanId)?.ratePercent);
+          expect(insight.marketRatePercent).toBeLessThan(insight.currentRatePercent);
+        }
+      });
+
+      it("keeps a refinance's yearly saving to twelve times its monthly saving, give or take rounding", async () => {
+        for (const insight of await makeApi().listInsights()) {
+          if (insight.kind !== "refinance") continue;
+          expect(Math.abs(insight.annualSaving - insight.monthlySaving * 12)).toBeLessThanOrEqual(12);
+        }
+      });
     });
 
     describe("health score", () => {

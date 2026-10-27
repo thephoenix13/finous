@@ -158,7 +158,9 @@ export type RefinanceInsight = {
   marketRatePercent: number;
   monthlySaving: Rupees;
   annualSaving: Rupees;
+  /** The total paid to switch. Always the sum of `costs`. */
   upfrontCost: Rupees;
+  costs: { processingFee: Rupees; documentation: Rupees };
   breakEvenMonths: number;
 };
 

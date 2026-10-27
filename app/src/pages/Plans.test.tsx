@@ -30,7 +30,18 @@ describe("Plans", () => {
     expect(links[0]).toHaveAttribute("href", "/plans/prepay");
     expect(links[0]).toHaveTextContent(title);
     expect(links[0]).toHaveTextContent(subtitle);
-    expect(links[1]).toHaveAttribute("href", "/plans/emi");
+    expect(links[2]).toHaveAttribute("href", "/plans/emi");
+  });
+
+  it.each([
+    ["en", "Refinance check", "Should I switch my home loan"],
+    ["hi", "रिफाइनेंस जाँच", "क्या मुझे अपना होम लोन बदलना चाहिए"],
+  ] as const)("offers the refinance check in %s, between prepay and EMI as in the prototype", (lng, title, subtitle) => {
+    renderWithI18n(<Plans />, { lng });
+    const links = screen.getAllByRole("link");
+    expect(links.map((l) => l.getAttribute("href"))).toEqual(["/plans/prepay", "/plans/refinance", "/plans/emi"]);
+    expect(links[1]).toHaveTextContent(title);
+    expect(links[1]).toHaveTextContent(subtitle);
   });
 
   it("keeps the Plans hero above the tools", () => {
@@ -85,6 +96,26 @@ describe("Plans to EMI calculator, in the real app", () => {
     await user.click(screen.getByRole("link", { name: "Back" }));
     expect(window.location.pathname).toBe("/plans");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("opens the refinance check from the Plans tab, loads the offer, and comes back with Back", async () => {
+    const user = userEvent.setup();
+    open("/plans");
+    await user.click(screen.getByRole("link", { name: /Refinance check/ }));
+    expect(window.location.pathname).toBe("/plans/refinance");
+    expect(await screen.findByText("Monthly saving")).toBeInTheDocument();
+    expect(screen.getByText("₹1,523")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("loads the refinance check straight from a deep link, in Hindi", async () => {
+    open("/plans/refinance", "hi");
+    expect(await screen.findByText("मासिक बचत")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("रिफाइनेंस जाँच");
   });
 
   it("loads the prepay calculator straight from a deep link, in Hindi", async () => {

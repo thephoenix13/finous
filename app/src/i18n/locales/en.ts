@@ -28,10 +28,12 @@ export const en = {
     loading: "Loading",
     loadError: "We couldn't load this. Check your connection and try again.",
     retry: "Try again",
+    noHomeLoan: "We don't see a home loan in your linked accounts.",
   },
   plans: {
     tools: {
       prepay: { title: "Prepay home loan", subtitle: "What if I pay ₹50K extra" },
+      refinance: { title: "Refinance check", subtitle: "Should I switch my home loan" },
       emi: { title: "EMI calculator", subtitle: "Any loan, any rate" },
     },
   },
@@ -46,7 +48,23 @@ export const en = {
       "You have {{savings}} in savings in {{count}} bank. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
     whereBody_other:
       "You have {{savings}} in savings across {{count}} banks. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
-    noLoan: "We don't see a home loan in your linked accounts.",
+  },
+  refinance: {
+    title: "Refinance check",
+    monthlySaving: "Monthly saving",
+    yourRate: "Your rate",
+    market: "Market",
+    breakEven: "Break-even",
+    breakEvenValue: "{{months}} mo",
+    involves: "What this involves",
+    processingFee: "Processing fee",
+    processingFeeNote: "About {{percent}} of outstanding",
+    documentation: "Documentation",
+    documentationNote: "Stamping, legal, valuation",
+    totalUpfront: "Total upfront",
+    recoveredIn_one: "Recovered in {{count}} month",
+    recoveredIn_other: "Recovered in {{count}} months",
+    noSaving: "Switching wouldn't save you anything right now: your rate is at or below what banks are offering.",
   },
   emi: {
     title: "EMI calculator",
