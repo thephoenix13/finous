@@ -105,10 +105,37 @@ and there is no loading state.
 - **Numbers and dates:** not localised yet. `inr` keeps Indian grouping with Western digits, and `formatMonthYear` is still English.
 - **Review needed:** the Hindi copy was written by Claude and needs a native-speaker pass before launch.
 
+## Mock API
+
+`src/api/` is the contract between the app and its backend, with a mock that serves the prototype persona (Aarav Mehta,
+Bengaluru, 29 September 2026). Build screens against `Api`; swap in the real HTTP client later without touching them.
+
+```ts
+import { createMockApi, isApiError } from "./api";
+const api = createMockApi({ latencyMs: 250 });
+const home = await api.getHome();
+```
+
+- **Contract:** `types.ts` is the whole surface (profile, home, accounts, transactions, net worth, cash flow, insights,
+  health score, goals, consents), documented with the REST route each method will call. Money is whole rupees, spending is
+  negative, dates are ISO. The backend sends numbers and a `kind`, never display text: the client formats and translates.
+- **One suite for every implementation:** `contract.suite.ts` checks what any backend must guarantee (net worth is assets
+  minus liabilities, endpoints agree with each other, newest-first order, errors, cancellation). Run it against the HTTP
+  client too: `describeApiContract("http", () => createHttpApi(...))`.
+- **Persona figures** live in `persona.ts` and derive from `lib/finance` wherever it owns the maths. `persona.test.ts` pins
+  each one to Prototype v2.
+- **Errors:** failed calls reject with `ApiError` (`code`: `unauthorized`, `not_found`, `unavailable`, with the matching HTTP
+  `status`). Cancelling with an `AbortSignal` rejects with an `AbortError`.
+- **Testing error screens:** `api.failNext(new ApiError("unavailable"))` fails the next call you make, once.
+- **Copies:** every response is a deep copy, so nothing can change the persona by accident.
+- **Not here yet:** writes (revoke consent, add a manual asset, create a goal), and a 12-month net-worth history. The
+  prototype only draws a decorative curve, so no numbers were invented for it.
+
 ## Layout
 
 ```
 src/
+  api/          types (the contract), mock, persona, errors, contract.suite
   components/   Shell, TabBar, OfflineScreen, UpdatePrompt, PlaceholderPage, LanguageSwitcher
   components/ui/ shared library: Button, HeroCard, Card, Row, Tag, Switch, Slider, Field, Toast
   hooks/        useOnline
@@ -122,6 +149,6 @@ public/         icons and favicon
 
 ## Status
 
-M1 in progress: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
-CI with Vercel previews, and English and Hindi i18n are done.
-Still to do in M1: the mock API.
+M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
+CI with Vercel previews, English and Hindi i18n, and the mock API.
+Next is M2 (calculators), which can run entirely on `lib/finance` and the mock.
