@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type HomeSummary, type LoanAccount, type Profile, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
-import { HeroCard, Row, RowGroup } from "../components/ui";
+import { ButtonLink, HeroCard, Row, RowGroup } from "../components/ui";
 import { formatWeekdayDate, inr } from "../lib/format";
 import { insightCopy } from "../lib/insightCopy";
 
@@ -67,6 +67,12 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
           </p>
         </div>
       </section>
+
+      <div className="px-5 pt-8">
+        <ButtonLink to="/accounts" variant="ghost" size="sm">
+          {t("home.allAccounts")}
+        </ButtonLink>
+      </div>
 
       <section aria-labelledby="home-look" className="pt-8">
         <h2 id="home-look" className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">

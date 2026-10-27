@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Shell from "./components/Shell";
 import PlaceholderPage from "./components/PlaceholderPage";
+import AccountDetail from "./pages/AccountDetail";
+import Accounts from "./pages/Accounts";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
 import EmiCalculator from "./pages/EmiCalculator";
 import GoalCalculator from "./pages/GoalCalculator";
@@ -33,6 +35,8 @@ export default function App() {
             path="advisor"
             element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
           />
+          <Route path="accounts" element={<Accounts />} />
+          <Route path="accounts/:id" element={<AccountDetail />} />
           <Route path="plans" element={<Plans />} />
           <Route path="plans/goals" element={<Goals />} />
           <Route path="plans/goals/:id" element={<GoalDetail />} />
