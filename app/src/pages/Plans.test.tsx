@@ -39,7 +39,7 @@ describe("Plans", () => {
   ] as const)("offers the refinance check in %s, between prepay and EMI as in the prototype", (lng, title, subtitle) => {
     renderWithI18n(<Plans />, { lng });
     const links = screen.getAllByRole("link");
-    expect(links.map((l) => l.getAttribute("href"))).toEqual(["/plans/prepay", "/plans/refinance", "/plans/afford", "/plans/emi"]);
+    expect(links.map((l) => l.getAttribute("href"))).toEqual(["/plans/prepay", "/plans/refinance", "/plans/afford", "/plans/goal-calc", "/plans/emi"]);
     expect(links[1]).toHaveTextContent(title);
     expect(links[1]).toHaveTextContent(subtitle);
   });
@@ -53,6 +53,17 @@ describe("Plans", () => {
     expect(links[2]).toHaveAttribute("href", "/plans/afford");
     expect(links[2]).toHaveTextContent(title);
     expect(links[2]).toHaveTextContent(subtitle);
+  });
+
+  it.each([
+    ["en", "Goal calculator", "How much to save each month"],
+    ["hi", "लक्ष्य कैलकुलेटर", "हर महीने कितना बचाना है"],
+  ] as const)("offers the goal calculator in %s, between affordability and EMI as in the prototype", (lng, title, subtitle) => {
+    renderWithI18n(<Plans />, { lng });
+    const links = screen.getAllByRole("link");
+    expect(links[3]).toHaveAttribute("href", "/plans/goal-calc");
+    expect(links[3]).toHaveTextContent(title);
+    expect(links[3]).toHaveTextContent(subtitle);
   });
 
   it("keeps the Plans hero above the tools", () => {
@@ -135,6 +146,26 @@ describe("Plans to EMI calculator, in the real app", () => {
     await user.click(screen.getByRole("link", { name: "Back" }));
     expect(window.location.pathname).toBe("/plans");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("opens the goal calculator from the Plans tab, and comes back with Back", async () => {
+    const user = userEvent.setup();
+    open("/plans");
+    await user.click(screen.getByRole("link", { name: /Goal calculator/ }));
+    expect(window.location.pathname).toBe("/plans/goal-calc");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Goal calculator");
+    expect(screen.getByText("₹31,400")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("loads the goal calculator straight from a deep link, in Hindi", () => {
+    open("/plans/goal-calc", "hi");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("लक्ष्य कैलकुलेटर");
+    expect(screen.getByText("₹31,400")).toBeInTheDocument();
   });
 
   it("loads the affordability check straight from a deep link, in Hindi", async () => {
