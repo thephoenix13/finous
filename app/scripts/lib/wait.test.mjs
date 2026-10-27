@@ -2,6 +2,12 @@ import { spawn } from "node:child_process";
 import { describe, expect, it, vi } from "vitest";
 import { CHROME_START_TIMEOUT_MS, describeExit, sleep, waitFor, watchProcess } from "./wait.mjs";
 
+/**
+ * Source for a process that writes `text` to stderr and then exits with `code`, once the write has gone through.
+ * Exiting straight after writing can cut the output short on Linux, where a pipe is written asynchronously.
+ */
+const failWith = (text, code) => `process.stderr.write(${JSON.stringify(text)}, () => process.exit(${code}))`;
+
 /** Starts a Node process running `source`, watched the way pwa-check.mjs watches Chrome. */
 function run(source) {
   const child = spawn(process.execPath, ["-e", source], { stdio: ["ignore", "ignore", "pipe"] });
@@ -133,7 +139,7 @@ describe("watchProcess, with real processes", () => {
   });
 
   it("reports a process that exits at once: its exit code and what it printed", async () => {
-    const { failFast } = run("console.error('FATAL: no display'); process.exit(3)");
+    const { failFast } = run(failWith("FATAL: no display\n", 3));
     const reason = await reasonAfterExit(failFast);
     expect(reason).toContain("Chrome exited with code 3 before it was ready.");
     expect(reason).toContain("FATAL: no display");
@@ -147,9 +153,11 @@ describe("watchProcess, with real processes", () => {
   });
 
   it("keeps only the last of a very chatty process, so the report stays short", async () => {
-    const { failFast } = run("for (let i = 0; i < 2000; i++) console.error('line ' + i); process.exit(1)");
+    // 1000 lines is about 9 KB: more than the 4 KB the watcher keeps, and well under the Windows command-line limit.
+    const text = Array.from({ length: 1000 }, (_, i) => `line ${i}`).join("\n") + "\n";
+    const { failFast } = run(failWith(text, 1));
     const reason = await reasonAfterExit(failFast);
-    expect(reason).toContain("line 1999");
+    expect(reason).toContain("line 999");
     expect(reason).not.toContain("line 5\n");
     expect(reason.length).toBeLessThan(500);
   });
@@ -163,14 +171,14 @@ describe("watchProcess, with real processes", () => {
   });
 
   it("keeps the first reason: a later event does not overwrite it", async () => {
-    const { failFast } = run("console.error('first reason'); process.exit(4)");
+    const { failFast } = run(failWith("first reason\n", 4));
     const first = await reasonAfterExit(failFast);
     await sleep(50);
     expect(failFast()).toBe(first);
   });
 
   it("ends a waitFor straight away when Chrome has already died, instead of waiting out the timeout", async () => {
-    const { failFast } = run("console.error('Missing X server'); process.exit(1)");
+    const { failFast } = run(failWith("Missing X server\n", 1));
     const start = Date.now();
     await expect(waitFor(() => false, "Chrome's debugging port", { timeoutMs: 30_000, intervalMs: 10, failFast })).rejects.toThrow(/Chrome's debugging port: Chrome exited with code 1 .*Missing X server/s);
     expect(Date.now() - start).toBeLessThan(5_000);
