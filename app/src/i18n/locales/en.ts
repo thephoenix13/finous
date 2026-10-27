@@ -34,6 +34,7 @@ export const en = {
     tools: {
       prepay: { title: "Prepay home loan", subtitle: "What if I pay ₹50K extra" },
       refinance: { title: "Refinance check", subtitle: "Should I switch my home loan" },
+      afford: { title: "Affordability check", subtitle: "Can I buy a ₹40L car" },
       emi: { title: "EMI calculator", subtitle: "Any loan, any rate" },
     },
   },
@@ -48,6 +49,25 @@ export const en = {
       "You have {{savings}} in savings in {{count}} bank. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
     whereBody_other:
       "You have {{savings}} in savings across {{count}} banks. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
+  },
+  afford: {
+    title: "Affordability",
+    eyebrow: "A ₹{{lakhs}}L car",
+    notYet: "Not yet",
+    yes: "Yes",
+    shortfall: "You'd need {{gap}}/month more headroom, or about ₹{{lakhs}}L more down payment.",
+    shortfallOnly: "You'd need {{gap}}/month more headroom. A bigger down payment alone wouldn't cover it.",
+    spare: "You'd still have about {{spare}}/month free after the car.",
+    assumptions: "Assumptions",
+    downPayment: "Down payment",
+    downPaymentNote: "{{percent}} of ₹{{lakhs}}L",
+    loan: "Loan at {{rate}}",
+    loanNote_one: "{{count}} month",
+    loanNote_other: "{{count}} months",
+    outflow: "Total monthly outflow",
+    outflowNote: "Including insurance",
+    headroomTitle: "Your headroom",
+    headroomBody: "After EMIs, SIPs, and living expenses, you currently have {{free}}/month free. A ₹{{lakhs}}L car needs {{needs}}.",
   },
   refinance: {
     title: "Refinance check",

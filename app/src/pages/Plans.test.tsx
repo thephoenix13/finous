@@ -30,7 +30,7 @@ describe("Plans", () => {
     expect(links[0]).toHaveAttribute("href", "/plans/prepay");
     expect(links[0]).toHaveTextContent(title);
     expect(links[0]).toHaveTextContent(subtitle);
-    expect(links[2]).toHaveAttribute("href", "/plans/emi");
+    expect(links[links.length - 1]).toHaveAttribute("href", "/plans/emi");
   });
 
   it.each([
@@ -39,9 +39,20 @@ describe("Plans", () => {
   ] as const)("offers the refinance check in %s, between prepay and EMI as in the prototype", (lng, title, subtitle) => {
     renderWithI18n(<Plans />, { lng });
     const links = screen.getAllByRole("link");
-    expect(links.map((l) => l.getAttribute("href"))).toEqual(["/plans/prepay", "/plans/refinance", "/plans/emi"]);
+    expect(links.map((l) => l.getAttribute("href"))).toEqual(["/plans/prepay", "/plans/refinance", "/plans/afford", "/plans/emi"]);
     expect(links[1]).toHaveTextContent(title);
     expect(links[1]).toHaveTextContent(subtitle);
+  });
+
+  it.each([
+    ["en", "Affordability check", "Can I buy a ₹40L car"],
+    ["hi", "खरीद की क्षमता की जाँच", "क्या मैं ₹40 लाख की कार खरीद सकता हूँ"],
+  ] as const)("offers the affordability check in %s, between refinance and EMI as in the prototype", (lng, title, subtitle) => {
+    renderWithI18n(<Plans />, { lng });
+    const links = screen.getAllByRole("link");
+    expect(links[2]).toHaveAttribute("href", "/plans/afford");
+    expect(links[2]).toHaveTextContent(title);
+    expect(links[2]).toHaveTextContent(subtitle);
   });
 
   it("keeps the Plans hero above the tools", () => {
@@ -110,6 +121,26 @@ describe("Plans to EMI calculator, in the real app", () => {
     await user.click(screen.getByRole("link", { name: "Back" }));
     expect(window.location.pathname).toBe("/plans");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("opens the affordability check from the Plans tab, loads the headroom, and comes back with Back", async () => {
+    const user = userEvent.setup();
+    open("/plans");
+    await user.click(screen.getByRole("link", { name: /Affordability check/ }));
+    expect(window.location.pathname).toBe("/plans/afford");
+    expect(await screen.findByText("Assumptions")).toBeInTheDocument();
+    expect(screen.getByText("Not yet")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("loads the affordability check straight from a deep link, in Hindi", async () => {
+    open("/plans/afford", "hi");
+    expect(await screen.findByText("मान्यताएँ")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("खरीद की क्षमता");
   });
 
   it("loads the refinance check straight from a deep link, in Hindi", async () => {

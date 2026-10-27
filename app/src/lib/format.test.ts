@@ -1,5 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { formatMonthYear, percent } from "./format";
+import { formatMonthYear, percent, toLakhs } from "./format";
+
+describe("toLakhs", () => {
+  it.each([
+    [4_000_000, "40"],
+    [876_399, "8.8"],
+    [6_200_000, "62"],
+    [150_000, "1.5"],
+    [10_000, "0.1"],
+    [0, "0"],
+    [4_049_999, "40.5"],
+  ])("writes %i as %s", (amount, shown) => {
+    expect(toLakhs(amount)).toBe(shown);
+  });
+
+  it("can keep more decimals", () => {
+    expect(toLakhs(876_399, 2)).toBe("8.76");
+    expect(toLakhs(876_399, 0)).toBe("9");
+  });
+});
 
 describe("percent", () => {
   it.each([

@@ -28,6 +28,11 @@ export function percent(value: number, maxDecimals = 2): string {
   return `${Number(value.toFixed(maxDecimals))}%`;
 }
 
+/** An amount in lakhs, for "₹8.8L" copy: the number only, to one decimal with no trailing zero (40 and 8.8). The unit is the caller's, as it is translated. */
+export function toLakhs(amount: number, decimals = 1): string {
+  return String(Number((amount / 100_000).toFixed(decimals)));
+}
+
 /** Round to a step, for "about ₹1,35,000" style copy. */
 export function roundTo(value: number, step: number): number {
   return Math.round(value / step) * step;

@@ -22,6 +22,13 @@ const ChartIcon = () => (
   </svg>
 );
 
+const CheckIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="m8 12.5 3 3 5-6" />
+  </svg>
+);
+
 /** The Plans hub. One row per tool, in the prototype's order; rows are added as each M2 calculator lands. */
 export default function Plans() {
   const { t } = useTranslation();
@@ -31,6 +38,7 @@ export default function Plans() {
       <RowGroup className="mb-6">
         <Row to="/plans/prepay" icon={<TrendIcon />} title={t("plans.tools.prepay.title")} subtitle={t("plans.tools.prepay.subtitle")} />
         <Row to="/plans/refinance" icon={<ChartIcon />} title={t("plans.tools.refinance.title")} subtitle={t("plans.tools.refinance.subtitle")} />
+        <Row to="/plans/afford" icon={<CheckIcon />} title={t("plans.tools.afford.title")} subtitle={t("plans.tools.afford.subtitle")} />
         <Row to="/plans/emi" icon={<CalcIcon />} title={t("plans.tools.emi.title")} subtitle={t("plans.tools.emi.subtitle")} />
       </RowGroup>
     </>

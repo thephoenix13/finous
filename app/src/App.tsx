@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Shell from "./components/Shell";
 import PlaceholderPage from "./components/PlaceholderPage";
+import AffordabilityCheck from "./pages/AffordabilityCheck";
 import EmiCalculator from "./pages/EmiCalculator";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="plans" element={<Plans />} />
           <Route path="plans/prepay" element={<PrepayCalculator />} />
           <Route path="plans/refinance" element={<RefinanceCheck />} />
+          <Route path="plans/afford" element={<AffordabilityCheck />} />
           <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
           {DevComponents && (
