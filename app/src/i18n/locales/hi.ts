@@ -26,6 +26,26 @@ export const hi: Messages = {
   language: {
     label: "भाषा",
   },
+  common: {
+    back: "वापस",
+  },
+  plans: {
+    tools: {
+      emi: { title: "EMI कैलकुलेटर", subtitle: "कोई भी लोन, कोई भी दर" },
+    },
+  },
+  emi: {
+    title: "EMI कैलकुलेटर",
+    monthly: "मासिक EMI",
+    principal: "मूलधन",
+    interest: "ब्याज",
+    total: "कुल",
+    loanAmount: "लोन की राशि",
+    rate: "ब्याज दर",
+    tenure: "अवधि",
+    tenureValue_one: "{{count}} वर्ष",
+    tenureValue_other: "{{count}} वर्ष",
+  },
   pages: {
     home: {
       eyebrow: "होम",
@@ -40,7 +60,7 @@ export const hi: Messages = {
     plans: {
       eyebrow: "योजनाएँ",
       title: "आप क्या समझना चाहते हैं?",
-      note: "कैलकुलेटर, हेल्थ स्कोर, लक्ष्य और टैक्स। EMI और प्रीपेमेंट टूल M2 में आएँगे।",
+      note: "कैलकुलेटर, हेल्थ स्कोर, लक्ष्य और टैक्स। और टूल M2 में आएँगे।",
     },
     you: {
       eyebrow: "आप",

@@ -1,0 +1,23 @@
+import { useTranslation } from "react-i18next";
+import PlaceholderPage from "../components/PlaceholderPage";
+import { Row, RowGroup } from "../components/ui";
+
+const CalcIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="5" y="3" width="14" height="18" rx="2" />
+    <path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01" />
+  </svg>
+);
+
+/** The Plans hub. One row per tool; rows are added as each M2 calculator lands. */
+export default function Plans() {
+  const { t } = useTranslation();
+  return (
+    <>
+      <PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />
+      <RowGroup className="mb-6">
+        <Row to="/plans/emi" icon={<CalcIcon />} title={t("plans.tools.emi.title")} subtitle={t("plans.tools.emi.subtitle")} />
+      </RowGroup>
+    </>
+  );
+}

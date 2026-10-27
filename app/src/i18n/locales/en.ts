@@ -23,6 +23,26 @@ export const en = {
   language: {
     label: "Language",
   },
+  common: {
+    back: "Back",
+  },
+  plans: {
+    tools: {
+      emi: { title: "EMI calculator", subtitle: "Any loan, any rate" },
+    },
+  },
+  emi: {
+    title: "EMI calculator",
+    monthly: "Monthly EMI",
+    principal: "Principal",
+    interest: "Interest",
+    total: "Total",
+    loanAmount: "Loan amount",
+    rate: "Interest rate",
+    tenure: "Tenure",
+    tenureValue_one: "{{count}} year",
+    tenureValue_other: "{{count}} years",
+  },
   pages: {
     home: {
       eyebrow: "Home",
@@ -37,7 +57,7 @@ export const en = {
     plans: {
       eyebrow: "Plans",
       title: "What do you want to figure out?",
-      note: "Calculators, health score, goals and tax. EMI and prepay tools arrive in M2.",
+      note: "Calculators, health score, goals and tax. More tools arrive in M2.",
     },
     you: {
       eyebrow: "You",

@@ -131,17 +131,34 @@ const home = await api.getHome();
 - **Not here yet:** writes (revoke consent, add a manual asset, create a goal), and a 12-month net-worth history. The
   prototype only draws a decorative curve, so no numbers were invented for it.
 
+## Calculators (M2)
+
+Each calculator is a screen under the Plans tab (`/plans/<tool>`), built on `lib/finance` with no backend. The EMI
+calculator (`pages/EmiCalculator.tsx`) is the pattern to copy:
+
+- **Shape:** `PageHeader` (Back link and the one h1, going to a fixed route, not history), a `HeroCard` with the result in a
+  polite live region (so a screen reader hears the answer change as a slider moves), then `Slider`s. Colours come from `data-domain`.
+- **Wire-up:** add the route in `App.tsx`, a `Row` in `pages/Plans.tsx`, and strings in both `en.ts` and `hi.ts`.
+- **Wording that depends on a number** uses i18next plurals (`tenureValue_one`, `tenureValue_other`), not string maths.
+- **Numbers on a narrow card:** the result split uses a container query (`@container`, `@[18rem]:`), because the app is a 480px
+  column and viewport breakpoints do not apply. At 320px with the largest values, three amounts side by side collide; they
+  stack instead. Check new result layouts at 320px with the largest inputs.
+- **Tests** pin results to the prototype or to an independent calculation, cover the slider ranges and extremes, the
+  principal + interest = total identity to the rupee, Hindi, axe, and the route from the Plans tab and back.
+
+Done: EMI calculator. Still to build: prepay, refinance, affordability, goal calculator, then tax, health score and goals.
+
 ## Layout
 
 ```
 src/
   api/          types (the contract), mock, persona, errors, contract.suite
-  components/   Shell, TabBar, OfflineScreen, UpdatePrompt, PlaceholderPage, LanguageSwitcher
+  components/   Shell, TabBar, PageHeader, OfflineScreen, UpdatePrompt, PlaceholderPage, LanguageSwitcher
   components/ui/ shared library: Button, HeroCard, Card, Row, Tag, Switch, Slider, Field, Toast
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        You, DevTokens and DevComponents (dev only)
+  pages/        Plans, EmiCalculator, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -151,4 +168,4 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-Next is M2 (calculators), which can run entirely on `lib/finance` and the mock.
+M2 (calculators) is under way: the Plans hub and the EMI calculator are live. The rest run on `lib/finance` and the mock.
