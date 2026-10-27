@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finous — B2C PWA Build Plan v1.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f7; color: #1a1a2e; line-height: 1.6; font-size: 14px;
+    -webkit-font-smoothing: antialiased; padding: 16px;
+  }
+  .page {
+    max-width: 1160px; margin: 20px auto; background: #ffffff; padding: 40px 48px 48px;
+    border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid #e4e9f0;
+  }
+  @media print {
+    body { background: #ffffff; padding: 0; font-size: 11px; }
+    .page { border-radius: 0; box-shadow: none; border: none; padding: 0.4in; margin: 0; max-width: 100%; }
+    h2 { page-break-after: avoid; }
+    table, .callout { page-break-inside: avoid; }
+  }
+  .doc-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18px; border-bottom: 2px solid #0f1f3d; margin-bottom: 28px; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark { width: 40px; height: 40px; background: #c9a227; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; color: #ffffff; }
+  .logo-text { font-size: 20px; font-weight: 800; color: #0f1f3d; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 11px; color: #9aa3b3; letter-spacing: 0.3px; }
+  .doc-badge { font-size: 10px; font-weight: 700; color: #c9a227; background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.25); padding: 5px 14px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; }
+  h1 { font-size: 26px; font-weight: 800; color: #0f1f3d; letter-spacing: -0.6px; margin-bottom: 8px; }
+  .subtitle { font-size: 14px; color: #6b7280; margin-bottom: 28px; line-height: 1.65; max-width: 780px; }
+  h2 { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 800; color: #0f1f3d; letter-spacing: -0.2px; margin: 34px 0 14px; }
+  h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: #0f1f3d; color: #c9a227; border-radius: 7px; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  h3 { font-size: 13px; font-weight: 700; color: #0f1f3d; margin: 18px 0 6px; }
+  p { margin-bottom: 10px; color: #374151; max-width: 860px; }
+  ul { margin: 0 0 12px 20px; color: #374151; }
+  li { margin-bottom: 4px; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; background: #f3f4f8; padding: 1px 6px; border-radius: 4px; color: #0f1f3d; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 13px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; background: #f8f9fc; padding: 9px 12px; border-bottom: 1px solid #e4e9f0; }
+  td { padding: 10px 12px; border-bottom: 1px solid #eef1f6; vertical-align: top; color: #374151; }
+  td strong { color: #0f1f3d; }
+  .callout { background: #f8f9fc; border: 1px solid #e8ecf2; border-left: 3px solid #c9a227; border-radius: 8px; padding: 12px 16px; margin: 10px 0 16px; color: #374151; }
+  .callout.ok { border-left-color: #2e7d4f; background: #f1f8f4; }
+  .callout.risk { border-left-color: #b8390e; background: #fdf3f1; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.4px; text-transform: uppercase; }
+  .t-s { background: #e8f5ec; color: #2e7d4f; }
+  .t-m { background: #fff4e0; color: #a8871f; }
+  .t-l { background: #fce8e8; color: #b8390e; }
+  .footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid #e4e9f0; font-size: 11px; color: #9aa3b3; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <div class="logo">
+      <div class="logo-mark">F</div>
+      <div>
+        <div class="logo-text">Finous</div>
+        <div class="logo-sub">by Nidhiverse Private Limited</div>
+      </div>
+    </div>
+    <div class="doc-badge">Build Plan v1.0 · Draft</div>
+  </div>
+
+  <h1>B2C PWA — Build Plan</h1>
+  <p class="subtitle">How the Finous prototype becomes the production PWA. Scope is Phase 1 and Phase 2 of the Screen Inventory. This plan builds on Architecture v1.1 and treats Prototype v2 (Daylight) as the visual and behavioural reference. Dated 27 Oct 2026.</p>
+
+  <h2><span class="num">1</span>Decisions (confirmed)</h2>
+  <table>
+    <tr><th style="width:20%">Topic</th><th style="width:30%">Decision</th><th>Reasoning</th></tr>
+    <tr><td><strong>Brand colour</strong></td><td>Daylight blue (<code>#1E5EFF</code>) for the product. Gold stays an accent on the marketing site.</td><td>Prototype v2 is built on it, and the domain tints (loan, investment, goal, advisor) hang off a blue base.</td></tr>
+    <tr><td><strong>Repo location</strong></td><td>New <code>Finous/app/</code> folder in the main Finous repo.</td><td>The existing <code>finous/</code> folder is a separate nested repo holding the marketing site. Keeping the app out of it avoids nested-repo confusion.</td></tr>
+    <tr><td><strong>Auth order</strong></td><td>Follow the Screen Inventory: phone OTP, name and email, Aadhaar eKYC, consent.</td><td>Matches Architecture v1.1 (Identity module) and lets P1 ship before Aadhaar and AA are available. The prototype's flow is updated to match.</td></tr>
+    <tr><td><strong>Backend dependency</strong></td><td>Build against a mock API that serves the prototype persona until the real backend, Setu and eKYC exist.</td><td>Account Aggregator and Aadhaar approvals have external lead times. The frontend must not wait on them.</td></tr>
+  </table>
+
+  <h2><span class="num">2</span>Scope and phasing</h2>
+  <ul>
+    <li><strong>In scope now (P1 + P2):</strong> onboarding and auth, Day 0 tools, error, offline and skeleton states, home and detail screens, AI Advisor, voice agent, settings, privacy and consent management.</li>
+    <li><strong>Later (P3 to P5):</strong> loan suite, health score, marketplace, goals, investment hub, premium. Prototype v2 already designs most of these, so they become reference rather than new design.</li>
+    <li><strong>Ship order:</strong> P1 first. It needs no Account Aggregator and no licence.</li>
+  </ul>
+
+  <h2><span class="num">3</span>Stack</h2>
+  <table>
+    <tr><th style="width:22%">Concern</th><th>Choice</th></tr>
+    <tr><td>App</td><td>Vite, React 18, TypeScript, React Router. Matches the marketing site. Server rendering adds nothing for a thin client.</td></tr>
+    <tr><td>Styling</td><td>Tailwind 4 with the Daylight values as CSS variables. Domain colours switch through a <code>data-domain</code> attribute. Tenant branding loads at runtime.</td></tr>
+    <tr><td>Data</td><td>TanStack Query with <strong>no persistence</strong>. No financial data is stored in the browser.</td></tr>
+    <tr><td>i18n</td><td>react-i18next, English and Hindi. Hindi at the UI layer, English at the data layer (Architecture v1.1).</td></tr>
+    <tr><td>PWA</td><td><code>vite-plugin-pwa</code>. App shell precache only. No runtime caching for <code>/api</code>.</td></tr>
+    <tr><td>Testing</td><td>Vitest (unit), Playwright (one flow per prototype journey), axe in CI.</td></tr>
+    <tr><td>Hosting</td><td>Vercel, with preview deploys per pull request.</td></tr>
+  </table>
+
+  <h2><span class="num">4</span>PWA specifics</h2>
+  <ul>
+    <li><strong>Manifest:</strong> standalone display, 192 and 512 icons plus a maskable icon, theme colour and language set.</li>
+    <li><strong>Per-tenant manifest:</strong> white-labelling means each subdomain needs its own name, icons and theme colour. The gateway serves the manifest dynamically from the resolved tenant.</li>
+    <li><strong>Service worker:</strong> precaches HTML, JS, CSS and icons only. Navigation falls back to the offline screen. Nothing financial is ever cached.</li>
+    <li><strong>Updates:</strong> prompt the user ("New version available") instead of updating silently.</li>
+    <li><strong>Install:</strong> the Android install prompt, plus manual Add to Home Screen steps for iOS.</li>
+    <li><strong>Session:</strong> access token held in memory, refresh token in an httpOnly cookie, silent refresh at app start.</li>
+    <li><strong>Biometric lock:</strong> WebAuthn platform authenticator (Screen 11.5).</li>
+    <li><strong>Push alerts:</strong> Web Push. iOS supports it only for installed PWAs, so it ships with the alerts milestone, not before.</li>
+    <li><strong>Logout:</strong> clears every cache and in-memory state.</li>
+    <li><strong>No background sync:</strong> deliberate, because the data is financial.</li>
+  </ul>
+
+  <h2><span class="num">5</span>Milestones</h2>
+  <p>Sizes are relative effort, not calendar time. Each milestone is shippable behind a feature flag.</p>
+  <table>
+    <tr><th style="width:4%">#</th><th style="width:22%">Milestone</th><th style="width:7%">Size</th><th>Deliverables</th><th style="width:16%">Depends on</th></tr>
+    <tr><td>M1</td><td><strong>Foundations</strong></td><td><span class="tag t-m">M</span></td><td>Repo at <code>Finous/app</code>, CI, Vercel previews, design tokens, component library lifted from the prototype, i18n, PWA shell, offline and error screens, mock API.</td><td>None</td></tr>
+    <tr><td>M2</td><td><strong>Day 0 and onboarding</strong></td><td><span class="tag t-m">M</span></td><td>Splash, welcome, phone OTP, name and email, empty home, EMI and prepay tools. No AA needed.</td><td>M1</td></tr>
+    <tr><td>M3</td><td><strong>Auth and AA</strong></td><td><span class="tag t-l">L</span></td><td>Aadhaar eKYC, consent intro, consent flow, sync, consent granted. Mock first, Setu later.</td><td>M2, Identity and AA modules</td></tr>
+    <tr><td>M4</td><td><strong>Home and detail</strong></td><td><span class="tag t-m">M</span></td><td>Connected home, accounts, loans, investments, cards, cash flow, net worth.</td><td>M3 (or mock)</td></tr>
+    <tr><td>M5</td><td><strong>AI Advisor</strong></td><td><span class="tag t-l">L</span></td><td>Chat, history, sources, proactive alerts, "information, not advice" guardrails.</td><td>M4, AI module</td></tr>
+    <tr><td>M6</td><td><strong>Voice</strong></td><td><span class="tag t-l">L</span></td><td>Idle, listening, thinking, speaking, transcript. Deepgram token, session-loss message.</td><td>M5, Voice module</td></tr>
+    <tr><td>M7</td><td><strong>Settings and privacy</strong></td><td><span class="tag t-m">M</span></td><td>Profile, linked accounts, consent revoke, 24-hour deletion, data download, notifications, language, security, help, about. Push alerts.</td><td>M4</td></tr>
+    <tr><td>M8</td><td><strong>Hardening</strong></td><td><span class="tag t-m">M</span></td><td>Accessibility audit, performance budget, DPDP review, security review, device testing on iOS Safari and Android Chrome.</td><td>All</td></tr>
+  </table>
+
+  <h2><span class="num">6</span>Quality gates</h2>
+  <ul>
+    <li><strong>Shared finance module:</strong> the prototype's loan maths (EMI, months to close, prepay, refinance) moves into a tested <code>finance</code> module. The numbers audit from the prototype becomes unit tests, so figures cannot drift apart between screens.</li>
+    <li><strong>Single source for figures:</strong> screens read derived values, never hard-coded text, as in the prototype's <code>F</code> object.</li>
+    <li><strong>Accessibility:</strong> WCAG AA, axe in CI, keyboard and screen-reader pass per milestone. Prototype v2 already sets the patterns: focusable rows, labelled controls, reduced-motion, 44px targets.</li>
+    <li><strong>Performance and PWA:</strong> Lighthouse PWA and performance budget enforced in CI.</li>
+    <li><strong>End to end:</strong> one Playwright flow per prototype journey.</li>
+  </ul>
+
+  <h2><span class="num">7</span>Prototype versus documents</h2>
+  <p>Where the prototype and the documents disagree, the documents win and the prototype is updated.</p>
+  <table>
+    <tr><th style="width:18%">Topic</th><th style="width:32%">Prototype v2 today</th><th>Resolution</th></tr>
+    <tr><td><strong>Brand colour</strong></td><td>Daylight blue</td><td>Blue for the product (decision 1). Gold accent on marketing only.</td></tr>
+    <tr><td><strong>Onboarding</strong></td><td>Welcome, consent, Aadhaar, sync. No phone login.</td><td>Follow the inventory (decision 3).</td></tr>
+    <tr><td><strong>Product CTA</strong></td><td>"Ask HDFC for a quote"</td><td>Inventory says "Learn more", never "Apply". Use "Learn more" with the referral disclosure.</td></tr>
+    <tr><td><strong>Audit retention</strong></td><td>Audit logs kept for 3 years</td><td>Architecture says hashed user ID, action and timestamp only. Confirm the retention period with legal.</td></tr>
+    <tr><td><strong>Voice</strong></td><td>One screen</td><td>Five states per the inventory (4.1 to 4.5).</td></tr>
+    <tr><td><strong>Offline</strong></td><td>"We don't show cached balances"</td><td>Matches the architecture. No change.</td></tr>
+    <tr><td><strong>Data refresh</strong></td><td>Every 12 hours, pull on demand</td><td>Matches the architecture. No change.</td></tr>
+  </table>
+
+  <h2><span class="num">8</span>Risks and open items</h2>
+  <div class="callout risk">
+    <ul style="margin-bottom:0">
+      <li><strong>Regulatory lead times:</strong> Setu (AA) and Aadhaar eKYC approvals gate M3. The mock API keeps everything else moving.</li>
+      <li><strong>Advice boundary:</strong> the Advisor and recommendation screens must stay information, not advice. Have a SEBI-aware reviewer approve the final copy, including voice, which shares the same guardrails.</li>
+      <li><strong>iOS push:</strong> limited to installed PWAs, so alerts need an in-app fallback.</li>
+      <li><strong>Voice latency:</strong> it depends on the Deepgram to Finous LLM callback.</li>
+      <li><strong>Hindi copy:</strong> needs proper translation, not machine output, for financial terms.</li>
+      <li><strong>Data residency:</strong> all data services must run in Azure Central India. The static shell on a Vercel CDN holds no user data.</li>
+      <li><strong>Multi-tenant theming:</strong> per-tenant manifest and runtime tokens are not in the prototype and need design time in M1.</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">9</span>First steps</h2>
+  <ul>
+    <li>Scaffold <code>Finous/app/</code> (Vite, React, TypeScript, Tailwind 4, <code>vite-plugin-pwa</code>).</li>
+    <li>Port the Daylight tokens and the shared components: hero card, row, card, tag, switch, slider, field, toast, tab bar, nav bar.</li>
+    <li>Extract the loan maths into <code>finance</code> with unit tests.</li>
+    <li>Stand up the mock API from the prototype persona.</li>
+    <li>Wire CI and Vercel previews, then ship the offline screen as the first PWA proof.</li>
+  </ul>
+
+  <div class="footer">
+    <span>Confidential · Finous by Nidhiverse Private Limited · 2026</span>
+    <span>B2C PWA Build Plan · v1.0 draft</span>
+  </div>
+
+</div>
+</body>
+</html>
