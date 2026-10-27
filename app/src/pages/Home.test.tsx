@@ -63,6 +63,12 @@ describe("Home: first view (prototype Home screen)", () => {
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
+  it("links to all accounts", async () => {
+    renderWithI18n(<Home now={MORNING} />);
+    await loaded();
+    expect(screen.getByRole("link", { name: "All accounts" })).toHaveAttribute("href", "/accounts");
+  });
+
   it("draws no net-worth curve: the Api has no history to draw it from", async () => {
     const { container } = renderWithI18n(<Home now={MORNING} />);
     await loaded();
@@ -153,6 +159,7 @@ describe("Home: Hindi", () => {
     expect(screen.getByText("आपके HDFC Home Loan की दर बाज़ार से ऊपर है")).toBeInTheDocument();
     expect(screen.getByText("अभी 8.9%। बाज़ार में 8.5% मिल रही है। रिफाइनेंस से हर महीने ₹1,523 बच सकते हैं।")).toBeInTheDocument();
     expect(screen.getByText("आपकी बचत का ₹2,10,000 ज़्यादा कमा सकता है")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "सभी खाते" })).toHaveAttribute("href", "/accounts");
   });
 
   it("greets in the afternoon and evening in Hindi", async () => {

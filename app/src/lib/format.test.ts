@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addMonths } from "./finance";
-import { formatDayMonth, formatList, formatMonthYear, formatWeekdayDate, parseMonth, percent, roundSig, toLakhs } from "./format";
+import { formatClock, formatDayMonth, formatList, formatMonthYear, formatWeekdayDate, formatWhen, ordinalDay, parseMonth, percent, roundSig, signedInr, toLakhs } from "./format";
 
 describe("parseMonth", () => {
   it("reads a month string into a year and a month", () => {
@@ -194,5 +194,85 @@ describe("formatMonthYear", () => {
     expect(formatMonthYear({ year: 2044, month: 3 })).toBe("Mar 2044");
     expect(formatMonthYear({ year: 2044, month: 3 }, undefined)).toBe("Mar 2044");
     expect(formatMonthYear({ year: 2044, month: 3 }, "")).toBe("Mar 2044");
+  });
+});
+
+describe("formatWhen", () => {
+  const labels = { today: "Today", yesterday: "Yesterday" };
+
+  it("says Today and Yesterday", () => {
+    expect(formatWhen("2026-09-29", "2026-09-29", labels)).toBe("Today");
+    expect(formatWhen("2026-09-28", "2026-09-29", labels)).toBe("Yesterday");
+  });
+
+  it("names the weekday for the days before that, up to six days back", () => {
+    expect(formatWhen("2026-09-27", "2026-09-29", labels)).toBe("Sun");
+    expect(formatWhen("2026-09-26", "2026-09-29", labels)).toBe("Sat");
+    expect(formatWhen("2026-09-23", "2026-09-29", labels)).toBe("Wed");
+  });
+
+  it("writes the day and month from a week back, and for a day that has not happened yet", () => {
+    expect(formatWhen("2026-09-22", "2026-09-29", labels)).toBe("22 September");
+    expect(formatWhen("2026-09-19", "2026-09-29", labels)).toBe("19 September");
+    expect(formatWhen("2026-09-30", "2026-09-29", labels)).toBe("30 September");
+  });
+
+  it("counts across a month and a year end", () => {
+    expect(formatWhen("2026-12-31", "2027-01-01", labels)).toBe("Yesterday");
+    expect(formatWhen("2026-12-30", "2027-01-01", labels)).toBe("Wed");
+  });
+
+  it("writes the Hindi weekday and month in Devanagari", () => {
+    expect(formatWhen("2026-09-27", "2026-09-29", { today: "आज", yesterday: "कल" }, "hi")).toMatch(/रवि/);
+    expect(formatWhen("2026-09-19", "2026-09-29", { today: "आज", yesterday: "कल" }, "hi")).toBe("19 सितंबर");
+  });
+});
+
+describe("formatClock", () => {
+  it.each([
+    ["21:12", "9:12 PM"],
+    ["07:00", "7:00 AM"],
+    ["00:05", "12:05 AM"],
+    ["12:00", "12:00 PM"],
+    ["12:30", "12:30 PM"],
+    ["23:59", "11:59 PM"],
+  ])("writes %s as %s", (time, shown) => {
+    expect(formatClock(time)).toBe(shown);
+  });
+
+  it("writes Hindi through Intl, with the same hour", () => {
+    expect(formatClock("21:12", "hi")).toMatch(/9:12/);
+  });
+});
+
+describe("ordinalDay", () => {
+  it.each([
+    [1, "1st"],
+    [2, "2nd"],
+    [3, "3rd"],
+    [4, "4th"],
+    [11, "11th"],
+    [12, "12th"],
+    [13, "13th"],
+    [15, "15th"],
+    [21, "21st"],
+    [22, "22nd"],
+    [23, "23rd"],
+    [28, "28th"],
+    [31, "31st"],
+  ])("writes %i as %s in English", (day, shown) => {
+    expect(ordinalDay(day)).toBe(shown);
+  });
+
+  it("leaves the number bare in Hindi, whose sentence words the day around it", () => {
+    expect(ordinalDay(28, "hi")).toBe("28");
+  });
+});
+
+describe("signedInr", () => {
+  it("writes money in with a plus and money out with a true minus", () => {
+    expect(signedInr(240_000)).toBe("+₹2,40,000");
+    expect(signedInr(-842)).toBe("−₹842");
+    expect(signedInr(0)).toBe("₹0");
   });
 });
