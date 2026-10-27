@@ -1,16 +1,12 @@
 name: App CI
 
-# Runs for the PWA in app/ only. The marketing site at the repo root is not affected.
+# Checks the PWA in app/. Runs on every pull request, with no path filter, because this job is a
+# required check on main: a filtered-out run would never report and would block the merge forever.
+# The job takes about 40 seconds, so running it for marketing-site changes is cheap.
 on:
   pull_request:
-    paths:
-      - "app/**"
-      - ".github/workflows/app-ci.yml"
   push:
     branches: [main]
-    paths:
-      - "app/**"
-      - ".github/workflows/app-ci.yml"
   workflow_dispatch:
 
 permissions:
