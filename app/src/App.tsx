@@ -6,6 +6,8 @@ import PlaceholderPage from "./components/PlaceholderPage";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
 import EmiCalculator from "./pages/EmiCalculator";
 import GoalCalculator from "./pages/GoalCalculator";
+import GoalDetail from "./pages/GoalDetail";
+import Goals from "./pages/Goals";
 import Health from "./pages/Health";
 import HealthBreakdown from "./pages/HealthBreakdown";
 import Plans from "./pages/Plans";
@@ -33,6 +35,8 @@ export default function App() {
             element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
           />
           <Route path="plans" element={<Plans />} />
+          <Route path="plans/goals" element={<Goals />} />
+          <Route path="plans/goals/:id" element={<GoalDetail />} />
           <Route path="plans/health" element={<Health />} />
           <Route path="plans/health/breakdown" element={<HealthBreakdown />} />
           <Route path="plans/tax" element={<Tax />} />

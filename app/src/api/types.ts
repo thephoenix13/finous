@@ -230,7 +230,10 @@ export type HealthScore = {
 };
 
 export type GoalContribution = {
-  label: string;
+  /** What it is. The client words it ("Recurring deposit"), so the data carries no display copy. */
+  kind: "fund" | "recurring-deposit" | "savings-top-up";
+  /** The fund's own name, for `kind: "fund"` ("Parag Parikh Flexi Cap"): a proper noun. Absent for the other kinds. */
+  label?: string;
   institution: string;
   frequency: "monthly" | "one-time";
   /** Per month, or the single amount. */

@@ -266,11 +266,12 @@ describe("persona: goals (prototype Goals screens)", () => {
 
   it("funds the home upgrade from three places, ₹25,000 a month today", async () => {
     const home = await api.getGoal("home-upgrade");
-    expect(home.contributions?.map((c) => [c.institution, c.currentValue])).toEqual([
-      ["Groww", 550_000],
-      ["HDFC", 150_000],
-      ["HDFC", 140_000],
+    expect(home.contributions?.map((c) => [c.kind, c.institution, c.currentValue])).toEqual([
+      ["fund", "Groww", 550_000],
+      ["recurring-deposit", "HDFC", 150_000],
+      ["savings-top-up", "HDFC", 140_000],
     ]);
+    expect(home.contributions?.[0].label).toBe("Parag Parikh Flexi Cap");
     expect(home.currentMonthlyContribution).toBe(25_000);
   });
 

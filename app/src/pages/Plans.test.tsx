@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import App from "../App";
-import { ApiError, ApiProvider, createMockApi, type Api, type TaxSummary } from "../api";
+import { ApiError, ApiProvider, createMockApi, type Api, type Goal, type TaxSummary } from "../api";
 import { createI18n, type Language } from "../i18n";
 import { expectAccessible } from "../test/a11y";
 import { renderWithI18n } from "../test/renderWithI18n";
@@ -13,6 +13,7 @@ import Plans from "./Plans";
 /** The tools, in the prototype's order, each with its title and subtitle in both languages. */
 const TOOLS = [
   { href: "/plans/health", en: ["Health score", "Where you stand, in six numbers"], hi: ["हेल्थ स्कोर", "आप कहाँ खड़े हैं, छह संख्याओं में"] },
+  { href: "/plans/goals", en: ["Goals", "3 active"], hi: ["लक्ष्य", "3 सक्रिय"] },
   { href: "/plans/tax", en: ["Tax", "₹56,000 left in 80C"], hi: ["टैक्स", "80C में ₹56,000 बाकी"] },
   { href: "/plans/prepay", en: ["Prepay home loan", "What if I pay ₹50K extra"], hi: ["होम लोन का प्रीपेमेंट", "अगर मैं ₹50K ज़्यादा चुकाऊँ"] },
   { href: "/plans/refinance", en: ["Refinance check", "Should I switch my home loan"], hi: ["रिफाइनेंस जाँच", "क्या मुझे अपना होम लोन बदलना चाहिए"] },
@@ -23,7 +24,10 @@ const TOOLS = [
 
 const linkTo = (href: string) => screen.getAllByRole("link").find((l) => l.getAttribute("href") === href)!;
 /** The Tax row's live subtitle arrives after a load; wait for it so no test ends mid-update. */
-const settled = (lng: "en" | "hi" = "en") => screen.findByText(lng === "en" ? /left in 80C/ : /80C में .* बाकी/);
+const settled = async (lng: "en" | "hi" = "en") => {
+  await screen.findByText(lng === "en" ? /\d+ active/ : /\d+ सक्रिय/);
+  return screen.findByText(lng === "en" ? /left in 80C/ : /80C में .* बाकी/);
+};
 
 /** Wraps an Api so a test can wait for its tax call to finish, whether it succeeds or fails, and for the screen to react. */
 function watchTax(api: Api) {
@@ -54,7 +58,7 @@ describe("Plans", () => {
     }
   });
 
-  it("lists the tools in the prototype's order: health, tax, prepay, refinance, affordability, goal, EMI", async () => {
+  it("lists the tools in the prototype's order: health, goals, tax, prepay, refinance, affordability, goal calculator, EMI", async () => {
     renderWithI18n(<Plans />);
     await settled();
     expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(TOOLS.map((t) => t.href));
@@ -70,6 +74,45 @@ describe("Plans", () => {
     const { container } = renderWithI18n(<Plans />, { lng });
     await settled(lng);
     await expectAccessible(container);
+  });
+});
+
+describe("Plans: the Goals row's subtitle", () => {
+  /** The persona, with its goals changed. */
+  const withGoals = (change: (goals: Goal[]) => Goal[]): Api => {
+    const base = createMockApi();
+    return { ...base, listGoals: async (options) => change(await base.listGoals(options)) };
+  };
+
+  it("describes the screen while the count loads, then says how many are active", async () => {
+    renderWithI18n(<Plans />, { api: { ...createMockApi(), listGoals: () => new Promise<never>(() => {}) } });
+    expect(linkTo("/plans/goals")).toHaveTextContent("Long-horizon savings, funded and tracked");
+    expect(linkTo("/plans/goals")).not.toHaveTextContent("active");
+  });
+
+  it("says 3 active once it is known", async () => {
+    renderWithI18n(<Plans />);
+    await settled();
+    expect(linkTo("/plans/goals")).toHaveTextContent("3 active");
+    expect(linkTo("/plans/goals")).not.toHaveTextContent("Long-horizon");
+  });
+
+  it("follows the data: one goal is 1 active", async () => {
+    renderWithI18n(<Plans />, { api: withGoals((all) => all.slice(0, 1)) });
+    expect(await screen.findByText("1 active")).toBeInTheDocument();
+  });
+
+  it("goes on describing the screen when there are no goals, or the count cannot be loaded", async () => {
+    const none = watchTax(withGoals(() => []));
+    renderWithI18n(<Plans />, { api: none.api });
+    await none.finished();
+    expect(linkTo("/plans/goals")).toHaveTextContent("Long-horizon savings, funded and tracked");
+  });
+
+  it("is written in Hindi too", async () => {
+    renderWithI18n(<Plans />, { lng: "hi" });
+    await settled("hi");
+    expect(linkTo("/plans/goals")).toHaveTextContent("3 सक्रिय");
   });
 });
 
@@ -186,6 +229,39 @@ describe("Plans to EMI calculator, in the real app", () => {
     await user.click(screen.getByRole("link", { name: "Back" }));
     expect(window.location.pathname).toBe("/plans");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("walks from the Plans tab to the goals, to the home upgrade, and back a step at a time", async () => {
+    const user = userEvent.setup();
+    open("/plans");
+    await user.click(screen.getByRole("link", { name: /^Goals/ }));
+    expect(window.location.pathname).toBe("/plans/goals");
+    expect(await screen.findByText("3 active goals. Funded from your linked accounts.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: /Home upgrade/ }));
+    expect(window.location.pathname).toBe("/plans/goals/home-upgrade");
+    expect(await screen.findByText("15 months remaining")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Home upgrade");
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans/goals");
+    expect(await screen.findByText("3 active goals. Funded from your linked accounts.")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("loads a goal straight from a deep link, in Hindi, and says so when there is no such goal", async () => {
+    const goal = open("/plans/goals/emergency-fund", "hi");
+    expect(await screen.findByText("6 महीने बाकी")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Emergency fund");
+    goal.unmount();
+
+    open("/plans/goals/no-such-goal");
+    expect(await screen.findByText("We couldn't find that goal.")).toBeInTheDocument();
   });
 
   it("walks from the Plans tab to the health score, to its breakdown, and back a step at a time", async () => {
