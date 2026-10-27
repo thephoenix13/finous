@@ -35,6 +35,7 @@ export const hi: Messages = {
   },
   plans: {
     tools: {
+      goals: { title: "लक्ष्य", subtitle: "लंबी अवधि की बचत, फंडेड और ट्रैक की हुई", active: "{{count}} सक्रिय" },
       health: { title: "हेल्थ स्कोर", subtitle: "आप कहाँ खड़े हैं, छह संख्याओं में" },
       tax: { title: "टैक्स", subtitle: "धारा 80C, 80D, होम लोन ब्याज", left: "80C में {{left}} बाकी" },
       prepay: { title: "होम लोन का प्रीपेमेंट", subtitle: "अगर मैं ₹50K ज़्यादा चुकाऊँ" },
@@ -55,6 +56,39 @@ export const hi: Messages = {
       "आपके पास {{count}} बैंक में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
     whereBody_other:
       "आपके पास {{count}} बैंकों में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
+  },
+  goals: {
+    title: "लक्ष्य",
+    detailTitle: "लक्ष्य",
+    summary_one: "{{count}} सक्रिय लक्ष्य। आपके लिंक किए गए खातों से फंडेड।",
+    summary_other: "{{count}} सक्रिय लक्ष्य। आपके लिंक किए गए खातों से फंडेड।",
+    none: "अभी आपका कोई लक्ष्य नहीं है।",
+    notFound: "वह लक्ष्य नहीं मिला।",
+    eyebrow: "{{name}} · {{date}} तक",
+    ofTarget: "{{target}} में से {{funded}}",
+    percentFunded: "{{percent}}% पूरा",
+    needed: "लगभग {{amount}}/माह चाहिए",
+    progress: "{{name}} की प्रगति",
+    funded: "जमा",
+    ofTargetBy: "{{target}} के लक्ष्य में से · {{date}}",
+    monthsRemaining_one: "{{count}} महीना बाकी",
+    monthsRemaining_other: "{{count}} महीने बाकी",
+    contributions: "योगदान",
+    contribution: {
+      fund: "{{institution}} का {{label}}",
+      "recurring-deposit": "{{institution}} — रिकरिंग डिपॉज़िट",
+      "savings-top-up": "{{institution}} — बचत में जमा",
+    },
+    monthlySince: "{{since}} से {{amount}}/माह",
+    oneTimeSince: "एकमुश्त, {{since}}",
+    onTrack: "सही रास्ते पर?",
+    behind:
+      "आज के {{current}}/माह पर आप {{date}} तक लगभग {{projected}} तक पहुँचेंगे। {{target}} तक पहुँचने के लिए लगभग {{needed}}/माह चाहिए। लक्ष्य को {{laterDate}} तक बढ़ाने पर यह घटकर लगभग {{neededLater}}/माह हो जाता है। {{assumes}}",
+    ahead: "आप सही रास्ते पर हैं। आज के {{current}}/माह पर आप {{date}} तक लगभग {{projected}} तक पहुँचेंगे। {{assumes}}",
+    unknown: "{{date}} तक {{target}} तक पहुँचने के लिए लगभग {{needed}}/माह चाहिए। {{assumes}}",
+    reached: "आप {{target}} का लक्ष्य पहले ही पा चुके हैं।",
+    assumesReturn: "{{rate}} रिटर्न माना गया है।",
+    assumesNone: "कोई रिटर्न नहीं माना गया।",
   },
   health: {
     title: "हेल्थ स्कोर",

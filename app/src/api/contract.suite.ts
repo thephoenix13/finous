@@ -258,6 +258,15 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
         }
       });
 
+      it("names a fund by its own name, and gives the other kinds of contribution none", async () => {
+        for (const g of await makeApi().listGoals()) {
+          for (const c of g.contributions ?? []) {
+            if (c.kind === "fund") expect(c.label?.trim()).toBeTruthy();
+            else expect(c.label).toBeUndefined();
+          }
+        }
+      });
+
       it("adds up the contributions it lists to what is funded and what is paid monthly", async () => {
         for (const g of await makeApi().listGoals()) {
           if (!g.contributions) continue;

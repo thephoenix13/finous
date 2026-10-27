@@ -227,7 +227,24 @@ breakdown returns to the score, not the hub.
 - **Do not name a file by case alone.** `health.ts` beside `Health.tsx` is one name on Windows and macOS, so `import "./pages/Health"`
   could pick the wrong file while Linux CI would not. The shared loader is `healthData.ts`.
 
-Done: all of Plans except Goals: the health score and breakdown, tax, and the five calculators. Still to build: the Goals list and form.
+**A list and a detail** (the goals, `pages/Goals.tsx` and `pages/GoalDetail.tsx`) are two screens over `listGoals()` and `getGoal(id)`.
+The detail takes its goal from the address (`useParams`) and builds its load with `useCallback(..., [id])`, so it reloads when the address
+changes. A goal that does not exist is its own state ("We couldn't find that goal", no retry), not a failed load.
+
+- **Estimates get one rounding rule: three significant figures** (`roundSig`), said to be "about". The prototype rounded each goal by
+  hand and inconsistently (₹1,35,000 and ₹46,000 to the thousand, ₹18,400 to the hundred), so no single rule reproduces it. Three figures
+  matches ₹1,35,000, ₹50,000 and ₹18,400 and gives ₹46,100 where the prototype says ₹46,000 (the exact figure is ₹46,098).
+  Amounts are written in full (₹12,90,000), not as "₹12.9L", so no unit has to be translated.
+- **Say what the data supports, in cases.** The "On track?" card has four outlooks: behind (what today's saving reaches, what the goal needs,
+  and what it would need two years later), on track, a goal with no known monthly saving (just what it needs), and already reached. A goal
+  whose date has come shows no card, because the maths needs a month to work with. The what-if of two years is the prototype's, as a named constant.
+- **The contract carries kinds, not copy.** A contribution has a `kind` (`fund`, `recurring-deposit`, `savings-top-up`) and only a fund has a
+  `label` (its own name). The client words the rest, so Hindi can translate "Recurring deposit". The suite checks that only a fund names itself.
+- **The user's own names stay as written.** A goal called "Home upgrade" is data, so it is not translated; the screen around it is.
+- **Left out because the Api cannot back it:** the "+" to make a goal and "Add to this goal" (both are writes, and there is no write in the
+  contract), so there is no button on either screen. They arrive with a `createGoal` and a contribution write.
+
+Done: all of Plans. M2 is complete. The natural next screen is Recommendations (the three ranked actions `listInsights()` already returns).
 Not on the refinance screen: "Ask HDFC for a quote". That is the Home action flow (an offer, then a confirmation), a later milestone.
 
 ## Layout
@@ -240,7 +257,7 @@ src/
   hooks/        useOnline
   i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        Plans, Health, HealthBreakdown, Tax, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
+  pages/        Plans, Goals, GoalDetail, Health, HealthBreakdown, Tax, EmiCalculator, PrepayCalculator, RefinanceCheck, AffordabilityCheck, GoalCalculator, You, DevTokens and DevComponents (dev only)
   test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
@@ -250,5 +267,5 @@ public/         icons and favicon
 
 M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
 CI with Vercel previews, English and Hindi i18n, and the mock API.
-M2 is nearly done: the Plans hub, all five calculators (EMI, prepay, refinance, affordability, goal), the tax screen and the health score with its breakdown are live; only the Goals list and form are still to come. The rest run on `lib/finance` and the mock.
+M2 is done: the Plans hub, all five calculators (EMI, prepay, refinance, affordability, goal), the tax screen, the health score with its breakdown, and the goals list and detail are live. Next is Recommendations, then the milestones that need writes. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).

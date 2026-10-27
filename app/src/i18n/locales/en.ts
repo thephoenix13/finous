@@ -32,6 +32,7 @@ export const en = {
   },
   plans: {
     tools: {
+      goals: { title: "Goals", subtitle: "Long-horizon savings, funded and tracked", active: "{{count}} active" },
       health: { title: "Health score", subtitle: "Where you stand, in six numbers" },
       tax: { title: "Tax", subtitle: "Section 80C, 80D, home loan interest", left: "{{left}} left in 80C" },
       prepay: { title: "Prepay home loan", subtitle: "What if I pay ₹50K extra" },
@@ -52,6 +53,39 @@ export const en = {
       "You have {{savings}} in savings in {{count}} bank. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
     whereBody_other:
       "You have {{savings}} in savings across {{count}} banks. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
+  },
+  goals: {
+    title: "Goals",
+    detailTitle: "Goal",
+    summary_one: "{{count}} active goal. Funded from your linked accounts.",
+    summary_other: "{{count}} active goals. Funded from your linked accounts.",
+    none: "You have no goals yet.",
+    notFound: "We couldn't find that goal.",
+    eyebrow: "{{name}} · {{date}}",
+    ofTarget: "{{funded}} of {{target}}",
+    percentFunded: "{{percent}}% funded",
+    needed: "about {{amount}}/mo needed",
+    progress: "{{name}} funded",
+    funded: "Funded",
+    ofTargetBy: "of {{target}} target · {{date}}",
+    monthsRemaining_one: "{{count}} month remaining",
+    monthsRemaining_other: "{{count}} months remaining",
+    contributions: "Contributions",
+    contribution: {
+      fund: "{{institution}} — {{label}}",
+      "recurring-deposit": "{{institution}} — Recurring deposit",
+      "savings-top-up": "{{institution}} — Savings top-up",
+    },
+    monthlySince: "{{amount}}/month since {{since}}",
+    oneTimeSince: "One-time, {{since}}",
+    onTrack: "On track?",
+    behind:
+      "At today's {{current}}/month you'll reach about {{projected}} by {{date}}. Hitting {{target}} needs about {{needed}}/month. Moving the target to {{laterDate}} brings that down to about {{neededLater}}/month. {{assumes}}",
+    ahead: "You're on track. At today's {{current}}/month you'll reach about {{projected}} by {{date}}. {{assumes}}",
+    unknown: "Reaching {{target}} by {{date}} needs about {{needed}}/month. {{assumes}}",
+    reached: "You've already reached {{target}}.",
+    assumesReturn: "Assumes a {{rate}} return.",
+    assumesNone: "Assumes no return.",
   },
   health: {
     title: "Health score",

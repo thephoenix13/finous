@@ -1,5 +1,54 @@
 import { describe, expect, it } from "vitest";
-import { formatDayMonth, formatList, formatMonthYear, percent, toLakhs } from "./format";
+import { addMonths } from "./finance";
+import { formatDayMonth, formatList, formatMonthYear, parseMonth, percent, roundSig, toLakhs } from "./format";
+
+describe("parseMonth", () => {
+  it("reads a month string into a year and a month", () => {
+    expect(parseMonth("2027-12")).toEqual({ year: 2027, month: 12 });
+    expect(parseMonth("2026-09")).toEqual({ year: 2026, month: 9 });
+    expect(parseMonth("2038-06")).toEqual({ year: 2038, month: 6 });
+  });
+
+  it("feeds addMonths and formatMonthYear: 24 months after Dec 2027 is Dec 2029", () => {
+    expect(formatMonthYear(addMonths(parseMonth("2027-12"), 24))).toBe("Dec 2029");
+    expect(formatMonthYear(addMonths(parseMonth("2027-12"), 1))).toBe("Jan 2028");
+  });
+});
+
+describe("roundSig", () => {
+  it.each([
+    [134_827, 135_000],
+    [50_000, 50_000],
+    [18_364.39, 18_400],
+    [46_097.91, 46_100],
+    [1_293_667, 1_290_000],
+    [999, 999],
+    [1_234, 1_230],
+    [0.0123456, 0.0123],
+    [7, 7],
+  ])("rounds %s to three significant figures: %s", (value, expected) => {
+    expect(roundSig(value)).toBeCloseTo(expected, 10);
+  });
+
+  it("is the same rule at every size: three figures of a small number, and of a large one", () => {
+    expect(roundSig(18_364)).toBe(18_400);
+    expect(roundSig(183_640)).toBe(184_000);
+    expect(roundSig(1_836_400)).toBe(1_840_000);
+  });
+
+  it("can keep more or fewer figures", () => {
+    expect(roundSig(134_827, 2)).toBe(130_000);
+    expect(roundSig(134_827, 5)).toBe(134_830);
+    expect(roundSig(134_827, 1)).toBe(100_000);
+  });
+
+  it("rounds a negative the same way, and leaves zero and non-numbers alone", () => {
+    expect(roundSig(-134_827)).toBe(-135_000);
+    expect(roundSig(0)).toBe(0);
+    expect(roundSig(Number.NaN)).toBeNaN();
+    expect(roundSig(Number.POSITIVE_INFINITY)).toBe(Number.POSITIVE_INFINITY);
+  });
+});
 
 describe("formatList", () => {
   it("joins two with 'and'", () => {

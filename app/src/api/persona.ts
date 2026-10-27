@@ -272,9 +272,9 @@ const goals: Goal[] = [
     assumedReturnPercent: 6,
     currentMonthlyContribution: 25_000,
     contributions: [
-      { label: "Parag Parikh Flexi Cap", institution: "Groww", frequency: "monthly", amount: 15_000, since: "2024-04", currentValue: 550_000 },
-      { label: "Recurring deposit", institution: "HDFC", frequency: "monthly", amount: 10_000, since: "2025-08", currentValue: 150_000 },
-      { label: "Savings top-up", institution: "HDFC", frequency: "one-time", amount: 140_000, since: "2026-01", currentValue: 140_000 },
+      { kind: "fund", label: "Parag Parikh Flexi Cap", institution: "Groww", frequency: "monthly", amount: 15_000, since: "2024-04", currentValue: 550_000 },
+      { kind: "recurring-deposit", institution: "HDFC", frequency: "monthly", amount: 10_000, since: "2025-08", currentValue: 150_000 },
+      { kind: "savings-top-up", institution: "HDFC", frequency: "one-time", amount: 140_000, since: "2026-01", currentValue: 140_000 },
     ],
   }),
   // Cash in savings, so the maths assumes no market return.

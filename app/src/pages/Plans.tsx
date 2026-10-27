@@ -24,6 +24,9 @@ const loadRoom80C = async (api: Api, options: RequestOptions): Promise<number> =
   return Math.max(0, section80C.limit - section80C.used);
 };
 
+/** How many goals the user has, for the Goals row's subtitle. */
+const loadGoalCount = async (api: Api, options: RequestOptions): Promise<number> => (await api.listGoals(options)).length;
+
 const CalcIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="5" y="3" width="14" height="18" rx="2" />
@@ -64,12 +67,15 @@ export default function Plans() {
   const { t } = useTranslation();
   // The Tax row shows what is left in 80C once that is known. Until then, or if it cannot be loaded, it describes the screen.
   const room = useApiData(loadRoom80C);
+  const goals = useApiData(loadGoalCount);
+  const goalsSubtitle = goals.status === "ready" && goals.data > 0 ? t("plans.tools.goals.active", { count: goals.data }) : t("plans.tools.goals.subtitle");
   const taxSubtitle = room.status === "ready" && room.data > 0 ? t("plans.tools.tax.left", { left: inr(room.data) }) : t("plans.tools.tax.subtitle");
   return (
     <>
       <PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />
       <RowGroup className="mb-6">
         <Row to="/plans/health" icon={<CompassIcon />} title={t("plans.tools.health.title")} subtitle={t("plans.tools.health.subtitle")} />
+        <Row to="/plans/goals" icon={<TargetIcon />} title={t("plans.tools.goals.title")} subtitle={goalsSubtitle} />
         <Row to="/plans/tax" icon={<DocIcon />} title={t("plans.tools.tax.title")} subtitle={taxSubtitle} />
         <Row to="/plans/prepay" icon={<TrendIcon />} title={t("plans.tools.prepay.title")} subtitle={t("plans.tools.prepay.subtitle")} />
         <Row to="/plans/refinance" icon={<ChartIcon />} title={t("plans.tools.refinance.title")} subtitle={t("plans.tools.refinance.subtitle")} />

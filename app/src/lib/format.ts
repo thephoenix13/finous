@@ -45,6 +45,12 @@ export function formatList(items: string[], locale = "en"): string {
   return new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(items);
 }
 
+/** "2027-12" as a `YearMonth`, the shape `addMonths` and `formatMonthYear` take. */
+export function parseMonth(month: string): YearMonth {
+  const [year, m] = month.split("-").map(Number);
+  return { year, month: m };
+}
+
 /** A rate or share without trailing zeros, to at most two decimals: 8.9 is "8.9%", 9 is "9%", 8.256 is "8.26%". */
 export function percent(value: number, maxDecimals = 2): string {
   return `${Number(value.toFixed(maxDecimals))}%`;
@@ -53,6 +59,16 @@ export function percent(value: number, maxDecimals = 2): string {
 /** An amount in lakhs, for "₹8.8L" copy: the number only, to one decimal with no trailing zero (40 and 8.8). The unit is the caller's, as it is translated. */
 export function toLakhs(amount: number, decimals = 1): string {
   return String(Number((amount / 100_000).toFixed(decimals)));
+}
+
+/**
+ * Round to a number of significant figures (three by default), for estimates: 134,827 is 135,000 and 18,364 is 18,400.
+ * One rule at every size, so a small figure is not shown as precisely as a large one, or the reverse.
+ */
+export function roundSig(value: number, digits = 3): number {
+  if (value === 0 || !Number.isFinite(value)) return value;
+  const step = 10 ** (Math.floor(Math.log10(Math.abs(value))) - digits + 1);
+  return Math.round(value / step) * step;
 }
 
 /** Round to a step, for "about ₹1,35,000" style copy. */
