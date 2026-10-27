@@ -23,6 +23,11 @@ export function formatMonthYear({ year, month }: YearMonth, locale?: string): st
   return `${MONTHS[month - 1]} ${year}`;
 }
 
+/** A rate or share without trailing zeros, to at most two decimals: 8.9 is "8.9%", 9 is "9%", 8.256 is "8.26%". */
+export function percent(value: number, maxDecimals = 2): string {
+  return `${Number(value.toFixed(maxDecimals))}%`;
+}
+
 /** Round to a step, for "about ₹1,35,000" style copy. */
 export function roundTo(value: number, step: number): number {
   return Math.round(value / step) * step;

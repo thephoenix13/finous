@@ -49,7 +49,9 @@ const SAVED_CHANGE_VS_LAST_MONTH = 14_400;
 
 const LOAN = { outstanding: 6_200_000, ratePercent: 8.9, monthsLeft: 210 };
 const CARD = { outstanding: 18_400, limit: 300_000 };
-const REFINANCE = { marketRatePercent: 8.5, upfrontCost: 39_000 };
+/** Switching lenders costs a processing fee of about 0.5% of the outstanding amount, plus documentation. */
+const REFINANCE_COSTS = { processingFee: Math.round(LOAN.outstanding * 0.005), documentation: 8_000 };
+const REFINANCE = { marketRatePercent: 8.5, upfrontCost: REFINANCE_COSTS.processingFee + REFINANCE_COSTS.documentation };
 
 /** Property and other manual assets. The prototype's Net worth screen shows assets of ₹1,38,60,000; this is the remainder. */
 const PROPERTY_AND_OTHER = 9_500_000;
@@ -185,6 +187,7 @@ const insights: Insight[] = [
     monthlySaving: Math.round(refi.monthlySaving),
     annualSaving: Math.round(refi.annualSaving),
     upfrontCost: REFINANCE.upfrontCost,
+    costs: REFINANCE_COSTS,
     breakEvenMonths: Math.ceil(refi.breakEvenMonths),
   },
   {

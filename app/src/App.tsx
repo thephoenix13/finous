@@ -6,6 +6,7 @@ import PlaceholderPage from "./components/PlaceholderPage";
 import EmiCalculator from "./pages/EmiCalculator";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
+import RefinanceCheck from "./pages/RefinanceCheck";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -28,6 +29,7 @@ export default function App() {
           />
           <Route path="plans" element={<Plans />} />
           <Route path="plans/prepay" element={<PrepayCalculator />} />
+          <Route path="plans/refinance" element={<RefinanceCheck />} />
           <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
           {DevComponents && (

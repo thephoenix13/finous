@@ -185,6 +185,17 @@ describe("persona: insights (prototype Refinance, FD and Emergency fund actions)
     });
   });
 
+  it("charges ₹31,000 to process and ₹8,000 for documentation: ₹39,000 to switch", async () => {
+    const refi = await insight("refinance");
+    expect(refi.costs).toEqual({ processingFee: 31_000, documentation: 8_000 });
+    expect(refi.costs.processingFee).toBe(refi.upfrontCost - refi.costs.documentation);
+  });
+
+  it("prices the processing fee at 0.5% of the outstanding loan", async () => {
+    const [loan] = (await api.listAccounts()).loans;
+    expect((await insight("refinance")).costs.processingFee / loan.outstanding).toBe(0.005);
+  });
+
   it("moving ₹2.1L from 3% savings to a 7.1% deposit earns about ₹8,600 more a year", async () => {
     const fd = await insight("deposit");
     expect(fd).toMatchObject({ amount: 210_000, bufferLeft: 210_000, savingsRatePercent: 3, depositRatePercent: 7.1, termMonths: 12 });
