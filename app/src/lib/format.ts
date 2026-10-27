@@ -37,6 +37,14 @@ export function formatDayMonth(isoDate: string, locale?: string): string {
   return `${day} ${MONTHS_LONG[month - 1]}`;
 }
 
+/**
+ * "A and B", "A, B, and C": a list in the language's own words, through Intl.ListFormat ("हिंदी" says "और").
+ * An empty list is an empty string.
+ */
+export function formatList(items: string[], locale = "en"): string {
+  return new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(items);
+}
+
 /** A rate or share without trailing zeros, to at most two decimals: 8.9 is "8.9%", 9 is "9%", 8.256 is "8.26%". */
 export function percent(value: number, maxDecimals = 2): string {
   return `${Number(value.toFixed(maxDecimals))}%`;

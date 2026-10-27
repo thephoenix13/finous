@@ -12,6 +12,7 @@ import Plans from "./Plans";
 
 /** The tools, in the prototype's order, each with its title and subtitle in both languages. */
 const TOOLS = [
+  { href: "/plans/health", en: ["Health score", "Where you stand, in six numbers"], hi: ["हेल्थ स्कोर", "आप कहाँ खड़े हैं, छह संख्याओं में"] },
   { href: "/plans/tax", en: ["Tax", "₹56,000 left in 80C"], hi: ["टैक्स", "80C में ₹56,000 बाकी"] },
   { href: "/plans/prepay", en: ["Prepay home loan", "What if I pay ₹50K extra"], hi: ["होम लोन का प्रीपेमेंट", "अगर मैं ₹50K ज़्यादा चुकाऊँ"] },
   { href: "/plans/refinance", en: ["Refinance check", "Should I switch my home loan"], hi: ["रिफाइनेंस जाँच", "क्या मुझे अपना होम लोन बदलना चाहिए"] },
@@ -53,7 +54,7 @@ describe("Plans", () => {
     }
   });
 
-  it("lists the tools in the prototype's order: tax, prepay, refinance, affordability, goal, EMI", async () => {
+  it("lists the tools in the prototype's order: health, tax, prepay, refinance, affordability, goal, EMI", async () => {
     renderWithI18n(<Plans />);
     await settled();
     expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(TOOLS.map((t) => t.href));
@@ -185,6 +186,39 @@ describe("Plans to EMI calculator, in the real app", () => {
     await user.click(screen.getByRole("link", { name: "Back" }));
     expect(window.location.pathname).toBe("/plans");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+  });
+
+  it("walks from the Plans tab to the health score, to its breakdown, and back a step at a time", async () => {
+    const user = userEvent.setup();
+    open("/plans");
+    await user.click(screen.getByRole("link", { name: /Health score/ }));
+    expect(window.location.pathname).toBe("/plans/health");
+    expect(await screen.findByText("Out of 900")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "See the six components" }));
+    expect(window.location.pathname).toBe("/plans/health/breakdown");
+    expect(await screen.findAllByRole("progressbar")).toHaveLength(6);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Breakdown");
+    expect(screen.getByRole("link", { name: "Plans" })).toHaveAttribute("aria-current", "page");
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans/health");
+    expect(await screen.findByText("Out of 900")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: "Back" }));
+    expect(window.location.pathname).toBe("/plans");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("What do you want to figure out?");
+    expect(await screen.findByText(/left in 80C/)).toBeInTheDocument();
+  });
+
+  it("loads the health score and its breakdown straight from deep links, in Hindi", async () => {
+    const score = open("/plans/health", "hi");
+    expect(await screen.findByText("900 में से")).toBeInTheDocument();
+    score.unmount();
+    open("/plans/health/breakdown", "hi");
+    expect(await screen.findAllByRole("progressbar")).toHaveLength(6);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("ब्योरा");
   });
 
   it("opens the tax screen from the Plans tab, loads the year, and comes back with Back", async () => {

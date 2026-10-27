@@ -29,6 +29,27 @@ describe("HeroCard", () => {
     expect(screen.getByText("₹58,345")).toHaveClass("text-[44px]");
   });
 
+  it.each([
+    ["xl", "text-[88px]"],
+    ["lg", "text-[52px]"],
+    ["md", "text-[44px]"],
+  ] as const)("sizes the number %s as %s", (size, cls) => {
+    render(<HeroCard eyebrow="Health score" value="742" size={size} />);
+    expect(screen.getByText("742")).toHaveClass(cls);
+  });
+
+  it("defaults to the large number", () => {
+    render(<HeroCard eyebrow="Net worth" value="₹76.4L" />);
+    expect(screen.getByText("₹76.4L")).toHaveClass("text-[52px]");
+  });
+
+  it("starts the text at the start by default, and can centre it", () => {
+    const { container, rerender } = render(<HeroCard eyebrow="Health score" value="742" />);
+    expect(container.firstElementChild).not.toHaveClass("text-center");
+    rerender(<HeroCard eyebrow="Health score" value="742" align="center" />);
+    expect(container.firstElementChild).toHaveClass("text-center");
+  });
+
   it("renders extra content under the caption", () => {
     render(
       <HeroCard eyebrow="Monthly EMI" value="₹58,345">

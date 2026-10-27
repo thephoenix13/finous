@@ -32,6 +32,7 @@ export const en = {
   },
   plans: {
     tools: {
+      health: { title: "Health score", subtitle: "Where you stand, in six numbers" },
       tax: { title: "Tax", subtitle: "Section 80C, 80D, home loan interest", left: "{{left}} left in 80C" },
       prepay: { title: "Prepay home loan", subtitle: "What if I pay ₹50K extra" },
       refinance: { title: "Refinance check", subtitle: "Should I switch my home loan" },
@@ -51,6 +52,41 @@ export const en = {
       "You have {{savings}} in savings in {{count}} bank. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
     whereBody_other:
       "You have {{savings}} in savings across {{count}} banks. Using {{amount}} for prepayment leaves about {{months}} months of essential expenses (EMI, rent, food). The benchmark is {{benchmark}} months.",
+  },
+  health: {
+    title: "Health score",
+    eyebrow: "Health score",
+    outOf: "Out of {{max}}",
+    changeUp_one: "↑ {{count}} point this month",
+    changeUp_other: "↑ {{count}} points this month",
+    changeDown_one: "↓ {{count}} point this month",
+    changeDown_other: "↓ {{count}} points this month",
+    noChange: "No change this month",
+    standing: "You're in the top {{percent}} for your income band.",
+    dragOne: "The drag is {{list}}.",
+    dragMany: "The drags are {{list}}.",
+    noDrags: "Nothing is dragging your score down.",
+    seeComponents: "See the six components",
+    breakdown: "Breakdown",
+    whatsDragging: "What's dragging",
+    months: "{{value}} mo",
+    component: {
+      "debt-to-income": "Debt to income",
+      "savings-rate": "Savings rate",
+      "emergency-fund": "Emergency fund",
+      "card-utilisation": "Card utilisation",
+      diversification: "Diversification",
+      "repayment-track": "Repayment track",
+    },
+    // The same six, as they read inside a sentence.
+    phrase: {
+      "debt-to-income": "debt to income",
+      "savings-rate": "savings rate",
+      "emergency-fund": "emergency fund",
+      "card-utilisation": "card utilisation",
+      diversification: "diversification",
+      "repayment-track": "repayment track",
+    },
   },
   tax: {
     title: "Tax",

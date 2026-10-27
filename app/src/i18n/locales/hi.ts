@@ -35,6 +35,7 @@ export const hi: Messages = {
   },
   plans: {
     tools: {
+      health: { title: "हेल्थ स्कोर", subtitle: "आप कहाँ खड़े हैं, छह संख्याओं में" },
       tax: { title: "टैक्स", subtitle: "धारा 80C, 80D, होम लोन ब्याज", left: "80C में {{left}} बाकी" },
       prepay: { title: "होम लोन का प्रीपेमेंट", subtitle: "अगर मैं ₹50K ज़्यादा चुकाऊँ" },
       refinance: { title: "रिफाइनेंस जाँच", subtitle: "क्या मुझे अपना होम लोन बदलना चाहिए" },
@@ -54,6 +55,40 @@ export const hi: Messages = {
       "आपके पास {{count}} बैंक में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
     whereBody_other:
       "आपके पास {{count}} बैंकों में {{savings}} की बचत है। प्रीपेमेंट के लिए {{amount}} इस्तेमाल करने पर लगभग {{months}} महीने के ज़रूरी खर्च (EMI, किराया, खाना) बचते हैं। बेंचमार्क {{benchmark}} महीने है।",
+  },
+  health: {
+    title: "हेल्थ स्कोर",
+    eyebrow: "हेल्थ स्कोर",
+    outOf: "{{max}} में से",
+    changeUp_one: "↑ इस महीने {{count}} अंक",
+    changeUp_other: "↑ इस महीने {{count}} अंक",
+    changeDown_one: "↓ इस महीने {{count}} अंक",
+    changeDown_other: "↓ इस महीने {{count}} अंक",
+    noChange: "इस महीने कोई बदलाव नहीं",
+    standing: "आप अपने आय वर्ग में शीर्ष {{percent}} में हैं।",
+    dragOne: "कमज़ोर पहलू है {{list}}।",
+    dragMany: "कमज़ोर पहलू हैं {{list}}।",
+    noDrags: "कोई भी चीज़ आपके स्कोर को नीचे नहीं खींच रही।",
+    seeComponents: "छह घटक देखें",
+    breakdown: "ब्योरा",
+    whatsDragging: "क्या नीचे खींच रहा है",
+    months: "{{value}} माह",
+    component: {
+      "debt-to-income": "आय के मुकाबले कर्ज",
+      "savings-rate": "बचत दर",
+      "emergency-fund": "आपातकालीन निधि",
+      "card-utilisation": "कार्ड का उपयोग",
+      diversification: "विविधीकरण",
+      "repayment-track": "भुगतान का रिकॉर्ड",
+    },
+    phrase: {
+      "debt-to-income": "आय के मुकाबले कर्ज",
+      "savings-rate": "बचत दर",
+      "emergency-fund": "आपातकालीन निधि",
+      "card-utilisation": "कार्ड का उपयोग",
+      diversification: "विविधीकरण",
+      "repayment-track": "भुगतान का रिकॉर्ड",
+    },
   },
   tax: {
     title: "टैक्स",
