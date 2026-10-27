@@ -27,8 +27,8 @@ The service worker is off in `npm run dev`. Test install and offline behaviour a
 
 ## CI and deploys
 
-**CI** (`../.github/workflows/app-ci.yml`) runs on pull requests and pushes to `main` that touch `app/`:
-install (`npm ci`), typecheck, tests, build, then the PWA check. It does not run for marketing-site changes.
+**CI** (`../.github/workflows/app-ci.yml`) runs on every pull request and every push to `main` (no path filter, because
+it is a required check): install (`npm ci`), typecheck, tests, build, then the PWA check.
 Run the same thing locally with `npm run ci`.
 
 The PWA check (`scripts/pwa-check.mjs`) fails the build if the service worker stops installing, caches anything
