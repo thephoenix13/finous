@@ -34,6 +34,14 @@ Run the same thing locally with `npm run ci`.
 The PWA check (`scripts/pwa-check.mjs`) fails the build if the service worker stops installing, caches anything
 under `/api` or any runtime cache, or if the app no longer loads offline, including on a deep link.
 
+The smoke script is careful about its own start-up, because a slow runner once made it fail with a bare "timed out" while
+everything else had passed. Chrome gets 30 seconds to open its debugging port, each poll has its own 2 second limit, and if Chrome
+or the preview server dies first the script stops at once and prints how (its exit code and its last lines of output, for
+example `Chrome exited with code 9 before it was ready`). The waiting and watching live in `scripts/lib/wait.mjs`, with tests in
+`wait.test.mjs` that run in `npm test` and use real short-lived processes. If the check fails in CI, read the step's log first:
+a start-up failure of Chrome is not a failure of the app, and re-running just that job (`gh run rerun <id> --failed`) is the
+first thing to try.
+
 **Vercel** (`vercel.json`): Vite build, SPA rewrite to `index.html`, security headers, immutable caching for
 hashed assets and `no-cache` for `sw.js`, `index.html` and the manifest (so updates are always seen).
 `ignoreCommand` skips a deploy when nothing in `app/` changed.
