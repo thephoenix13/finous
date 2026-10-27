@@ -1,0 +1,84 @@
+/*
+ * Finous Daylight tokens (light mode), ported from Prototype v2.
+ *
+ * These are plain CSS variables so they can be overridden at runtime:
+ *  - per domain:  <section data-domain="loan">
+ *  - per tenant:  <html data-tenant="bank-a">  (white-label branding, later milestone)
+ * index.css maps them into Tailwind utilities with `@theme inline`.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --page: #f3f7ff;
+  --surface: #ffffff;
+  --tint: #e6eeff;
+  --line: #dce5f5;
+
+  /* Text */
+  --ink: #0b1b3f;
+  --ink-2: #4a5a7e;
+  --ink-3: #5e6d91; /* 4.8:1 on --page, AA for small text */
+
+  /* Brand */
+  --brand: #1e5eff;
+  --brand-strong: #0b3fd1;
+  --on-brand: #ffffff;
+
+  /* Status */
+  --positive: #0e7f57;
+  --warning: #9a5b00;
+  --negative: #c62a25;
+  --negative-bg: #ffe6e0;
+
+  /* Gold: milestones only */
+  --gold: #b86e00;
+  --gold-bg: #fff1d9;
+  --gold-text: #5c3b00;
+
+  /* Domain accent: accent, tint, text-on-tint. Default is Home blue. */
+  --d: #1e5eff;
+  --dn: #e6eeff;
+  --dt: #0b2a6b;
+
+  /* Shape and depth */
+  --r-card: 14px;
+  --r-btn: 10px;
+  --r-hero: 30px;
+  --r-pill: 100px;
+  --sh-card: 0 6px 22px rgb(11 27 63 / 0.08);
+  --sh-brand: 0 8px 20px rgb(30 94 255 / 0.3);
+
+  /* Type: system fonts only, so the shell works offline with no web fonts */
+  --f-display: Georgia, "Times New Roman", serif;
+  --f-text: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Domain accents: set data-domain on any container */
+[data-domain="emi"],
+[data-domain="tax"] {
+  --d: #b86e00;
+  --dn: #fff1d9;
+  --dt: #5c3b00;
+}
+[data-domain="loan"] {
+  --d: #d9472a;
+  --dn: #ffe6e0;
+  --dt: #6e1f0e;
+}
+[data-domain="inv"],
+[data-domain="save"] {
+  --d: #0c8f77;
+  --dn: #dff6f0;
+  --dt: #07463c;
+}
+[data-domain="goal"] {
+  --d: #6a45e6;
+  --dn: #eee8ff;
+  --dt: #33207a;
+}
+[data-domain="ai"] {
+  --d: #0188fc;
+  --dn: #e6eeff;
+  --dt: #021a3d;
+}
