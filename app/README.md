@@ -12,6 +12,8 @@ npm run dev        # http://localhost:5173, previews at /dev/tokens and /dev/com
 npm test           # unit and component tests (Vitest, Testing Library, axe)
 npm run build      # typecheck + production build + service worker
 npm run preview    # serve the build at http://localhost:4173 (needed to test the PWA)
+npm run test:pwa   # after a build: installs the service worker in headless Chrome, goes offline, checks the cache
+npm run ci         # everything CI runs: typecheck, tests, build, PWA check
 ```
 
 The service worker is off in `npm run dev`. Test install and offline behaviour against `npm run preview`.
@@ -22,6 +24,31 @@ The service worker is off in `npm run dev`. Test install and offline behaviour a
 - Offline shows the "You're offline" screen. Nothing cached is displayed.
 - Updates are prompted ("A new version of Finous is ready"), never silent.
 - System fonts only, so the shell works offline with no web-font requests.
+
+## CI and deploys
+
+**CI** (`../.github/workflows/app-ci.yml`) runs on pull requests and pushes to `main` that touch `app/`:
+install (`npm ci`), typecheck, tests, build, then the PWA check. It does not run for marketing-site changes.
+Run the same thing locally with `npm run ci`.
+
+The PWA check (`scripts/pwa-check.mjs`) fails the build if the service worker stops installing, caches anything
+under `/api` or any runtime cache, or if the app no longer loads offline, including on a deep link.
+
+**Vercel** (`vercel.json`): Vite build, SPA rewrite to `index.html`, security headers, immutable caching for
+hashed assets and `no-cache` for `sw.js`, `index.html` and the manifest (so updates are always seen).
+`ignoreCommand` skips a deploy when nothing in `app/` changed.
+
+### One-time Vercel setup (needs your Vercel account)
+
+1. Vercel, **Add New, Project**, import the `thephoenix13/finous` repo.
+2. Set **Root Directory** to `app`. Framework is detected as Vite; leave the commands as they are (they come from `vercel.json`).
+3. Production branch `main`. Every pull request then gets a preview URL, posted as a comment on the PR.
+4. Settings, **Git**, confirm "Ignored Build Step" shows the `vercel.json` command.
+5. Optional: in the *existing* marketing-site project (repo root), set the Ignored Build Step to
+   `git diff --quiet HEAD^ HEAD -- . ':(exclude)app'` so app-only pushes do not rebuild the marketing site.
+6. In GitHub, **Settings, Branches**, require the "Typecheck, test, build, PWA check" check on `main`.
+
+Not set up yet: a Content-Security-Policy (needs the final API, Deepgram and tenant origins; planned for M8 hardening).
 
 ## Finance maths
 
