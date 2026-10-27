@@ -221,12 +221,42 @@ export const hi: Messages = {
     tenureValue_one: "{{count}} वर्ष",
     tenureValue_other: "{{count}} वर्ष",
   },
-  pages: {
-    home: {
-      eyebrow: "होम",
-      title: "हर खाता। एक संख्या।",
-      note: "नेट वर्थ, कैश फ़्लो और किस पर नज़र रखनी है। M4 में आएगा।",
+  home: {
+    greeting: { morning: "सुप्रभात, {{name}}।", afternoon: "नमस्कार, {{name}}।", evening: "शुभ संध्या, {{name}}।" },
+    netWorth: "नेट वर्थ",
+    changeUp: "↑ इस महीने {{amount}}",
+    changeDown: "↓ इस महीने {{amount}}",
+    thisMonth: "इस महीने",
+    in: "आया",
+    out: "गया",
+    saved: "बचत",
+    savedMore: "पिछले महीने से {{amount}} ज़्यादा",
+    savedLess: "पिछले महीने से {{amount}} कम",
+    savedSame: "पिछले महीने जितनी ही",
+    lookAt: "इस पर नज़र डालें",
+    lookAtNone: "अभी आपके ध्यान देने लायक कुछ नहीं है।",
+  },
+  insights: {
+    homeLoanFallback: "होम लोन",
+    refinance: {
+      title: "आपके {{loan}} की दर बाज़ार से ऊपर है",
+      body: "अभी {{current}}। बाज़ार में {{market}} मिल रही है। रिफाइनेंस से हर महीने {{saving}} बच सकते हैं।",
     },
+    deposit: {
+      title: "आपकी बचत का {{amount}} ज़्यादा कमा सकता है",
+      body: "इसे टर्म डिपॉज़िट में रखने से साल में {{extra}} ज़्यादा कमा सकते हैं।",
+    },
+    emergencyFund: {
+      title: "अपना आपातकालीन फंड बनाइए",
+      body: "{{target}} के लक्ष्य में से आपके पास {{held}} है। हर महीने {{monthly}} से आप {{date}} तक पहुँच जाएँगे।",
+    },
+  },
+  notFound: {
+    title: "हमें वह पेज नहीं मिला।",
+    body: "लिंक पुराना या गलत लिखा हुआ हो सकता है।",
+    home: "होम पर जाएँ",
+  },
+  pages: {
     advisor: {
       eyebrow: "सलाहकार",
       title: "किसी भी लेन-देन के बारे में पूछिए।",

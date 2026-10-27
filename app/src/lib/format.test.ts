@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addMonths } from "./finance";
-import { formatDayMonth, formatList, formatMonthYear, parseMonth, percent, roundSig, toLakhs } from "./format";
+import { formatDayMonth, formatList, formatMonthYear, formatWeekdayDate, parseMonth, percent, roundSig, toLakhs } from "./format";
 
 describe("parseMonth", () => {
   it("reads a month string into a year and a month", () => {
@@ -100,6 +100,23 @@ describe("formatDayMonth", () => {
   it("uses English when no locale is given", () => {
     expect(formatDayMonth("2027-03-31", undefined)).toBe("31 March");
     expect(formatDayMonth("2027-03-31", "")).toBe("31 March");
+  });
+});
+
+describe("formatWeekdayDate", () => {
+  it("writes English from fixed tables: the weekday, the day and the full month", () => {
+    expect(formatWeekdayDate("2026-09-29")).toBe("Tuesday, 29 September");
+    expect(formatWeekdayDate("2027-01-01")).toBe("Friday, 1 January");
+    expect(formatWeekdayDate("2026-12-27", "en-IN")).toBe("Sunday, 27 December");
+  });
+
+  it("writes Hindi in Devanagari, without moving the day across a time zone", () => {
+    expect(formatWeekdayDate("2026-09-29", "hi")).toBe("मंगलवार, 29 सितंबर");
+    expect(formatWeekdayDate("2027-01-01", "hi")).toBe("शुक्रवार, 1 जनवरी");
+  });
+
+  it("uses English when no locale is given", () => {
+    expect(formatWeekdayDate("2026-09-29", undefined)).toBe("Tuesday, 29 September");
   });
 });
 
