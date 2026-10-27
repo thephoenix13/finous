@@ -1,33 +1,33 @@
 import { lazy, Suspense } from "react";
+import { useTranslation } from "react-i18next";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Shell from "./components/Shell";
 import PlaceholderPage from "./components/PlaceholderPage";
+import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
 const DevTokens = import.meta.env.DEV ? lazy(() => import("./pages/DevTokens")) : null;
 const DevComponents = import.meta.env.DEV ? lazy(() => import("./pages/DevComponents")) : null;
 
 export default function App() {
+  const { t } = useTranslation();
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Shell />}>
           <Route
             index
-            element={<PlaceholderPage eyebrow="Home" title="Every account. One number." note="Net worth, cash flow and what to look at. Arrives in M4." />}
+            element={<PlaceholderPage eyebrow={t("pages.home.eyebrow")} title={t("pages.home.title")} note={t("pages.home.note")} />}
           />
           <Route
             path="advisor"
-            element={<PlaceholderPage domain="ai" eyebrow="Advisor" title="Ask about any transaction." note="Chat, sources and voice. Arrives in M5 and M6." />}
+            element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
           />
           <Route
             path="plans"
-            element={<PlaceholderPage domain="goal" eyebrow="Plans" title="What do you want to figure out?" note="Calculators, health score, goals and tax. EMI and prepay tools arrive in M2." />}
+            element={<PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />}
           />
-          <Route
-            path="you"
-            element={<PlaceholderPage eyebrow="You" title="Profile and privacy." note="Linked accounts, consent manager and data controls. Arrive in M7." />}
-          />
+          <Route path="you" element={<You />} />
           {DevComponents && (
             <Route
               path="dev/components"

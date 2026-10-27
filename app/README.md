@@ -88,21 +88,40 @@ Daylight tokens live in `src/styles/tokens.css` as plain CSS variables, mapped t
 - Domain accents: set `data-domain="loan"` (also `emi`, `tax`, `inv`, `save`, `goal`, `ai`) on a container.
 - Tenant branding (later milestone): override the same variables per tenant.
 
+## Languages (English and Hindi)
+
+react-i18next, with the catalogs bundled in the app: they are precached by the service worker, so translations work offline
+and there is no loading state.
+
+- **Add a string:** put it in `src/i18n/locales/en.ts`, then in `hi.ts`. `hi.ts` is typed against English, so a missing key
+  fails `npm run typecheck`. `t("nav.home")` is type-checked too: a typo in a key is a compile error.
+- **Use it:** `const { t } = useTranslation()`. Never hard-code user-facing text in a component.
+- **Choosing the language:** the saved choice (`localStorage` key `finous.lang`), then the browser's language preferences in
+  order, then English. `LanguageSwitcher` (on the You tab) changes it. `<html lang>` follows it.
+- **Hindi typography:** `index.css` resets letter-spacing and loosens line height under `html:lang(hi)`. Devanagari clips
+  and breaks conjuncts with the tight English settings. Fonts are the system's Devanagari font.
+- **Tests:** `catalogs.test.ts` checks both catalogs have the same keys and placeholders, nothing is empty, and every Hindi
+  string is really Devanagari and not a copy of the English. `scripts/pwa-check.mjs` looks for the English "You're offline" heading.
+- **Numbers and dates:** not localised yet. `inr` keeps Indian grouping with Western digits, and `formatMonthYear` is still English.
+- **Review needed:** the Hindi copy was written by Claude and needs a native-speaker pass before launch.
+
 ## Layout
 
 ```
 src/
-  components/   Shell, TabBar, OfflineScreen, UpdatePrompt, PlaceholderPage
+  components/   Shell, TabBar, OfflineScreen, UpdatePrompt, PlaceholderPage, LanguageSwitcher
   components/ui/ shared library: Button, HeroCard, Card, Row, Tag, Switch, Slider, Field, Toast
   hooks/        useOnline
+  i18n/         createI18n, language detection, locales/en.ts and hi.ts
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        DevTokens, DevComponents (dev only)
-  test/         setup and the axe accessibility helper
+  pages/        You, DevTokens and DevComponents (dev only)
+  test/         setup, the axe helper, renderWithI18n, the PWA virtual-module stub
   styles/       tokens.css
 public/         icons and favicon
 ```
 
 ## Status
 
-M1 in progress: scaffold, tokens, PWA shell, offline screen, the tested finance module and the shared component library are done.
-Still to do in M1: i18n (en, hi), mock API, CI and Vercel previews.
+M1 in progress: scaffold, tokens, PWA shell, offline screen, the tested finance module, the shared component library,
+CI with Vercel previews, and English and Hindi i18n are done.
+Still to do in M1: the mock API.

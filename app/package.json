@@ -14,8 +14,10 @@
     "ci": "npm run typecheck && npm test && npm run build && npm run test:pwa"
   },
   "dependencies": {
+    "i18next": "^26.5.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^17.1.9",
     "react-router": "^7.18.4"
   },
   "devDependencies": {
