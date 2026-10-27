@@ -5,6 +5,7 @@ import PlaceholderPage from "./components/PlaceholderPage";
 
 // Dev-only token preview. Tree-shaken out of production builds.
 const DevTokens = import.meta.env.DEV ? lazy(() => import("./pages/DevTokens")) : null;
+const DevComponents = import.meta.env.DEV ? lazy(() => import("./pages/DevComponents")) : null;
 
 export default function App() {
   return (
@@ -27,6 +28,16 @@ export default function App() {
             path="you"
             element={<PlaceholderPage eyebrow="You" title="Profile and privacy." note="Linked accounts, consent manager and data controls. Arrive in M7." />}
           />
+          {DevComponents && (
+            <Route
+              path="dev/components"
+              element={
+                <Suspense fallback={null}>
+                  <DevComponents />
+                </Suspense>
+              }
+            />
+          )}
           {DevTokens && (
             <Route
               path="dev/tokens"

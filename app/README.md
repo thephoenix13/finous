@@ -8,8 +8,8 @@ This folder is separate from the marketing site at the repo root and in `../fino
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173, token preview at /dev/tokens
-npm test           # finance unit tests (Vitest)
+npm run dev        # http://localhost:5173, previews at /dev/tokens and /dev/components
+npm test           # unit and component tests (Vitest, Testing Library, axe)
 npm run build      # typecheck + production build + service worker
 npm run preview    # serve the build at http://localhost:4173 (needed to test the PWA)
 ```
@@ -34,6 +34,25 @@ The service worker is off in `npm run dev`. Test install and offline behaviour a
 - The tests use the figures from Prototype v2 (EMI ₹58,345, prepay ₹50,000 saves 4 months and about ₹1,83,378,
   refinance saves about ₹1,523 a month). If a screen's number changes, change it here first.
 
+## Component library
+
+`src/components/ui/`, imported from `components/ui`. Each component is tested for behaviour, keyboard use,
+accessible names and a clean axe run (`src/test/a11y.ts`; colour contrast is checked by hand because jsdom has no layout).
+
+| Component | Notes |
+| --- | --- |
+| `Button`, `ButtonLink` | `primary`, `accent`, `ghost`, `quiet`; `md` (52px) or `sm` (44px). Defaults to `type="button"`. `loading` keeps the label and blocks repeat taps. `ButtonLink` is a real link styled the same. |
+| `HeroCard` | Tinted card with the one big number. Colours come from `data-domain`. |
+| `Card` | `raised` (shadow) or `outline` (hairline). |
+| `Row`, `RowGroup` | Renders a real `<button>` (`onClick`), a real link (`to`) or plain content. |
+| `Tag` | `neutral`, `positive`, `warning`, `negative`. Text carries the meaning. |
+| `Switch` | `<button role="switch">`. `label` is required. Controlled or uncontrolled. |
+| `Slider` | Native range input with a label, formatted live value and `aria-valuetext`. 44px touch target. |
+| `Field` | Always-visible label, hint and error wired with `aria-describedby`, forwards its ref. |
+| `ToastProvider`, `useToast` | One polite live-region message at a time. Wrapped around the app in `main.tsx`. |
+
+Not included yet: `Sheet`.
+
 ## Design tokens
 
 Daylight tokens live in `src/styles/tokens.css` as plain CSS variables, mapped to Tailwind utilities in `src/index.css`
@@ -47,14 +66,16 @@ Daylight tokens live in `src/styles/tokens.css` as plain CSS variables, mapped t
 ```
 src/
   components/   Shell, TabBar, OfflineScreen, UpdatePrompt, PlaceholderPage
+  components/ui/ shared library: Button, HeroCard, Card, Row, Tag, Switch, Slider, Field, Toast
   hooks/        useOnline
   lib/          finance (loan, prepay, refinance, goal maths), format (₹ and dates)
-  pages/        DevTokens (dev only)
+  pages/        DevTokens, DevComponents (dev only)
+  test/         setup and the axe accessibility helper
   styles/       tokens.css
 public/         icons and favicon
 ```
 
 ## Status
 
-M1 in progress: scaffold, tokens, PWA shell, offline screen and the tested finance module are done.
-Still to do in M1: shared component library, i18n (en, hi), mock API, CI and Vercel previews.
+M1 in progress: scaffold, tokens, PWA shell, offline screen, the tested finance module and the shared component library are done.
+Still to do in M1: i18n (en, hi), mock API, CI and Vercel previews.
