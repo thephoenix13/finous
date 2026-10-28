@@ -280,3 +280,10 @@ last few turns and the user's figures; the function calls Claude with the key an
 - **Limits:** a question is at most 500 characters, the figures at most 8 KB, 8 calls a minute for each caller and 400 a day in all (best effort: per running instance). Set a monthly spend limit in the Anthropic console too; that is the real ceiling.
 - **Fallback:** on any failure (no key, rate limit, timeout, bad reply) the Advisor screen answers from the fixed rules in `src/lib/advisor.ts` and says so on the message.
 - **Tests** use a fake `fetch`; CI never calls Claude. To try it locally you need `vercel dev` with the variable set; plain `npm run dev` has no `/api`, so the Advisor shows the rules' answers.
+
+## Hindi review
+
+`npm run hindi-review` writes `HINDI_REVIEW.csv`: every screen string in English beside its Hindi (432 at the time of writing). Send it to a
+native speaker; they put corrections in "Corrected Hindi" and the reason in "Comment", and anything left blank counts as accepted. Words inside
+`{{double braces}}` are filled in by the app (amounts, names, dates) and must stay exactly as they are. The catalog tests reject a Hindi string
+that lacks them or is identical to the English. Apply the corrections in `src/i18n/locales/hi.ts`.
