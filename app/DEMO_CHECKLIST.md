@@ -49,7 +49,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [ ] Decision on the 12-month net-worth history (none is invented; Home shows no chart until decided)
 - [ ] Decision on the tax ELSS SIP figure (prototype ₹30,000 vs ₹15,000)
 - [ ] App icon, splash colour, install prompt checked on a real Android and iPhone
-- [ ] Lighthouse PWA and accessibility pass on production
+- [x] Lighthouse on production (mobile, 28 Oct 2026): performance 99, accessibility 100, best practices 100, SEO 91 before adding robots.txt; LCP 1.6 s, CLS 0
 - [x] A one-page demo script: `DEMO_SCRIPT.md`
 
 ## 4. Not in scope without a paid service
