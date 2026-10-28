@@ -18,6 +18,7 @@ import LinkedAccounts from "./pages/LinkedAccounts";
 import NotFound from "./pages/NotFound";
 import Plans from "./pages/Plans";
 import Privacy from "./pages/Privacy";
+import Notifications from "./pages/Notifications";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import Profile from "./pages/Profile";
 import RecommendationDetail from "./pages/RecommendationDetail";
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="advisor" element={<Advisor />} />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
+          <Route path="notifications" element={<Notifications />} />
           <Route path="search" element={<Search />} />
           <Route path="cash-flow" element={<CashFlow />} />
           <Route path="transactions/:id" element={<TransactionDetail />} />

@@ -235,6 +235,7 @@ export const en = {
     allAccounts: "All accounts",
     cashFlow: "Cash flow",
     search: "Search",
+    notifications: "Notifications",
     lookAt: "Look at this",
     lookAtNone: "Nothing needs your attention right now.",
   },
@@ -388,6 +389,15 @@ export const en = {
       },
     },
     profile: { title: "Profile", subtitle: "Name, email, city", name: "Full name", email: "Email", city: "City" },
+  },
+  notifications: {
+    title: "Notifications",
+    none: "Nothing needs your attention.",
+    worthLook: "Worth a look",
+    statementReady: "{{card}} statement is ready",
+    dueAutoPayOn: "{{amount}} due on {{date}}. Auto-pay is on.",
+    dueAutoPayOff: "{{amount}} due on {{date}}. Auto-pay is off.",
+    credited: "{{amount}} to {{account}}.",
   },
   search: {
     title: "Search",

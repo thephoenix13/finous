@@ -17,7 +17,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] Cash flow
 - [ ] Monthly recap
 - [x] Search transactions
-- [ ] Notifications
+- [x] Notifications: what is open, worked out from the user's own data (insights, card statement, latest income); there is no feed in the Api
 - [x] Recommendations (ranked) and recommendation detail, linked from Home and Plans. The prototype's confirmation screen (tracking number, "request received") is left out: it needs a write the Api does not have, and the reference would be invented.
 
 **Advisor tab**

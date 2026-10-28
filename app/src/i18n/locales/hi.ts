@@ -237,6 +237,7 @@ export const hi: Messages = {
     allAccounts: "सभी खाते",
     cashFlow: "कैश फ़्लो",
     search: "खोजें",
+    notifications: "सूचनाएँ",
     lookAt: "इस पर नज़र डालें",
     lookAtNone: "अभी आपके ध्यान देने लायक कुछ नहीं है।",
   },
@@ -390,6 +391,15 @@ export const hi: Messages = {
       },
     },
     profile: { title: "प्रोफ़ाइल", subtitle: "नाम, ईमेल, शहर", name: "पूरा नाम", email: "ईमेल", city: "शहर" },
+  },
+  notifications: {
+    title: "सूचनाएँ",
+    none: "आपके ध्यान देने लायक कुछ नहीं है।",
+    worthLook: "देखने लायक",
+    statementReady: "{{card}} का स्टेटमेंट तैयार है",
+    dueAutoPayOn: "{{amount}} {{date}} को देय है। ऑटो-पे चालू है।",
+    dueAutoPayOff: "{{amount}} {{date}} को देय है। ऑटो-पे बंद है।",
+    credited: "{{amount}} {{account}} में।",
   },
   search: {
     title: "खोजें",
