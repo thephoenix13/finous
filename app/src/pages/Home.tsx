@@ -78,6 +78,9 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
         <ButtonLink to="/search" variant="ghost" size="sm" fullWidth={false}>
           {t("home.search")}
         </ButtonLink>
+        <ButtonLink to="/notifications" variant="ghost" size="sm" fullWidth={false}>
+          {t("home.notifications")}
+        </ButtonLink>
       </div>
 
       <section aria-labelledby="home-look" className="pt-8">
