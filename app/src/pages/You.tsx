@@ -50,6 +50,7 @@ export default function You() {
         />
         <Row to="/you/privacy" title={t("you.privacy.title")} subtitle={t("you.privacy.subtitle")} />
         <Row to="/you/profile" title={t("you.profile.title")} subtitle={t("you.profile.subtitle")} />
+        <Row to="/welcome" title={t("you.replay.title")} subtitle={t("you.replay.subtitle")} />
       </RowGroup>
 
       <section className="mx-4 mt-8">

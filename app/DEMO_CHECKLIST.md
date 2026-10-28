@@ -35,7 +35,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] Language: stays the inline switch on the You screen
 
 **First run (mock only, no real KYC or bank calls)**
-- [ ] Splash, welcome, consent, Aadhaar step, sync step, then Home
+- [x] Splash, welcome, consent, sync, then Home; shown once per device, replayable from You. No Aadhaar entry (it would look like real KYC); the consent step says it is a demo
 
 ## 2. Stability
 - [x] A "page not found" screen (unknown addresses were blank)

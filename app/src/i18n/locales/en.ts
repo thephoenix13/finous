@@ -390,6 +390,7 @@ export const en = {
       },
     },
     profile: { title: "Profile", subtitle: "Name, email, city", name: "Full name", email: "Email", city: "City" },
+    replay: { title: "Replay the welcome", subtitle: "See the first-run steps again" },
   },
   notifications: {
     title: "Notifications",
@@ -411,6 +412,30 @@ export const en = {
     diningBody: "{{amount}} this month. Nothing alarming.",
     spend: "Spend by category",
     next: "See what to do next",
+  },
+  welcome: {
+    eyebrow: "Welcome",
+    title: "Every account. One number.",
+    body: "Finous connects to your banks, loans, cards and mutual funds through RBI's Account Aggregator. Read-only. Revocable anytime.",
+    cta: "Get started",
+    time: "Takes about a minute",
+    step: "Step {{step}} of 2",
+    consent: {
+      title: "What you're sharing",
+      intro: "You're about to connect your financial accounts through RBI's Account Aggregator framework. Read-only. Revocable anytime.",
+      balances: { title: "Balances and transactions", body: "From banks, cards, loans and mutual funds. We can view, not move." },
+      valid: { title: "Valid for 12 months", body: "You can revoke consent at any time. Data is deleted within 24 hours." },
+      control: { title: "You stay in control", body: "Every account is added by you. Every consent can be revoked by you." },
+      demo: "This is a demo. No real accounts are connected yet; you will see sample data.",
+      cta: "Give consent",
+    },
+    sync: {
+      title: "Fetching your accounts",
+      body: "You'll land on your dashboard when it's done.",
+      done: "Done",
+      waiting: "Waiting",
+      skip: "Skip to dashboard",
+    },
   },
   search: {
     title: "Search",

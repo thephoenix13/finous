@@ -11,6 +11,9 @@ import { expectAccessible } from "./test/a11y";
 /** Every address a user can reach, with an address for each `:id` route. A new route in App.tsx fails the coverage test below until it is added. */
 const ROUTES = [
   "/",
+  "/welcome",
+  "/welcome/consent",
+  "/welcome/sync",
   "/advisor",
   "/accounts",
   "/accounts/hdfc",
