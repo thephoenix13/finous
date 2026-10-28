@@ -131,6 +131,7 @@ export const en = {
     progress: "Section 80C limit used",
     progressText: "{{used}} of {{limit}}",
     breakdown: "80C breakdown",
+    breakdownNote: "For the whole financial year, including instalments still to come.",
     kind: {
       ppf: "PPF contribution",
       elss: "ELSS SIP",
