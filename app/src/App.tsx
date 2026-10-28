@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import RefinanceCheck from "./pages/RefinanceCheck";
+import Search from "./pages/Search";
 import Tax from "./pages/Tax";
 import TransactionDetail from "./pages/TransactionDetail";
 import You from "./pages/You";
@@ -39,6 +40,7 @@ export default function App() {
           />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
+          <Route path="search" element={<Search />} />
           <Route path="cash-flow" element={<CashFlow />} />
           <Route path="transactions/:id" element={<TransactionDetail />} />
           <Route path="plans" element={<Plans />} />

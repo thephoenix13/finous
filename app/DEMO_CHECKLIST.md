@@ -16,7 +16,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] Transaction detail (amount, counterparty, recategorise)
 - [x] Cash flow
 - [ ] Monthly recap
-- [ ] Search transactions
+- [x] Search transactions
 - [ ] Notifications
 - [ ] Recommendations (the ranked actions), action detail, confirmation
 
