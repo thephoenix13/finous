@@ -4,7 +4,7 @@ Goal: a stable PWA the partners can open on a phone and click through end to end
 Everything runs on the mock persona (Aarav Mehta). No paid service is used. Tick a box only when it is merged **and** live.
 
 ## 0. Blocker: production deploys
-- [ ] Deploy current `main` to production (the limit refused earlier deploys). Previews of branches are now skipped (`ignoreCommand` in `vercel.json`), so each merge costs one deployment. Then check `/welcome` and `POST /api/advisor` on production.
+- [ ] Deploy current `main` to production (Vercel's rolling daily limit refused the deploys after the AI advisor fix: PRs 33 to 37 are merged but not live; retrying by merging a small change). Previews of branches are skipped (`ignoreCommand` in `vercel.json`), so each merge costs one deployment. Then check `/robots.txt`, the net-worth line on Home, and that a long advisor answer is no longer raw JSON.
 - [x] Leftover projects `finous_app` and `finous-l4x6` deleted; `finous` skips app-only pushes.
 
 ## 1. Screens (prototype order)
