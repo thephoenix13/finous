@@ -6,6 +6,7 @@ import PlaceholderPage from "./components/PlaceholderPage";
 import AccountDetail from "./pages/AccountDetail";
 import Accounts from "./pages/Accounts";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
+import CashFlow from "./pages/CashFlow";
 import EmiCalculator from "./pages/EmiCalculator";
 import GoalCalculator from "./pages/GoalCalculator";
 import GoalDetail from "./pages/GoalDetail";
@@ -38,6 +39,7 @@ export default function App() {
           />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
+          <Route path="cash-flow" element={<CashFlow />} />
           <Route path="transactions/:id" element={<TransactionDetail />} />
           <Route path="plans" element={<Plans />} />
           <Route path="plans/goals" element={<Goals />} />

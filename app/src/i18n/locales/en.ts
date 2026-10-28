@@ -232,6 +232,7 @@ export const en = {
     savedLess: "{{amount}} less than last month",
     savedSame: "The same as last month",
     allAccounts: "All accounts",
+    cashFlow: "Cash flow",
     lookAt: "Look at this",
     lookAtNone: "Nothing needs your attention right now.",
   },
@@ -268,6 +269,15 @@ export const en = {
       autoPayOn: "On",
       autoPayOff: "Not set up",
     },
+  },
+  cashFlow: {
+    title: "This month",
+    saved: "Saved in {{month}}",
+    totals: "In and out",
+    where: "Where it went",
+    categories: { emi: "EMI", sips: "SIPs", rent: "Rent and utilities", food: "Food and dining", other: "Other" },
+    insight: "Insight",
+    diningAbove: "Dining is {{percent}}% higher than your {{months}}-month average. Nothing alarming, but worth a look.",
   },
   transaction: {
     title: "Transaction",

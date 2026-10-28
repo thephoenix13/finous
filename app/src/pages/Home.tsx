@@ -68,7 +68,10 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
         </div>
       </section>
 
-      <div className="px-5 pt-8">
+      <div className="flex gap-3 px-5 pt-8">
+        <ButtonLink to="/cash-flow" variant="ghost" size="sm">
+          {t("home.cashFlow")}
+        </ButtonLink>
         <ButtonLink to="/accounts" variant="ghost" size="sm">
           {t("home.allAccounts")}
         </ButtonLink>
