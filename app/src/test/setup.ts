@@ -1,6 +1,11 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
-import { afterEach, vi } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
+
+// Tests start as a returning visitor; the welcome tests clear this to be a first-time one.
+beforeEach(() => {
+  if (typeof localStorage !== "undefined") localStorage.setItem("finous.firstRunDone", "1");
+});
 
 afterEach(() => {
   cleanup();

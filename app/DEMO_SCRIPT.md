@@ -6,6 +6,7 @@ About ten minutes. Open https://finous-app.vercel.app on a phone, or install it 
 
 ## The click path
 
+0. **First visit only: the welcome.** A brand splash, the promise, what is being shared (it says it is a demo), then the accounts "fetching" one by one, then Home. It shows once per device; to show it again, open the You tab and tap "Replay the welcome".
 1. **Home.** The greeting, net worth with this month's change, this month's in, out and saved, and the two things worth looking at. Tap the first one to open its recommendation.
 2. **Recommendations** (Plans tab, or from Home). Three ranked suggestions, each with its reason and its headline figure. Open the refinance one: why, what it costs (₹39,000 upfront, recovered in 26 months), then "Open the refinance check".
 3. **Refinance check.** It sets the 8.9% rate against the 8.5% market rate and shows about ₹1,523 a month saved. Then Back.
@@ -24,7 +25,7 @@ About ten minutes. Open https://finous-app.vercel.app on a phone, or install it 
 | --- | --- |
 | Every screen, the layout, the language switch (English and Hindi) | Aarav's data: one fixed persona, same for every visitor |
 | The calculators (EMI, prepay, refinance, affordability, goal) and the tax and health-score maths | Real bank and investment data (Account Aggregator) |
-| Installing it and opening it offline | Sign-in, Aadhaar verification and the first-run flow |
+| Installing it and opening it offline | Sign-in and Aadhaar verification (the welcome steps have no Aadhaar entry) |
 | Advisor answers worked out from the figures on screen | An AI advisor and voice: both paid services, not included |
 | Accessibility checks and a test for every screen | Changing anything: revoke consent, add an account, create a goal, recategorise a transaction |
 

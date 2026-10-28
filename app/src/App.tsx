@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
 import Shell from "./components/Shell";
+import { firstRunDone } from "./lib/firstRun";
 import Advisor from "./pages/Advisor";
 import AccountDetail from "./pages/AccountDetail";
 import Accounts from "./pages/Accounts";
@@ -28,18 +29,43 @@ import RefinanceCheck from "./pages/RefinanceCheck";
 import Search from "./pages/Search";
 import Tax from "./pages/Tax";
 import TransactionDetail from "./pages/TransactionDetail";
+import Welcome from "./pages/Welcome";
+import WelcomeConsent from "./pages/WelcomeConsent";
+import WelcomeSync from "./pages/WelcomeSync";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
 const DevTokens = import.meta.env.DEV ? lazy(() => import("./pages/DevTokens")) : null;
 const DevComponents = import.meta.env.DEV ? lazy(() => import("./pages/DevComponents")) : null;
 
+/** The welcome steps have no tab bar: nothing to go to until the accounts are connected. */
+function WelcomeLayout() {
+  return (
+    <div className="mx-auto flex h-full max-w-[480px] flex-col bg-page">
+      <main className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)]">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+/** Evaluated each time the front door is opened, so finishing the welcome lets the next visit through. */
+function FrontDoor() {
+  return firstRunDone() ? <Home /> : <Navigate to="/welcome" replace />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route element={<WelcomeLayout />}>
+          <Route path="welcome" element={<Welcome />} />
+          <Route path="welcome/consent" element={<WelcomeConsent />} />
+          <Route path="welcome/sync" element={<WelcomeSync />} />
+        </Route>
         <Route element={<Shell />}>
-          <Route index element={<Home />} />
+          {/* Only the front door sends a first-time visitor to the welcome; a link to any other screen still opens it. */}
+          <Route index element={<FrontDoor />} />
           <Route path="advisor" element={<Advisor />} />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />

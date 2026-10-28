@@ -145,6 +145,9 @@ try {
     "the service worker to activate",
   ).catch(() => "never activated");
   check("service worker installs and activates on first visit", state === "active", `state: ${state}`);
+  // The rest checks the app itself, not the welcome steps a first-time visitor is sent to from "/".
+  await evaluate("localStorage.setItem('finous.firstRunDone', '1')");
+  await send("Page.navigate", { url: `${BASE}/` });
 
   // 2. Reload: the page is now controlled by it
   await send("Page.reload");
