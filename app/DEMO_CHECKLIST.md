@@ -21,7 +21,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] Recommendations (ranked) and recommendation detail, linked from Home and Plans. The prototype's confirmation screen (tracking number, "request received") is left out: it needs a write the Api does not have, and the reference would be invented.
 
 **Advisor tab**
-- [ ] Advisor chat UI on a scripted, offline responder (the real AI is a paid service: not included)
+- [x] Advisor chat UI on a scripted, offline responder: four suggested questions plus typed ones, answers worked out from the user's own figures, sources shown, labelled on screen as not an AI model. Voice (Deepgram) and the real AI are paid: not included
 - [ ] Milestone / stacks screens that need no writes
 
 **Plans tab**

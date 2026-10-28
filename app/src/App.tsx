@@ -1,8 +1,7 @@
 import { lazy, Suspense } from "react";
-import { useTranslation } from "react-i18next";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Shell from "./components/Shell";
-import PlaceholderPage from "./components/PlaceholderPage";
+import Advisor from "./pages/Advisor";
 import AccountDetail from "./pages/AccountDetail";
 import Accounts from "./pages/Accounts";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
@@ -30,16 +29,12 @@ const DevTokens = import.meta.env.DEV ? lazy(() => import("./pages/DevTokens")) 
 const DevComponents = import.meta.env.DEV ? lazy(() => import("./pages/DevComponents")) : null;
 
 export default function App() {
-  const { t } = useTranslation();
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Shell />}>
           <Route index element={<Home />} />
-          <Route
-            path="advisor"
-            element={<PlaceholderPage domain="ai" eyebrow={t("pages.advisor.eyebrow")} title={t("pages.advisor.title")} note={t("pages.advisor.note")} />}
-          />
+          <Route path="advisor" element={<Advisor />} />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
           <Route path="search" element={<Search />} />
