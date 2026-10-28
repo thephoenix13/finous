@@ -75,6 +75,7 @@ export default function Plans() {
       <PlaceholderPage domain="goal" eyebrow={t("pages.plans.eyebrow")} title={t("pages.plans.title")} note={t("pages.plans.note")} />
       <RowGroup className="mb-6">
         <Row to="/plans/health" icon={<CompassIcon />} title={t("plans.tools.health.title")} subtitle={t("plans.tools.health.subtitle")} />
+        <Row to="/plans/recommendations" icon={<CheckIcon />} title={t("plans.tools.recommendations.title")} subtitle={t("plans.tools.recommendations.subtitle")} />
         <Row to="/plans/goals" icon={<TargetIcon />} title={t("plans.tools.goals.title")} subtitle={goalsSubtitle} />
         <Row to="/plans/tax" icon={<DocIcon />} title={t("plans.tools.tax.title")} subtitle={taxSubtitle} />
         <Row to="/plans/prepay" icon={<TrendIcon />} title={t("plans.tools.prepay.title")} subtitle={t("plans.tools.prepay.subtitle")} />

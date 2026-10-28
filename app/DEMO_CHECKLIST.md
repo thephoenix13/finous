@@ -18,7 +18,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [ ] Monthly recap
 - [x] Search transactions
 - [ ] Notifications
-- [ ] Recommendations (the ranked actions), action detail, confirmation
+- [x] Recommendations (ranked) and recommendation detail, linked from Home and Plans. The prototype's confirmation screen (tracking number, "request received") is left out: it needs a write the Api does not have, and the reference would be invented.
 
 **Advisor tab**
 - [ ] Advisor chat UI on a scripted, offline responder (the real AI is a paid service: not included)

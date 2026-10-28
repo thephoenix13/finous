@@ -72,7 +72,8 @@ describe("Home: first view (prototype Home screen)", () => {
   it("draws no net-worth curve: the Api has no history to draw it from", async () => {
     const { container } = renderWithI18n(<Home now={MORNING} />);
     await loaded();
-    expect(container.querySelector("svg")).not.toBeInTheDocument();
+    // The only drawings are the arrows on rows that link somewhere.
+    expect([...container.querySelectorAll("svg")].filter((s) => !s.closest("a"))).toHaveLength(0);
   });
 });
 
