@@ -83,3 +83,20 @@ export function reply(topic: Topic | undefined, { cashFlow, accounts }: AdvisorD
       return { text: t("advisor.reply.fallback"), sources: [] };
   }
 }
+
+/** The user's figures, as the server sends them to the model: names, amounts and rates only, nothing about the app. */
+export function buildContext({ cashFlow, accounts }: AdvisorData, lang: string | undefined): Record<string, unknown> {
+  return {
+    month: formatMonthYear(parseMonth(cashFlow.month), lang),
+    income: cashFlow.income,
+    outflow: cashFlow.outflow,
+    saved: cashFlow.saved,
+    savedChangeVsLastMonth: cashFlow.savedChangeVsLastMonth,
+    spendByCategory: cashFlow.categories.map((c) => ({ category: c.category, amount: c.amount })),
+    diningAboveAverage: cashFlow.insight ? { percent: cashFlow.insight.percentAboveAverage, months: cashFlow.insight.baselineMonths } : undefined,
+    bankAccounts: accounts.bank.map((b) => ({ name: `${b.name} •${b.last4}`, balance: b.balance })),
+    loans: accounts.loans.map((l) => ({ name: l.name, outstanding: l.outstanding, ratePercent: l.ratePercent, monthsLeft: l.monthsLeft, emi: l.emi })),
+    cards: accounts.cards.map((c) => ({ name: c.name, outstanding: c.outstanding, limit: c.limit })),
+    investments: accounts.investments.map((i) => ({ name: i.name, kind: i.instrument, value: i.value })),
+  };
+}

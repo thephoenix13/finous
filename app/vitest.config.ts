@@ -12,7 +12,7 @@ export default defineConfig({
     // Pure logic tests run in node. Component tests opt in with `// @vitest-environment jsdom`.
     environment: "node",
     // The scripts' helpers (scripts/lib) are plain JavaScript, so their tests are too.
-    include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.mjs"],
+    include: ["src/**/*.test.{ts,tsx}", "server/**/*.test.ts", "scripts/**/*.test.mjs"],
     setupFiles: ["./src/test/setup.ts"],
   },
 });
