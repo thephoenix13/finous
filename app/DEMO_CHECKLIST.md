@@ -28,11 +28,11 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] Plans hub, EMI, prepay, refinance, affordability, goal calculator, tax, health score + breakdown, goals + detail
 
 **You tab**
-- [ ] You: profile summary, links
-- [ ] Linked accounts and consents (read only)
-- [ ] Privacy
-- [ ] Profile
-- [ ] Language (already a switcher; give it its own screen)
+- [x] You: name and email, links with live summaries, language switch
+- [x] Linked accounts and consents (read only; no revoke or add-account: the Api has no writes)
+- [x] Privacy (plain-words information; download and delete are left out, they need writes)
+- [x] Profile (read only)
+- [x] Language: stays the inline switch on the You screen
 
 **First run (mock only, no real KYC or bank calls)**
 - [ ] Splash, welcome, consent, Aadhaar step, sync step, then Home
