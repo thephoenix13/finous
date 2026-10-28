@@ -15,7 +15,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] Accounts: list by type, bank and card detail (a loan opens the refinance check; investment rows are not links: their holdings screens need data the Api lacks)
 - [x] Transaction detail (amount, counterparty, recategorise)
 - [x] Cash flow
-- [ ] Monthly recap
+- [x] Monthly recap: saved, in and out, what changed (card utilisation, dining), spend share by category. The prototype's rate-reset and best-month lines are left out: the Api has no history
 - [x] Search transactions
 - [x] Notifications: what is open, worked out from the user's own data (insights, card statement, latest income); there is no feed in the Api
 - [x] Recommendations (ranked) and recommendation detail, linked from Home and Plans. The prototype's confirmation screen (tracking number, "request received") is left out: it needs a write the Api does not have, and the reference would be invented.
