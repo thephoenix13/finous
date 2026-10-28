@@ -133,6 +133,7 @@ export const hi: Messages = {
     progress: "धारा 80C की सीमा का उपयोग",
     progressText: "{{limit}} में से {{used}}",
     breakdown: "80C का ब्योरा",
+    breakdownNote: "पूरे वित्त वर्ष के लिए, आने वाली किस्तों समेत।",
     kind: {
       ppf: "PPF योगदान",
       elss: "ELSS SIP निवेश",

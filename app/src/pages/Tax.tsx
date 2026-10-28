@@ -66,6 +66,7 @@ function Summary({ tax }: { tax: TaxSummary }) {
       </div>
 
       <Section id="tax-80c" title={t("tax.breakdown")}>
+        <p className="px-5 pb-2 text-[13px] text-ink-3">{t("tax.breakdownNote")}</p>
         {c.items.map((item) => (
           <Row
             key={item.id}

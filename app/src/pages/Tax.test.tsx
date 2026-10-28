@@ -47,6 +47,11 @@ describe("Tax: first view (prototype Tax screen)", () => {
     expect((bar().firstElementChild as HTMLElement).style.width).toMatch(/^62\.6/);
   });
 
+  it("says the 80C figures cover the whole financial year, including SIP instalments still to come", async () => {
+    renderWithI18n(<Tax />);
+    expect(await screen.findByText("For the whole financial year, including instalments still to come.")).toBeInTheDocument();
+  });
+
   it("breaks 80C down: PPF ₹42,000, an ELSS SIP ₹30,000 and life insurance ₹22,000", async () => {
     renderWithI18n(<Tax />);
     await loaded();
