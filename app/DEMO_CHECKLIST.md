@@ -4,7 +4,7 @@ Goal: a stable PWA the partners can open on a phone and click through end to end
 Everything runs on the mock persona (Aarav Mehta). No paid service is used. Tick a box only when it is merged **and** live.
 
 ## 0. Blocker: production deploys
-- [ ] `finous-app` redeploy after Vercel's rate limit lifts (about 21:33 UTC, 28 Oct 2026). Merged code is not live until then.
+- [ ] `finous-app` production is behind `main` (the rate limit refused the deploys of the first-run flow and the AI advisor, and a dashboard Redeploy only re-runs an older commit). Deploy current `main`, then check `/welcome` and `POST /api/advisor` on production.
 - [x] Leftover projects `finous_app` and `finous-l4x6` deleted; `finous` skips app-only pushes.
 
 ## 1. Screens (prototype order)
