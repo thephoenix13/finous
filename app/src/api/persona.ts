@@ -24,6 +24,7 @@ import type {
   LoanAccount,
   MonthString,
   NetWorth,
+  NetWorthHistory,
   Profile,
   TaxSummary,
   Transaction,
@@ -332,12 +333,31 @@ const consents: Consent[] = [
 ];
 
 /** The whole persona. mock.ts hands out deep copies, so callers can never change these. */
+/**
+ * Twelve months ending at today's net worth. The persona has no real history, so these are illustrative (`sample: true`):
+ * the monthly gains are fixed numbers, and the last is this month's ₹1,24,000 so the line agrees with the Home caption.
+ */
+const SAMPLE_MONTHLY_GAINS = [95_000, 110_000, 80_000, 132_000, 101_000, 88_000, 120_000, 97_000, 115_000, 105_000, netWorth.changeThisMonth];
+const netWorthHistory: NetWorthHistory = (() => {
+  const [year, month] = PERSONA_TODAY.split("-").map(Number);
+  const values = [netWorth.value];
+  for (let i = SAMPLE_MONTHLY_GAINS.length - 1; i >= 0; i--) values.unshift(values[0] - SAMPLE_MONTHLY_GAINS[i]);
+  return {
+    sample: true,
+    points: values.map((value, i) => {
+      const index = year * 12 + (month - 1) - (values.length - 1 - i);
+      return { month: `${Math.floor(index / 12)}-${String((index % 12) + 1).padStart(2, "0")}`, value };
+    }),
+  };
+})();
+
 export const persona = {
   profile,
   accounts,
   allAccounts,
   transactions,
   netWorth,
+  netWorthHistory,
   cashFlow,
   insights,
   home,

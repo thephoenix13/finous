@@ -338,3 +338,29 @@ describe("persona: consents (prototype Consent manager)", () => {
     ]);
   });
 });
+
+describe("persona: net worth history (illustrative)", () => {
+  it("is marked as a sample, twelve months long, ending in September 2026", async () => {
+    const h = await createMockApi().getNetWorthHistory();
+    expect(h.sample).toBe(true);
+    expect(h.points).toHaveLength(12);
+    expect(h.points[0].month).toBe("2025-10");
+    expect(h.points[11].month).toBe("2026-09");
+  });
+
+  it("ends at today's net worth, and last month is lower by this month's change", async () => {
+    const api = createMockApi();
+    const [h, n] = await Promise.all([api.getNetWorthHistory(), api.getNetWorth()]);
+    expect(h.points[11].value).toBe(n.value);
+    expect(h.points[10].value).toBe(n.value - n.changeThisMonth);
+  });
+
+  it("only ever rises, by about a lakh a month", async () => {
+    const { points } = await createMockApi().getNetWorthHistory();
+    for (let i = 1; i < points.length; i++) {
+      const gain = points[i].value - points[i - 1].value;
+      expect(gain).toBeGreaterThan(70_000);
+      expect(gain).toBeLessThan(140_000);
+    }
+  });
+});

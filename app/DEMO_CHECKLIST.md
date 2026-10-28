@@ -46,7 +46,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 
 ## 3. Demo polish
 - [ ] Hindi copy reviewed by a native speaker (written by Claude, not yet reviewed). Send `HINDI_REVIEW.csv` (`npm run hindi-review`); see the README
-- [ ] Decision on the 12-month net-worth history (none is invented; Home shows no chart until decided)
+- [x] Net-worth history: Home draws a 12-month line from `getNetWorthHistory()`, which the mock fills with a labelled sample (`sample: true`, shown on screen as "Sample history, for illustration"). Real history needs the backend
 - [x] Tax ELSS SIP: the ₹30,000 is twelve instalments of ₹2,500 for the whole year, so the screen now says the 80C figures cover the financial year including instalments still to come. The prototype figures (₹94,000 used, ₹56,000 left, ₹17,472 saving) are unchanged
 - [ ] App icon, splash colour, install prompt checked on a real Android and iPhone
 - [x] Lighthouse on production (mobile, 28 Oct 2026): performance 99, accessibility 100, best practices 100, SEO 91 before adding robots.txt; LCP 1.6 s, CLS 0

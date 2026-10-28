@@ -135,6 +135,24 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
       });
     });
 
+    describe("net worth history", () => {
+      it("has one point a month, oldest first, ending in the month of the net worth with its value", async () => {
+        const api = makeApi();
+        const [history, n] = await Promise.all([api.getNetWorthHistory(), api.getNetWorth()]);
+        expect(history.points.length).toBeGreaterThanOrEqual(2);
+        const months = history.points.map((p) => p.month);
+        expect(months).toEqual([...months].sort());
+        expect(new Set(months).size).toBe(months.length);
+        const last = history.points[history.points.length - 1];
+        expect(last.month).toBe(n.asOf.slice(0, 7));
+        expect(last.value).toBe(n.value);
+      });
+
+      it("says whether it is illustrative", async () => {
+        expect(typeof (await makeApi().getNetWorthHistory()).sample).toBe("boolean");
+      });
+    });
+
     describe("cash flow", () => {
       it("saves income minus outflow", async () => {
         const c = await makeApi().getCashFlow();
@@ -361,6 +379,7 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
           ["getAccount", () => api.getAccount(accountId, { signal })],
           ["listTransactions", () => api.listTransactions({}, { signal })],
           ["getNetWorth", () => api.getNetWorth({ signal })],
+          ["getNetWorthHistory", () => api.getNetWorthHistory({ signal })],
           ["getCashFlow", () => api.getCashFlow({ signal })],
           ["listInsights", () => api.listInsights({ signal })],
           ["getHealthScore", () => api.getHealthScore({ signal })],

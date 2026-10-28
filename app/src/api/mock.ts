@@ -72,6 +72,7 @@ export function createMockApi({ latencyMs = 0 }: MockApiOptions = {}): MockApi {
       }),
     listTransactions: (query, o) => respond(o, () => queryTransactions(query)),
     getNetWorth: (o) => respond(o, () => persona.netWorth),
+    getNetWorthHistory: (o) => respond(o, () => persona.netWorthHistory),
     getCashFlow: (o) => respond(o, () => persona.cashFlow),
     listInsights: (o) => respond(o, () => persona.insights),
     getHealthScore: (o) => respond(o, () => persona.health),

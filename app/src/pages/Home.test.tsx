@@ -69,11 +69,46 @@ describe("Home: first view (prototype Home screen)", () => {
     expect(screen.getByRole("link", { name: "All accounts" })).toHaveAttribute("href", "/accounts");
   });
 
-  it("draws no net-worth curve: the Api has no history to draw it from", async () => {
-    const { container } = renderWithI18n(<Home now={MORNING} />);
+  it("draws the net-worth line with a label that says where it started and ended", async () => {
+    renderWithI18n(<Home now={MORNING} />);
     await loaded();
-    // The only drawings are the arrows on rows that link somewhere.
-    expect([...container.querySelectorAll("svg")].filter((s) => !s.closest("a"))).toHaveLength(0);
+    const chart = screen.getByRole("img", { name: /^Net worth from ₹/ });
+    expect(chart).toHaveAccessibleName("Net worth from ₹64,74,600 in Oct 2025 to ₹76,41,600 in Sep 2026");
+    expect(screen.getByText("Oct 2025")).toBeInTheDocument();
+    expect(screen.getByText("Sep 2026")).toBeInTheDocument();
+  });
+
+  it("says the history is a sample, because it is", async () => {
+    renderWithI18n(<Home now={MORNING} />);
+    await loaded();
+    expect(screen.getByText(/Sample history, for illustration/)).toBeInTheDocument();
+  });
+
+  it("leaves out the sample line when the history is the user's own", async () => {
+    const base = createMockApi();
+    const api: Api = { ...base, getNetWorthHistory: async (o) => ({ ...(await base.getNetWorthHistory(o)), sample: false }) };
+    renderWithI18n(<Home now={MORNING} />, { api });
+    await loaded();
+    expect(screen.getByRole("img", { name: /^Net worth from/ })).toBeInTheDocument();
+    expect(screen.queryByText(/Sample history/)).not.toBeInTheDocument();
+  });
+
+  it("draws no chart when there is too little history to draw", async () => {
+    const base = createMockApi();
+    const api: Api = { ...base, getNetWorthHistory: async () => ({ sample: false, points: [{ month: "2026-09", value: 1 }] }) };
+    renderWithI18n(<Home now={MORNING} />, { api });
+    await loaded();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
+
+  it("retries the whole screen when the history cannot be loaded", async () => {
+    const base = createMockApi();
+    let fail = true;
+    const api: Api = { ...base, getNetWorthHistory: async (o) => (fail ? ((fail = false), Promise.reject(new ApiError("unavailable"))) : base.getNetWorthHistory(o)) };
+    renderWithI18n(<Home now={MORNING} />, { api });
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    await loaded();
   });
 });
 
