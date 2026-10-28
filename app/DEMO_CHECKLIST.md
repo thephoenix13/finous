@@ -53,4 +53,4 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] A one-page demo script: `DEMO_SCRIPT.md`
 
 ## 4. Not in scope without a paid service
-- Real AI advisor (model API), voice (Deepgram), real Aadhaar eKYC, real Account Aggregator, push notifications backend.
+- Voice (Deepgram), real Aadhaar eKYC, real Account Aggregator, push notifications backend. (The AI advisor is built: `api/advisor.ts` with `ANTHROPIC_API_KEY` set in Vercel.)

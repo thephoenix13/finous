@@ -5,19 +5,21 @@ import { useApiData, type Api, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
 import { buttonClasses } from "../components/ui";
 import { reply, topicFor, type AdvisorData, type Reply, type Topic } from "../lib/advisor";
+import { askAi } from "../lib/advisorAi";
 
 const loadAdvisorData = async (api: Api, options: RequestOptions): Promise<AdvisorData> => {
   const [cashFlow, accounts] = await Promise.all([api.getCashFlow(options), api.listAccounts(options)]);
   return { cashFlow, accounts };
 };
 
-type Message = { id: number; from: "user"; text: string } | ({ id: number; from: "advisor" } & Reply);
+type Message = { id: number; from: "user"; text: string } | ({ id: number; from: "advisor"; via: "ai" | "rules" } & Reply);
 
 const SUGGESTIONS: Topic[] = ["biggest", "prepay", "food", "afford"];
 
 /**
- * Ask a question about the user's own money. The answers are worked out from their figures by a fixed set of rules, so it
- * runs with no AI service; the screen says so. The conversation lives only as long as the screen.
+ * Ask a question about the user's own money. The answer comes from the AI advisor (a server function that holds the key);
+ * when that cannot answer, a fixed set of rules works it out from the same figures, and the message says which it was.
+ * The conversation lives only as long as the screen.
  */
 export default function Advisor() {
   const { t, i18n } = useTranslation();
@@ -26,17 +28,33 @@ export default function Advisor() {
   const [text, setText] = useState("");
   const fieldId = useId();
 
-  const ask = (question: string, topic: Topic | undefined) => {
-    if (result.status !== "ready") return;
-    const answer = reply(topic, result.data, t, i18n.resolvedLanguage);
-    setMessages((prev) => [...prev, { id: prev.length, from: "user", text: question }, { id: prev.length + 1, from: "advisor", ...answer }]);
+  const [pending, setPending] = useState(false);
+
+  const ask = async (question: string, topic: Topic | undefined) => {
+    if (result.status !== "ready" || pending) return;
+    const data = result.data;
+    const lang = i18n.resolvedLanguage === "hi" ? "hi" : "en";
+    const history = messages.map((m) => ({ from: m.from, text: m.text }));
+    setMessages((prev) => [...prev, { id: prev.length, from: "user", text: question }]);
+    setPending(true);
+    // The rules know which tool fits a topic, so their link is kept even when the AI wrote the words.
+    const rules = reply(topic, data, t, i18n.resolvedLanguage);
+    let answer: Message;
+    try {
+      const ai = await askAi({ question, lang, data, history });
+      answer = { id: 0, from: "advisor", via: "ai", text: ai.text, sources: ai.sources, link: rules.link };
+    } catch {
+      answer = { id: 0, from: "advisor", via: "rules", ...rules };
+    }
+    setMessages((prev) => [...prev, { ...answer, id: prev.length }]);
+    setPending(false);
   };
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const question = text.trim();
     if (!question) return;
-    ask(question, topicFor(question));
+    void ask(question, topicFor(question));
     setText("");
   };
 
@@ -57,7 +75,7 @@ export default function Advisor() {
             <li key={topic}>
               <button
                 type="button"
-                onClick={() => ask(t(`advisor.suggestions.${topic}`), topic)}
+                onClick={() => void ask(t(`advisor.suggestions.${topic}`), topic)}
                 className="flex min-h-[56px] w-full items-center rounded-btn bg-surface px-4 py-3 text-left text-[15px] text-ink shadow-card active:bg-tint"
               >
                 {t(`advisor.suggestions.${topic}`)}
@@ -91,14 +109,20 @@ export default function Advisor() {
                   )}
                 </div>
                 {m.sources.length > 0 && <p className="mt-1.5 px-1 text-[12px] text-ink-3">{t("advisor.basedOn", { sources: m.sources.join(" · ") })}</p>}
+                {m.via === "rules" && <p className="mt-1 px-1 text-[12px] text-ink-3">{t("advisor.viaRules")}</p>}
               </div>
             ),
+          )}
+          {pending && (
+            <p role="status" className="px-1 text-[13px] text-ink-3">
+              {t("advisor.thinking")}
+            </p>
           )}
         </div>
       )}
 
       <div className="sticky bottom-0 mt-auto bg-page px-4 pb-3 pt-2">
-        <p className="px-1 pb-2 text-[12px] leading-relaxed text-ink-3">{t("advisor.demoNote")}</p>
+        <p className="px-1 pb-2 text-[12px] leading-relaxed text-ink-3">{t("advisor.aiNote")}</p>
         <form onSubmit={submit} className="flex items-center gap-2">
           <label htmlFor={fieldId} className="sr-only">
             {t("advisor.field")}
@@ -113,7 +137,7 @@ export default function Advisor() {
           />
           <button
             type="submit"
-            disabled={result.status !== "ready"}
+            disabled={result.status !== "ready" || pending}
             className={buttonClasses("primary", "md", false, "shrink-0 disabled:cursor-not-allowed")}
           >
             {t("advisor.send")}

@@ -269,3 +269,14 @@ M1 is done: scaffold, tokens, PWA shell, offline screen, the tested finance modu
 CI with Vercel previews, English and Hindi i18n, and the mock API.
 M2 is done: the Plans hub, all five calculators (EMI, prepay, refinance, affordability, goal), the tax screen, the health score with its breakdown, and the goals list and detail are live. Next is Recommendations, then the milestones that need writes. The rest run on `lib/finance` and the mock.
 Until the backend exists the app serves the mock persona to everyone (`api/instance.ts`, with a 250 ms delay so loading states are real).
+
+## The AI advisor
+
+`POST /api/advisor` (`api/advisor.ts`, logic in `server/advisor.ts`) is a Vercel function. The browser sends the question, the language, the
+last few turns and the user's figures; the function calls Claude with the key and returns `{ text, sources }`. The key never reaches the browser.
+
+- **`ANTHROPIC_API_KEY`**: set in the Vercel project (Settings, Environment Variables), for Production and Preview. Never commit it.
+- **`ANTHROPIC_MODEL`** (optional): overrides the default, `claude-haiku-5-5`.
+- **Limits:** a question is at most 500 characters, the figures at most 8 KB, 8 calls a minute for each caller and 400 a day in all (best effort: per running instance). Set a monthly spend limit in the Anthropic console too; that is the real ceiling.
+- **Fallback:** on any failure (no key, rate limit, timeout, bad reply) the Advisor screen answers from the fixed rules in `src/lib/advisor.ts` and says so on the message.
+- **Tests** use a fake `fetch`; CI never calls Claude. To try it locally you need `vercel dev` with the variable set; plain `npm run dev` has no `/api`, so the Advisor shows the rules' answers.
