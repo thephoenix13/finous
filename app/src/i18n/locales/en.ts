@@ -269,6 +269,19 @@ export const en = {
       autoPayOff: "Not set up",
     },
   },
+  transaction: {
+    title: "Transaction",
+    notFound: "We couldn't find that transaction.",
+    amount: "Amount",
+    received: "Received",
+    debited: "Debited from {{account}}",
+    credited: "Credited to {{account}}",
+    counterparty: "Counterparty",
+    date: "Date",
+    category: "Category",
+    categories: { emi: "Loan EMI", sip: "SIP", rent: "Rent", food: "Food and dining", income: "Income", other: "Other" },
+    similar: "Similar transactions",
+  },
   insights: {
     homeLoanFallback: "home loan",
     refinance: {

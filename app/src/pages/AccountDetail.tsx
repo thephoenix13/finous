@@ -147,6 +147,7 @@ function Recent({ detail }: { detail: Detail }) {
             return (
               <Row
                 key={tx.id}
+                to={`/transactions/${tx.id}`}
                 title={tx.description}
                 subtitle={tx.time ? `${day} · ${formatClock(tx.time, lang)}` : day}
                 right={<span className={tx.amount > 0 ? "text-positive" : undefined}>{signedInr(tx.amount)}</span>}

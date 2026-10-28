@@ -13,7 +13,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 **Home tab**
 - [x] Home: net worth, month cash flow, "worth a look" (two insights). Links to Accounts, recap, search, notifications and the insight detail are added as those screens land
 - [x] Accounts: list by type, bank and card detail (a loan opens the refinance check; investment rows are not links: their holdings screens need data the Api lacks)
-- [ ] Transaction detail (amount, counterparty, recategorise)
+- [x] Transaction detail (amount, counterparty, recategorise)
 - [ ] Cash flow
 - [ ] Monthly recap
 - [ ] Search transactions
