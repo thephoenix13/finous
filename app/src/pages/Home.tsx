@@ -1,15 +1,21 @@
 import { useTranslation } from "react-i18next";
-import { useApiData, type Api, type HomeSummary, type LoanAccount, type Profile, type RequestOptions } from "../api";
+import { useApiData, type Api, type HomeSummary, type LoanAccount, type NetWorthHistory, type Profile, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import NetWorthChart from "../components/NetWorthChart";
 import { ButtonLink, HeroCard, Row, RowGroup } from "../components/ui";
 import { formatWeekdayDate, inr } from "../lib/format";
 import { insightCopy } from "../lib/insightCopy";
 
-type HomeData = { home: HomeSummary; profile: Profile; loans: LoanAccount[] };
+type HomeData = { home: HomeSummary; profile: Profile; loans: LoanAccount[]; history: NetWorthHistory };
 
 const loadHome = async (api: Api, options: RequestOptions): Promise<HomeData> => {
-  const [home, profile, accounts] = await Promise.all([api.getHome(options), api.getProfile(options), api.listAccounts(options)]);
-  return { home, profile, loans: accounts.loans };
+  const [home, profile, accounts, history] = await Promise.all([
+    api.getHome(options),
+    api.getProfile(options),
+    api.listAccounts(options),
+    api.getNetWorthHistory(options),
+  ]);
+  return { home, profile, loans: accounts.loans, history };
 };
 
 /** Morning until noon, afternoon until five, evening after. `now` is the device's clock; tests pass their own. */
@@ -18,10 +24,7 @@ function daypart(now: Date): "morning" | "afternoon" | "evening" {
   return hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
 }
 
-/**
- * Home: net worth, this month's cash flow and the things worth looking at.
- * The prototype draws a net-worth curve here. The Api has no history to draw it from, so there is none (see types.ts, M4).
- */
+/** Home: net worth with its line over the months, this month's cash flow and the things worth looking at. */
 export default function Home({ now = new Date() }: { now?: Date }) {
   const result = useApiData(loadHome);
   if (result.status === "loading") return <LoadingCard />;
@@ -32,7 +35,7 @@ export default function Home({ now = new Date() }: { now?: Date }) {
 function HomeContent({ data, now }: { data: HomeData; now: Date }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.resolvedLanguage;
-  const { home, profile, loans } = data;
+  const { home, profile, loans, history } = data;
   const { netWorth, month } = home;
   const delta = month.savedChangeVsLastMonth;
 
@@ -48,7 +51,9 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
         eyebrow={t("home.netWorth")}
         value={inr(netWorth.value)}
         caption={t(netWorth.changeThisMonth >= 0 ? "home.changeUp" : "home.changeDown", { amount: inr(Math.abs(netWorth.changeThisMonth)) })}
-      />
+      >
+        <NetWorthChart history={history} className="mt-5" />
+      </HeroCard>
 
       <section aria-labelledby="home-month" className="px-5 pt-8">
         <h2 id="home-month" className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">

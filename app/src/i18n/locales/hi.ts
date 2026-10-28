@@ -236,6 +236,8 @@ export const hi: Messages = {
     savedLess: "पिछले महीने से {{amount}} कम",
     savedSame: "पिछले महीने जितनी ही",
     allAccounts: "सभी खाते",
+    chartLabel: "{{from}} में {{start}} से {{to}} में {{end}} तक नेटवर्थ",
+    chartSample: "यह नमूना इतिहास है, समझाने के लिए। आपके खाते कुछ समय जुड़े रहने के बाद आपका असली इतिहास दिखेगा।",
     cashFlow: "कैश फ़्लो",
     search: "खोजें",
     notifications: "सूचनाएँ",

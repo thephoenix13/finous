@@ -125,7 +125,7 @@ export type TransactionPage = {
 
 export type AllocationCategory = "investments" | "savings" | "property-and-other";
 
-/** GET /v1/net-worth. A 12-month history arrives with M4; the prototype only draws a decorative curve. */
+/** GET /v1/net-worth. The month-by-month line is `NetWorthHistory`, from its own call. */
 export type NetWorth = {
   asOf: IsoDate;
   value: Rupees;
@@ -133,6 +133,14 @@ export type NetWorth = {
   assets: Rupees;
   liabilities: Rupees;
   allocation: { category: AllocationCategory; amount: Rupees; percent: number }[];
+};
+
+/** GET /v1/net-worth/history. */
+export type NetWorthHistory = {
+  /** True when the points illustrate the shape of the screen and are not the user's own history. The app says so on screen. */
+  sample: boolean;
+  /** Oldest first, one per month; the last is the current month and equals `NetWorth.value`. */
+  points: { month: MonthString; value: Rupees }[];
 };
 
 export type CashFlowCategory = "emi" | "sips" | "rent" | "food" | "other";
@@ -334,6 +342,8 @@ export interface Api {
   listTransactions(query?: TransactionQuery, options?: RequestOptions): Promise<TransactionPage>;
   /** GET /v1/net-worth */
   getNetWorth(options?: RequestOptions): Promise<NetWorth>;
+  /** GET /v1/net-worth/history */
+  getNetWorthHistory(options?: RequestOptions): Promise<NetWorthHistory>;
   /** GET /v1/cash-flow */
   getCashFlow(options?: RequestOptions): Promise<CashFlow>;
   /** GET /v1/insights */

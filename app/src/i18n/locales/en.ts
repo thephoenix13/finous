@@ -234,6 +234,8 @@ export const en = {
     savedLess: "{{amount}} less than last month",
     savedSame: "The same as last month",
     allAccounts: "All accounts",
+    chartLabel: "Net worth from {{start}} in {{from}} to {{end}} in {{to}}",
+    chartSample: "Sample history, for illustration. Your real history appears once your accounts have been connected for a while.",
     cashFlow: "Cash flow",
     search: "Search",
     notifications: "Notifications",

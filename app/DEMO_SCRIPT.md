@@ -7,7 +7,7 @@ About ten minutes. Open https://finous-app.vercel.app on a phone, or install it 
 ## The click path
 
 0. **First visit only: the welcome.** A brand splash, the promise, what is being shared (it says it is a demo), then the accounts "fetching" one by one, then Home. It shows once per device; to show it again, open the You tab and tap "Replay the welcome".
-1. **Home.** The greeting, net worth with this month's change, this month's in, out and saved, and the two things worth looking at. Tap the first one to open its recommendation.
+1. **Home.** The greeting, net worth with this month's change and a 12-month line (labelled as sample history), this month's in, out and saved, and the two things worth looking at. Tap the first one to open its recommendation.
 2. **Recommendations** (Plans tab, or from Home). Three ranked suggestions, each with its reason and its headline figure. Open the refinance one: why, what it costs (₹39,000 upfront, recovered in 26 months), then "Open the refinance check".
 3. **Refinance check.** It sets the 8.9% rate against the 8.5% market rate and shows about ₹1,523 a month saved. Then Back.
 4. **Prepay calculator** and **Affordability check** (Plans). Change the inputs and the answers update live.
@@ -23,7 +23,7 @@ About ten minutes. Open https://finous-app.vercel.app on a phone, or install it 
 
 | Real | Mock or not built |
 | --- | --- |
-| Every screen, the layout, the language switch (English and Hindi) | Aarav's data: one fixed persona, same for every visitor |
+| Every screen, the layout, the language switch (English and Hindi) | Aarav's data: one fixed persona, same for every visitor; the net-worth line is a labelled sample |
 | The calculators (EMI, prepay, refinance, affordability, goal) and the tax and health-score maths | Real bank and investment data (Account Aggregator) |
 | Installing it and opening it offline | Sign-in and Aadhaar verification (the welcome steps have no Aadhaar entry) |
 | The AI advisor: a server function calls Claude with Aarav's figures (rate limited, falls back to rules) | Voice (Deepgram): a paid service, not included |
