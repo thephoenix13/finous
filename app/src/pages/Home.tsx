@@ -91,7 +91,7 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
             {home.lookAt.map((insight, i) => {
               const loan = insight.kind === "refinance" ? loans.find((l) => l.id === insight.loanId) : undefined;
               const copy = insightCopy(insight, t, lang, loan?.name);
-              return <Row key={insight.id} icon={<span className="font-mono text-[13px]">{String(i + 1).padStart(2, "0")}</span>} title={copy.title} subtitle={copy.body} />;
+              return <Row key={insight.id} to={`/plans/recommendations/${insight.id}`} icon={<span className="font-mono text-[13px]">{String(i + 1).padStart(2, "0")}</span>} title={copy.title} subtitle={copy.body} />;
             })}
           </RowGroup>
         )}

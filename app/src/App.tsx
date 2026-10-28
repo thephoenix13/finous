@@ -17,6 +17,8 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
+import RecommendationDetail from "./pages/RecommendationDetail";
+import Recommendations from "./pages/Recommendations";
 import RefinanceCheck from "./pages/RefinanceCheck";
 import Search from "./pages/Search";
 import Tax from "./pages/Tax";
@@ -44,6 +46,8 @@ export default function App() {
           <Route path="cash-flow" element={<CashFlow />} />
           <Route path="transactions/:id" element={<TransactionDetail />} />
           <Route path="plans" element={<Plans />} />
+          <Route path="plans/recommendations" element={<Recommendations />} />
+          <Route path="plans/recommendations/:id" element={<RecommendationDetail />} />
           <Route path="plans/goals" element={<Goals />} />
           <Route path="plans/goals/:id" element={<GoalDetail />} />
           <Route path="plans/health" element={<Health />} />

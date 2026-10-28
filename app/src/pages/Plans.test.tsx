@@ -13,6 +13,7 @@ import Plans from "./Plans";
 /** The tools, in the prototype's order, each with its title and subtitle in both languages. */
 const TOOLS = [
   { href: "/plans/health", en: ["Health score", "Where you stand, in six numbers"], hi: ["हेल्थ स्कोर", "आप कहाँ खड़े हैं, छह संख्याओं में"] },
+  { href: "/plans/recommendations", en: ["Recommendations", "Ranked, with the reasons"], hi: ["सुझाव", "क्रम से, वजहों के साथ"] },
   { href: "/plans/goals", en: ["Goals", "3 active"], hi: ["लक्ष्य", "3 सक्रिय"] },
   { href: "/plans/tax", en: ["Tax", "₹56,000 left in 80C"], hi: ["टैक्स", "80C में ₹56,000 बाकी"] },
   { href: "/plans/prepay", en: ["Prepay home loan", "What if I pay ₹50K extra"], hi: ["होम लोन का प्रीपेमेंट", "अगर मैं ₹50K ज़्यादा चुकाऊँ"] },
@@ -58,7 +59,7 @@ describe("Plans", () => {
     }
   });
 
-  it("lists the tools in the prototype's order: health, goals, tax, prepay, refinance, affordability, goal calculator, EMI", async () => {
+  it("lists the tools in the prototype's order: health, recommendations, goals, tax, prepay, refinance, affordability, goal calculator, EMI", async () => {
     renderWithI18n(<Plans />);
     await settled();
     expect(screen.getAllByRole("link").map((l) => l.getAttribute("href"))).toEqual(TOOLS.map((t) => t.href));
