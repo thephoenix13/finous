@@ -1,4 +1,4 @@
-import { createLimiter, handleAdvisor } from "../server/advisor";
+import { createLimiter, handleAdvisor } from "../server/advisor.js";
 
 // Vercel provides process.env; this project does not install the Node types, so say what is used.
 declare const process: { env: Record<string, string | undefined> };
