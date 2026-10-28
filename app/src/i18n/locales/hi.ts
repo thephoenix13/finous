@@ -234,6 +234,7 @@ export const hi: Messages = {
     savedLess: "पिछले महीने से {{amount}} कम",
     savedSame: "पिछले महीने जितनी ही",
     allAccounts: "सभी खाते",
+    cashFlow: "कैश फ़्लो",
     lookAt: "इस पर नज़र डालें",
     lookAtNone: "अभी आपके ध्यान देने लायक कुछ नहीं है।",
   },
@@ -270,6 +271,15 @@ export const hi: Messages = {
       autoPayOn: "चालू",
       autoPayOff: "सेट नहीं है",
     },
+  },
+  cashFlow: {
+    title: "इस महीने",
+    saved: "{{month}} में बचत",
+    totals: "आया और गया",
+    where: "कहाँ गया",
+    categories: { emi: "ईएमआई", sips: "एसआईपी", rent: "किराया और बिल", food: "खान-पान", other: "अन्य" },
+    insight: "ध्यान देने की बात",
+    diningAbove: "बाहर खाने का खर्च आपके {{months}} महीने के औसत से {{percent}}% ज़्यादा है। चिंता की बात नहीं, पर देखने लायक है।",
   },
   transaction: {
     title: "लेन-देन",
