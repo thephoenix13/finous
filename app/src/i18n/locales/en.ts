@@ -354,6 +354,41 @@ export const en = {
       fallback: "I can answer questions about your biggest expense, your food spending, prepaying your home loan and affording a car. Try one of those.",
     },
   },
+  you: {
+    eyebrow: "You",
+    status: { active: "Active", expired: "Expired", revoked: "Revoked" },
+    linked: {
+      title: "Linked accounts",
+      count_one: "{{count}} connection",
+      count_other: "{{count}} connections",
+      note: "Finous reads these with your consent. Manage it in the consent manager.",
+    },
+    consents: {
+      title: "Consent manager",
+      summary_one: "{{count}} active · next expiry {{date}}",
+      summary_other: "{{count}} active · next expiry {{date}}",
+      noneActive: "No consents are active.",
+      intro_one: "{{count}} active consent. Data is refreshed every {{hours}} hours.",
+      intro_other: "{{count}} active consents. Data is refreshed every {{hours}} hours.",
+      purpose: { "financial-dashboard": "Financial dashboard", "health-score": "Health score" },
+      scope: { "balances-transactions-holdings": "Balances, transactions, holdings", "aggregated-analysis": "Aggregated analysis only" },
+      expires: "Expires {{date}} · {{months}} months",
+      revokingTitle: "Revoking consent",
+      revokingBody: "We delete your data within 24 hours of revocation. Backup copies clear within 14 days.",
+    },
+    privacy: {
+      title: "Privacy and data",
+      subtitle: "Where your data comes from and how long we keep it",
+      source: { title: "Where it comes from", body: "Your banks and investment accounts, shared with Finous only with your consent." },
+      refresh: { title: "How often it refreshes", body: "Every {{hours}} hours while a consent is active." },
+      revoke: { title: "If you revoke consent", body: "We delete your data within 24 hours. Backup copies clear within 14 days." },
+      close: {
+        title: "If you close your account",
+        body: "Live data is deleted within 24 hours. Backups clear in 14 days. Audit logs, which hold no financial data, are kept for 3 years as required by RBI.",
+      },
+    },
+    profile: { title: "Profile", subtitle: "Name, email, city", name: "Full name", email: "Email", city: "City" },
+  },
   search: {
     title: "Search",
     field: "Search transactions",
@@ -412,11 +447,6 @@ export const en = {
       eyebrow: "Plans",
       title: "What do you want to figure out?",
       note: "Calculators, health score, goals and tax. More tools arrive in M2.",
-    },
-    you: {
-      eyebrow: "You",
-      title: "Profile and privacy.",
-      note: "Linked accounts, consent manager and data controls. Arrive in M7.",
     },
   },
 };

@@ -67,9 +67,9 @@ describe("LanguageSwitcher", () => {
 });
 
 describe("You screen", () => {
-  it("shows the language control under the profile hero", () => {
+  it("shows the language control under the profile hero", async () => {
     renderWithI18n(<You />, { route: "/you" });
-    expect(screen.getByRole("heading", { level: 1, name: "Profile and privacy." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Aarav Mehta" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Language" })).toBeInTheDocument();
   });
 
@@ -81,9 +81,9 @@ describe("You screen", () => {
       </>,
       { route: "/you" },
     );
-    await userEvent.click(screen.getByRole("button", { name: "हिन्दी" }));
+    await userEvent.click(await screen.findByRole("button", { name: "हिन्दी" }));
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("प्रोफ़ाइल और प्राइवेसी।");
+    expect(await screen.findByRole("link", { name: /जुड़े हुए खाते/ })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "मुख्य" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "होम" })).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: "Home" })).not.toBeInTheDocument();
@@ -91,6 +91,7 @@ describe("You screen", () => {
 
   it.each(["en", "hi"] as const)("has no accessibility violations in %s", async (lng) => {
     const { container } = renderWithI18n(<You />, { lng, route: "/you" });
+    await screen.findByRole("heading", { level: 1 });
     await expectAccessible(container);
   });
 });

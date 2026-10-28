@@ -6,6 +6,7 @@ import AccountDetail from "./pages/AccountDetail";
 import Accounts from "./pages/Accounts";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
 import CashFlow from "./pages/CashFlow";
+import Consents from "./pages/Consents";
 import EmiCalculator from "./pages/EmiCalculator";
 import GoalCalculator from "./pages/GoalCalculator";
 import GoalDetail from "./pages/GoalDetail";
@@ -13,9 +14,12 @@ import Goals from "./pages/Goals";
 import Health from "./pages/Health";
 import HealthBreakdown from "./pages/HealthBreakdown";
 import Home from "./pages/Home";
+import LinkedAccounts from "./pages/LinkedAccounts";
 import NotFound from "./pages/NotFound";
 import Plans from "./pages/Plans";
+import Privacy from "./pages/Privacy";
 import PrepayCalculator from "./pages/PrepayCalculator";
+import Profile from "./pages/Profile";
 import RecommendationDetail from "./pages/RecommendationDetail";
 import Recommendations from "./pages/Recommendations";
 import RefinanceCheck from "./pages/RefinanceCheck";
@@ -54,6 +58,10 @@ export default function App() {
           <Route path="plans/goal-calc" element={<GoalCalculator />} />
           <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
+          <Route path="you/linked" element={<LinkedAccounts />} />
+          <Route path="you/consents" element={<Consents />} />
+          <Route path="you/privacy" element={<Privacy />} />
+          <Route path="you/profile" element={<Profile />} />
           {DevComponents && (
             <Route
               path="dev/components"
