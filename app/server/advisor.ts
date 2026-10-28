@@ -80,7 +80,7 @@ export function systemPrompt(req: AdvisorRequest): string {
     "- Write rupee amounts with Indian grouping, for example ₹2,84,000.",
     "- Describe what the data shows and the general options and trade-offs. You are not a SEBI-registered adviser: never tell the user to buy, sell or switch a specific product, and never say what you would do. If asked, explain the trade-off instead.",
     "- Stay on the user's own money. For anything else, say what you can answer, in one sentence.",
-    "- Be brief: at most 90 words, plain language, no headings or lists.",
+    "- Be brief: at most 70 words, 3 or 4 short sentences, plain language, no headings or lists. Do not tell the user what to do with their money (no \"you should\" or \"consider\"); set out the facts and the trade-off.",
     req.lang === "hi" ? "- Answer in Hindi (Devanagari). Keep names of accounts and amounts as they appear." : "- Answer in English.",
     '- Reply with JSON only, in this shape: {"answer": string, "sources": string[]}. "sources" names the accounts or figures you used, as they appear in the data, for example "HDFC Bank •4821" or "Cash flow, Sep 2026". Use an empty list if you used none.',
     "",
@@ -102,6 +102,15 @@ export function readAnswer(raw: string): AdvisorAnswer {
       }
     } catch {
       // Fall through to the plain text.
+    }
+  }
+  const partial = raw.match(/"answer"\s*:\s*"((?:[^"\\]|\\.)*)/);
+  if (partial) {
+    try {
+      const text = (JSON.parse(`"${partial[1]}"`) as string).trim();
+      if (text) return { text, sources: [] };
+    } catch {
+      // A cut-off escape sequence; fall through to the plain text.
     }
   }
   return { text: raw.trim(), sources: [] };
@@ -137,15 +146,22 @@ export async function handleAdvisor(request: Request, deps: Deps): Promise<Respo
     const upstream = await send("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": deps.apiKey, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: deps.model || DEFAULT_MODEL, max_tokens: 600, system: systemPrompt(req), messages: turns }),
+      body: JSON.stringify({ model: deps.model || DEFAULT_MODEL, max_tokens: 1000, system: systemPrompt(req), messages: turns }),
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
-    if (!upstream.ok) return json(502, { error: "upstream" });
+    if (!upstream.ok) {
+      console.error(`advisor: upstream answered ${upstream.status}`);
+      return json(502, { error: "upstream" });
+    }
     const data = (await upstream.json()) as { content?: { type?: string; text?: string }[] };
     const text = data.content?.find((c) => c.type === "text")?.text;
-    if (!text) return json(502, { error: "upstream" });
+    if (!text) {
+      console.error("advisor: upstream sent no text");
+      return json(502, { error: "upstream" });
+    }
     return json(200, readAnswer(text));
-  } catch {
+  } catch (error) {
+    console.error(`advisor: upstream call failed (${error instanceof Error ? error.name : "unknown"})`);
     return json(502, { error: "upstream" });
   }
 }
