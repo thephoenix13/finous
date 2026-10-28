@@ -18,6 +18,7 @@ import Plans from "./pages/Plans";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import RefinanceCheck from "./pages/RefinanceCheck";
 import Tax from "./pages/Tax";
+import TransactionDetail from "./pages/TransactionDetail";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -37,6 +38,7 @@ export default function App() {
           />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
+          <Route path="transactions/:id" element={<TransactionDetail />} />
           <Route path="plans" element={<Plans />} />
           <Route path="plans/goals" element={<Goals />} />
           <Route path="plans/goals/:id" element={<GoalDetail />} />

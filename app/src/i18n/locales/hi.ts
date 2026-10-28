@@ -271,6 +271,19 @@ export const hi: Messages = {
       autoPayOff: "सेट नहीं है",
     },
   },
+  transaction: {
+    title: "लेन-देन",
+    notFound: "हमें वह लेन-देन नहीं मिला।",
+    amount: "रकम",
+    received: "मिले",
+    debited: "{{account}} से कटे",
+    credited: "{{account}} में जमा",
+    counterparty: "किसके साथ",
+    date: "तारीख",
+    category: "श्रेणी",
+    categories: { emi: "लोन की EMI", sip: "एसआईपी", rent: "किराया", food: "खान-पान", income: "आय", other: "अन्य" },
+    similar: "मिलते-जुलते लेन-देन",
+  },
   insights: {
     homeLoanFallback: "होम लोन",
     refinance: {
