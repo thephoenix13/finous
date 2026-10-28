@@ -21,6 +21,7 @@ import Privacy from "./pages/Privacy";
 import Notifications from "./pages/Notifications";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import Profile from "./pages/Profile";
+import Recap from "./pages/Recap";
 import RecommendationDetail from "./pages/RecommendationDetail";
 import Recommendations from "./pages/Recommendations";
 import RefinanceCheck from "./pages/RefinanceCheck";
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="recap" element={<Recap />} />
           <Route path="search" element={<Search />} />
           <Route path="cash-flow" element={<CashFlow />} />
           <Route path="transactions/:id" element={<TransactionDetail />} />
