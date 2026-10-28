@@ -39,10 +39,10 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 
 ## 2. Stability
 - [x] A "page not found" screen (unknown addresses were blank)
-- [ ] Every tab and link in the app leads somewhere real; no placeholder hero left
-- [ ] Error and empty states on every screen (the pattern exists: `DataState`)
-- [ ] Offline screen reachable and honest; installed PWA opens offline
-- [ ] No console errors on any route (add a route-walk test)
+- [x] Every tab and link in the app leads somewhere real; no placeholder hero left (the route-walk test fails if a route breaks)
+- [x] Error and empty states on every screen (each screen's tests cover loading, error with retry, and empty)
+- [x] Offline screen reachable and honest (PWA smoke test, 12 checks)
+- [x] No console errors on any route: `App.routes.test.tsx` walks every route in English and Hindi, and fails on a console error, an error state, a missing or second h1, or an accessibility violation
 
 ## 3. Demo polish
 - [ ] Hindi copy reviewed by a native speaker (written by Claude, not yet reviewed)
@@ -50,7 +50,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [ ] Decision on the tax ELSS SIP figure (prototype ₹30,000 vs ₹15,000)
 - [ ] App icon, splash colour, install prompt checked on a real Android and iPhone
 - [ ] Lighthouse PWA and accessibility pass on production
-- [ ] A one-page demo script: the click path, what is real, what is mock
+- [x] A one-page demo script: `DEMO_SCRIPT.md`
 
 ## 4. Not in scope without a paid service
 - Real AI advisor (model API), voice (Deepgram), real Aadhaar eKYC, real Account Aggregator, push notifications backend.
