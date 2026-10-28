@@ -101,9 +101,14 @@ describe("readAnswer", () => {
     const sources = Array.from({ length: 12 }, (_, i) => `s${i}`);
     expect(readAnswer(JSON.stringify({ answer: "x", sources })).sources).toHaveLength(8);
   });
-  it("falls back to the raw text for broken JSON or an empty answer", () => {
-    expect(readAnswer('{"answer": "cut off').text).toBe('{"answer": "cut off');
+  it("rescues the answer from JSON that was cut off, instead of showing the braces", () => {
+    expect(readAnswer('{"answer": "You owe \u20b962,00,000 on the loan and hold \\"cash\\" too, so the buffer is').text).toBe('You owe \u20b962,00,000 on the loan and hold "cash" too, so the buffer is');
+    expect(readAnswer('{"answer": "Short answer.", "sources": ["HDFC Bank \u2022').text).toBe("Short answer.");
+  });
+  it("falls back to the raw text when there is no answer to rescue", () => {
     expect(readAnswer('{"answer":"  ","sources":[]}').text).toBe('{"answer":"  ","sources":[]}');
+    expect(readAnswer("Just words.").text).toBe("Just words.");
+    expect(readAnswer('{"answer": "bad \\q escape').text).toContain("answer");
   });
 });
 
@@ -154,10 +159,20 @@ describe("handleAdvisor: when Claude cannot answer", () => {
     ["an empty reply", () => (async () => new Response(JSON.stringify({ content: [] }), { status: 200 })) as unknown as typeof fetch],
     ["a network failure", () => (async () => Promise.reject(new Error("down"))) as unknown as typeof fetch],
     ["a reply that is not JSON", () => (async () => new Response("<html>", { status: 200 })) as unknown as typeof fetch],
-  ])("answers 502 for %s and never leaks the key", async (_name, make) => {
+  ])("answers 502 for %s, never leaks the key, and logs the cause without it", async (_name, make) => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
     const res = await handleAdvisor(post(body()), deps({ fetch: make() }));
     expect(res.status).toBe(502);
     expect(await res.text()).not.toContain("sk-test-key");
+    expect(log).toHaveBeenCalled();
+    expect(JSON.stringify(log.mock.calls)).not.toContain("sk-test-key");
+    expect(JSON.stringify(log.mock.calls)).not.toContain("53600");
+  });
+
+  it("allows the model room for a full answer", async () => {
+    const claude = fakeClaude("{}");
+    await handleAdvisor(post(body()), deps({ fetch: claude.fetchFn }));
+    expect(claude.sent().max_tokens).toBeGreaterThanOrEqual(1000);
   });
 });
 
