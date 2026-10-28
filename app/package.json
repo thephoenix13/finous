@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:pwa": "node scripts/pwa-check.mjs",
+    "hindi-review": "node scripts/hindi-review.mjs",
     "ci": "npm run typecheck && npm test && npm run build && npm run test:pwa"
   },
   "dependencies": {

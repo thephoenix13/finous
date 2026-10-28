@@ -45,7 +45,7 @@ Each screen: built to the prototype, English + Hindi, tests, axe check, checked 
 - [x] No console errors on any route: `App.routes.test.tsx` walks every route in English and Hindi, and fails on a console error, an error state, a missing or second h1, or an accessibility violation
 
 ## 3. Demo polish
-- [ ] Hindi copy reviewed by a native speaker (written by Claude, not yet reviewed)
+- [ ] Hindi copy reviewed by a native speaker (written by Claude, not yet reviewed). Send `HINDI_REVIEW.csv` (`npm run hindi-review`); see the README
 - [ ] Decision on the 12-month net-worth history (none is invented; Home shows no chart until decided)
 - [x] Tax ELSS SIP: the ₹30,000 is twelve instalments of ₹2,500 for the whole year, so the screen now says the 80C figures cover the financial year including instalments still to come. The prototype figures (₹94,000 used, ₹56,000 left, ₹17,472 saving) are unchanged
 - [ ] App icon, splash colour, install prompt checked on a real Android and iPhone
