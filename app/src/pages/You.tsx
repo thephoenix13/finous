@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
+import { useAuth } from "../auth/AuthProvider";
 import { useApiData, type Api, type Consent, type Profile, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
 import LanguageSwitcher from "../components/LanguageSwitcher";
@@ -16,6 +18,8 @@ const loadYou = async (api: Api, options: RequestOptions): Promise<Loaded> => {
 export default function You() {
   const { t, i18n } = useTranslation();
   const result = useApiData(loadYou);
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   if (result.status === "loading") return <LoadingCard />;
   if (result.status === "error") return <LoadError onRetry={result.retry} />;
@@ -51,6 +55,16 @@ export default function You() {
         <Row to="/you/privacy" title={t("you.privacy.title")} subtitle={t("you.privacy.subtitle")} />
         <Row to="/you/profile" title={t("you.profile.title")} subtitle={t("you.profile.subtitle")} />
         <Row to="/welcome" title={t("you.replay.title")} subtitle={t("you.replay.subtitle")} />
+        {auth.canSignIn && (
+          <Row
+            title={t("you.leaveDemo.title")}
+            subtitle={t("you.leaveDemo.subtitle")}
+            onClick={() => {
+              auth.leaveDemo();
+              navigate("/signin");
+            }}
+          />
+        )}
       </RowGroup>
 
       <section className="mx-4 mt-8">

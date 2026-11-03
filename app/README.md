@@ -287,3 +287,20 @@ last few turns and the user's figures; the function calls Claude with the key an
 native speaker; they put corrections in "Corrected Hindi" and the reason in "Comment", and anything left blank counts as accepted. Words inside
 `{{double braces}}` are filled in by the app (amounts, names, dates) and must stay exactly as they are. The catalog tests reject a Hindi string
 that lacks them or is identical to the English. Apply the corrections in `src/i18n/locales/hi.ts`.
+
+## Sign-in, consent and the demo
+
+Sign-in is by email code: the person enters their email, we mail a 6-digit code (valid 10 minutes), and the same two steps create the account the
+first time. There are no passwords. A first sign-in is followed by the beta consent: the terms in plain words and a tick, recorded in the `consents`
+table at the versions in `src/config.ts` (change a version and everyone is asked again).
+
+Who sees what is decided in one place, `components/AccessGate.tsx`:
+
+- **Demo:** the sample customer (Aarav). Reached from "Try the demo" on the sign-in page, or a `/demo` link (the one to share with partners). Nothing
+  is saved. A build with no Supabase settings is always the demo, which is what local work, the tests and CI use.
+- **Not signed in:** sent to `/signin`. **Signed in without consent:** sent to `/join`.
+- **Member:** a signed-in, consented person sees their own space and never the sample customer's figures. Until their own data screens exist this is a
+  short "you're in the beta" page with the demo and sign-out.
+
+Settings (see `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_PRIVACY_NOTICE_URL`. The emails come from the Supabase project's SMTP
+settings; the "Confirm sign up" and "Magic link or OTP" templates must show `{{ .Token }}` (the code), not a link.
