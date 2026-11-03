@@ -1,6 +1,7 @@
 import { ApiError } from "./errors";
 import { persona } from "./persona";
-import type { Api, RequestOptions, Transaction, TransactionPage, TransactionQuery } from "./types";
+import { queryTransactions } from "./transactions";
+import type { Api, RequestOptions } from "./types";
 
 export type MockApiOptions = {
   /** Simulated network delay for every call. Default 0, so tests and Storybook-style pages are instant. */
@@ -31,19 +32,6 @@ function wait(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
-/** Newest first: by date, then time (a missing time counts as midnight), then id so the order is stable. */
-function newestFirst(a: Transaction, b: Transaction): number {
-  return b.date.localeCompare(a.date) || (b.time ?? "00:00").localeCompare(a.time ?? "00:00") || b.id.localeCompare(a.id);
-}
-
-function queryTransactions({ search, accountId, limit }: TransactionQuery = {}): TransactionPage {
-  const needle = search?.trim().toLowerCase();
-  const matches = persona.transactions
-    .filter((t) => (!accountId || t.accountId === accountId) && (!needle || t.description.toLowerCase().includes(needle)))
-    .sort(newestFirst);
-  return { items: limit === undefined ? matches : matches.slice(0, Math.max(0, limit)), total: matches.length };
-}
-
 /**
  * An in-memory Api serving the prototype persona (see persona.ts). Every response is a deep copy, so a caller
  * can never change the data the next caller sees.
@@ -70,7 +58,7 @@ export function createMockApi({ latencyMs = 0 }: MockApiOptions = {}): MockApi {
         if (!account) throw new ApiError("not_found", `No account with id "${id}"`);
         return account;
       }),
-    listTransactions: (query, o) => respond(o, () => queryTransactions(query)),
+    listTransactions: (query, o) => respond(o, () => queryTransactions(persona.transactions, query)),
     getNetWorth: (o) => respond(o, () => persona.netWorth),
     getNetWorthHistory: (o) => respond(o, () => persona.netWorthHistory),
     getCashFlow: (o) => respond(o, () => persona.cashFlow),

@@ -35,6 +35,7 @@ const input = (over: Partial<MemberInput> = {}): MemberInput => ({
   asOf: ASOF,
   profile: persona.profile,
   accounts,
+  transactions: [],
   monthly: [september],
   goals: [],
   rates,
