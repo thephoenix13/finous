@@ -47,6 +47,13 @@ const ROUTES = [
   "/you/consents",
   "/you/privacy",
   "/you/profile",
+  "/you/figures",
+  "/you/profile/edit",
+  "/accounts/new",
+  "/accounts/hdfc/edit",
+  "/plans/goals/new",
+  "/plans/goals/home-upgrade/edit",
+  "/plans/tax/edit",
 ];
 
 const toPattern = (route: string) => new RegExp(`^${route.replace(/:[^/]+/g, "[^/]+")}$`);

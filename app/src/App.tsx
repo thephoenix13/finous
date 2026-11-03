@@ -2,7 +2,8 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
 import { AuthProvider } from "./auth/AuthProvider";
 import type { AuthClient } from "./auth/types";
-import AccessGate, { EnterDemo } from "./components/AccessGate";
+import AccessGate, { EnterDemo, type MemberEnvFactory } from "./components/AccessGate";
+import { useMemberData } from "./api/memberContext";
 import Shell from "./components/Shell";
 import { firstRunDone } from "./lib/firstRun";
 import Advisor from "./pages/Advisor";
@@ -37,6 +38,12 @@ import TransactionDetail from "./pages/TransactionDetail";
 import Welcome from "./pages/Welcome";
 import WelcomeConsent from "./pages/WelcomeConsent";
 import WelcomeSync from "./pages/WelcomeSync";
+import AccountForm from "./pages/forms/AccountForm";
+import FiguresForm from "./pages/forms/FiguresForm";
+import GoalForm from "./pages/forms/GoalForm";
+import MemberOnly from "./pages/forms/MemberOnly";
+import ProfileForm from "./pages/forms/ProfileForm";
+import TaxForm from "./pages/forms/TaxForm";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -54,13 +61,14 @@ function WelcomeLayout() {
   );
 }
 
-/** Evaluated each time the front door is opened, so finishing the welcome lets the next visit through. */
+/** Evaluated each time the front door is opened, so finishing the welcome lets the next visit through. A member skips it: it shows the demo connecting sample accounts. */
 function FrontDoor() {
-  return firstRunDone() ? <Home /> : <Navigate to="/welcome" replace />;
+  const member = useMemberData();
+  return member || firstRunDone() ? <Home /> : <Navigate to="/welcome" replace />;
 }
 
-/** `authClient` is for tests: leave it out and the app uses Supabase when this build has its settings, and runs as the demo when it has not. */
-export default function App({ authClient }: { authClient?: AuthClient | null }) {
+/** `authClient` and `memberEnv` are for tests: leave them out and the app uses Supabase when this build has its settings, and runs as the demo when it has not. */
+export default function App({ authClient, memberEnv }: { authClient?: AuthClient | null; memberEnv?: MemberEnvFactory }) {
   return (
     <AuthProvider client={authClient}>
     <BrowserRouter>
@@ -73,7 +81,7 @@ export default function App({ authClient }: { authClient?: AuthClient | null }) 
           <Route path="join" element={<Join />} />
         </Route>
         <Route path="demo" element={<EnterDemo />} />
-        <Route element={<AccessGate />}>
+        <Route element={<AccessGate memberEnv={memberEnv} />}>
         <Route element={<Shell />}>
           {/* Only the front door sends a first-time visitor to the welcome; a link to any other screen still opens it. */}
           <Route index element={<FrontDoor />} />
@@ -103,6 +111,16 @@ export default function App({ authClient }: { authClient?: AuthClient | null }) 
           <Route path="you/consents" element={<Consents />} />
           <Route path="you/privacy" element={<Privacy />} />
           <Route path="you/profile" element={<Profile />} />
+          {/* Changing one's own details: a member only. In the demo these send you home. */}
+          <Route element={<MemberOnly />}>
+            <Route path="you/figures" element={<FiguresForm />} />
+            <Route path="you/profile/edit" element={<ProfileForm />} />
+            <Route path="accounts/new" element={<AccountForm />} />
+            <Route path="accounts/:id/edit" element={<AccountForm />} />
+            <Route path="plans/goals/new" element={<GoalForm />} />
+            <Route path="plans/goals/:id/edit" element={<GoalForm />} />
+            <Route path="plans/tax/edit" element={<TaxForm />} />
+          </Route>
           {DevComponents && (
             <Route
               path="dev/components"

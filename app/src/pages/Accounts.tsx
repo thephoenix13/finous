@@ -2,6 +2,7 @@ import { useId, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useApiData, type AccountsOverview, type Api, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
 import { NoData } from "../components/NoData";
 import { ROUTES } from "../routes";
 import PageHeader from "../components/PageHeader";
@@ -58,7 +59,10 @@ export default function Accounts() {
         (result.data.bank.length + result.data.loans.length + result.data.cards.length + result.data.investments.length === 0 ? (
           <NoData title={t("empty.accounts.title")} body={t("empty.accounts.body")} to={ROUTES.newAccount} cta={t("empty.accounts.cta")} />
         ) : (
-          <Groups overview={result.data} />
+          <>
+            <Groups overview={result.data} />
+            <MemberLink to={ROUTES.newAccount}>{t("forms.links.addAccount")}</MemberLink>
+          </>
         ))}
     </>
   );

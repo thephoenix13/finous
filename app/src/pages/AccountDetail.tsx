@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import { isApiError, useApiData, type Account, type Api, type CardAccount, type RequestOptions, type Transaction } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
 import PageHeader from "../components/PageHeader";
 import { HeroCard, Progress, Row, RowGroup } from "../components/ui";
 import { cardCycle } from "../lib/cardCycle";
@@ -44,6 +45,7 @@ export default function AccountDetail() {
           <LoadError onRetry={result.retry} />
         ))}
       {result.status === "ready" && <Body detail={result.data} />}
+      {result.status === "ready" && <MemberLink to={`/accounts/${id}/edit`}>{t("forms.links.editAccount")}</MemberLink>}
     </>
   );
 }

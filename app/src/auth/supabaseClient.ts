@@ -63,14 +63,25 @@ export function authClientFor(supabase: SupabaseClient): AuthClient {
   };
 }
 
+let supabase: SupabaseClient | null | undefined;
+
+/** The app's Supabase client, or null when this build has no Supabase settings (local work, tests). */
+export function sharedSupabase(): SupabaseClient | null {
+  if (supabase === undefined) {
+    supabase = SUPABASE_URL && SUPABASE_ANON_KEY
+      ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } })
+      : null;
+  }
+  return supabase;
+}
+
 let shared: AuthClient | null | undefined;
 
-/** The app's client, or null when this build has no Supabase settings (local work, tests): the app then runs as the demo only. */
+/** The app's sign-in client, or null when this build has no Supabase settings: the app then runs as the demo only. */
 export function sharedAuthClient(): AuthClient | null {
   if (shared === undefined) {
-    shared = SUPABASE_URL && SUPABASE_ANON_KEY
-      ? authClientFor(createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } }))
-      : null;
+    const client = sharedSupabase();
+    shared = client ? authClientFor(client) : null;
   }
   return shared;
 }
