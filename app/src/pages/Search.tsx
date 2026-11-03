@@ -65,7 +65,7 @@ export default function Search() {
             {shown.query ? t("search.count", { count: shown.found.page.total }) : t("search.recent")}
           </p>
           {shown.found.page.items.length === 0 ? (
-            <p className="px-5 pt-2 text-ink-2">{t("search.none", { query: shown.query })}</p>
+            <p className="px-5 pt-2 text-ink-2">{shown.query ? t("search.none", { query: shown.query }) : t("search.noneYet")}</p>
           ) : (
             <RowGroup>
               {shown.found.page.items.map((tx) => (

@@ -2,9 +2,11 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { useApiData, type Api, type Goal, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import { NoData } from "../components/NoData";
 import PageHeader from "../components/PageHeader";
 import { Card, Progress } from "../components/ui";
 import { formatMonthYear, inr, parseMonth, percent, roundSig } from "../lib/format";
+import { ROUTES } from "../routes";
 
 const loadGoals = (api: Api, options: RequestOptions): Promise<Goal[]> => api.listGoals(options);
 
@@ -30,7 +32,7 @@ function GoalList({ goals }: { goals: Goal[] }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.resolvedLanguage;
 
-  if (goals.length === 0) return <p className="px-5 pt-16 text-center text-ink-2">{t("goals.none")}</p>;
+  if (goals.length === 0) return <NoData title={t("empty.goals.title")} body={t("goals.none")} to={ROUTES.newGoal} cta={t("empty.goals.cta")} />;
 
   return (
     <div data-domain="goal">

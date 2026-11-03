@@ -18,9 +18,9 @@ export default function Profile() {
       {result.status === "error" && <LoadError onRetry={result.retry} />}
       {result.status === "ready" && (
         <RowGroup className="mt-3">
-          <Row title={t("you.profile.name")} subtitle={result.data.name} />
+          <Row title={t("you.profile.name")} subtitle={result.data.name === result.data.email ? "—" : result.data.name} />
           <Row title={t("you.profile.email")} subtitle={result.data.email} />
-          <Row title={t("you.profile.city")} subtitle={result.data.city} />
+          <Row title={t("you.profile.city")} subtitle={result.data.city || "—"} />
         </RowGroup>
       )}
     </>

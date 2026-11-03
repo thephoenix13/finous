@@ -2,11 +2,12 @@ import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type HomeSummary, type LoanAccount, type NetWorthHistory, type Profile, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
 import NetWorthChart from "../components/NetWorthChart";
+import { ROUTES } from "../routes";
 import { ButtonLink, HeroCard, Row, RowGroup } from "../components/ui";
 import { formatWeekdayDate, inr } from "../lib/format";
 import { insightCopy } from "../lib/insightCopy";
 
-type HomeData = { home: HomeSummary; profile: Profile; loans: LoanAccount[]; history: NetWorthHistory };
+type HomeData = { home: HomeSummary; profile: Profile; loans: LoanAccount[]; history: NetWorthHistory; hasAccounts: boolean };
 
 const loadHome = async (api: Api, options: RequestOptions): Promise<HomeData> => {
   const [home, profile, accounts, history] = await Promise.all([
@@ -15,7 +16,8 @@ const loadHome = async (api: Api, options: RequestOptions): Promise<HomeData> =>
     api.listAccounts(options),
     api.getNetWorthHistory(options),
   ]);
-  return { home, profile, loans: accounts.loans, history };
+  const hasAccounts = accounts.bank.length + accounts.loans.length + accounts.cards.length + accounts.investments.length > 0;
+  return { home, profile, loans: accounts.loans, history, hasAccounts };
 };
 
 /** Morning until noon, afternoon until five, evening after. `now` is the device's clock; tests pass their own. */
@@ -43,7 +45,7 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
     <div className="pb-8">
       <header className="px-5 pt-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">{formatWeekdayDate(home.asOf, lang)}</p>
-        <h1 className="mt-2 font-display text-[28px] leading-[1.15] tracking-tight">{t(`home.greeting.${daypart(now)}`, { name: profile.firstName })}</h1>
+        <h1 className="mt-2 font-display text-[28px] leading-[1.15] tracking-tight">{profile.firstName ? t(`home.greeting.${daypart(now)}`, { name: profile.firstName }) : t(`home.greetingBare.${daypart(now)}`)}</h1>
       </header>
 
       <HeroCard
@@ -58,6 +60,27 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
       >
         <NetWorthChart history={history} className="mt-5" />
       </HeroCard>
+
+      {!month && data.hasAccounts && (
+        <section className="px-5 pt-8">
+          <p className="text-[15px] text-ink-2">{t("empty.home.month")}</p>
+          <ButtonLink to={ROUTES.figures} variant="ghost" size="sm" fullWidth={false} className="mt-4">
+            {t("empty.figures.cta")}
+          </ButtonLink>
+        </section>
+      )}
+
+      {!data.hasAccounts && (
+        <section aria-labelledby="home-start" className="px-5 pt-8">
+          <h2 id="home-start" className="font-display text-[20px] leading-snug tracking-tight">
+            {t("empty.accounts.title")}
+          </h2>
+          <p className="mt-3 text-[15px] text-ink-2">{t("empty.accounts.body")}</p>
+          <ButtonLink to={ROUTES.newAccount} fullWidth={false} className="mt-5">
+            {t("empty.accounts.cta")}
+          </ButtonLink>
+        </section>
+      )}
 
       {month && (
       <section aria-labelledby="home-month" className="px-5 pt-8">
