@@ -74,7 +74,7 @@ beforeEach(reset);
 describe("the schema", () => {
   it("applies cleanly and every table in public has row level security on", async () => {
     const { rows } = await ok(`select relname, relrowsecurity from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r' order by relname`);
-    expect((rows as { relname: string }[]).map((r) => r.relname)).toEqual(["accounts", "consents", "goals", "market_rates", "net_worth_snapshots", "profiles", "tax_inputs", "transactions"]);
+    expect((rows as { relname: string }[]).map((r) => r.relname)).toEqual(["accounts", "consents", "goals", "market_rates", "monthly_figures", "net_worth_snapshots", "profiles", "tax_inputs", "transactions"]);
     expect((rows as { relrowsecurity: boolean }[]).every((r) => r.relrowsecurity)).toBe(true);
   });
 
@@ -162,8 +162,61 @@ describe("someone else's rows", () => {
   });
 });
 
+describe("monthly figures", () => {
+  const fig = (user: string, month = "2026-10", income = 240_000) =>
+    ok(`insert into monthly_figures (user_id, month, income, rent, food, other, sips) values ($1, $2, $3, 42600, 18200, 32255, 35000)`, [user, month, income]);
+
+  it("can be added, read, changed and removed by their owner, one row a month", async () => {
+    await as(ALICE, async () => {
+      await fig(ALICE);
+      await fig(ALICE, "2026-09");
+      expect(await fails(`insert into monthly_figures (user_id, month, income) values ($1, '2026-10', 1)`, [ALICE])).toMatch(/duplicate key/);
+      expect((await ok(`select month from monthly_figures order by month`)).rows).toEqual([{ month: "2026-09" }, { month: "2026-10" }]);
+      expect((await ok(`update monthly_figures set rent = 50000 where month = '2026-10' returning rent`)).rows).toEqual([{ rent: 50_000 }]);
+      expect((await ok(`delete from monthly_figures where month = '2026-09' returning month`)).rows).toHaveLength(1);
+    });
+  });
+
+  it("default to zero for what is not given, apart from income", async () => {
+    await as(ALICE, async () => {
+      await ok(`insert into monthly_figures (user_id, month, income) values ($1, '2026-10', 100000)`, [ALICE]);
+      expect((await ok(`select rent, food, other, sips from monthly_figures`)).rows).toEqual([{ rent: 0, food: 0, other: 0, sips: 0 }]);
+    });
+  });
+
+  it("cannot be read, changed, deleted or written as by someone else", async () => {
+    await fig(ALICE);
+    await as(BOB, async () => {
+      expect((await ok(`select * from monthly_figures`)).rows).toEqual([]);
+      expect((await ok(`update monthly_figures set income = 1 returning income`)).rows).toEqual([]);
+      expect((await ok(`delete from monthly_figures returning month`)).rows).toEqual([]);
+      expect(await fails(`insert into monthly_figures (user_id, month, income) values ($1, '2026-11', 5)`, [ALICE])).toMatch(/row-level security/);
+    });
+    expect((await ok(`select income from monthly_figures where user_id = $1`, [ALICE])).rows).toEqual([{ income: 240_000 }]);
+  });
+
+  it("refuse a negative amount and a month that is not a month", async () => {
+    await as(ALICE, async () => {
+      expect(await fails(`insert into monthly_figures (user_id, month, income) values ($1, '2026-10', -1)`, [ALICE])).toMatch(/check constraint/);
+      expect(await fails(`insert into monthly_figures (user_id, month, income, rent) values ($1, '2026-10', 1, -5)`, [ALICE])).toMatch(/check constraint/);
+      for (const bad of ["2026-13", "2026-00", "26-10", "2026/10", "October", "2026-1"]) {
+        expect(await fails(`insert into monthly_figures (user_id, month, income) values ($1, $2, 1)`, [ALICE, bad]), bad).toMatch(/check constraint/);
+      }
+    });
+  });
+
+  it("move updated_at forward when changed", async () => {
+    await fig(ALICE);
+    const before = (await ok(`select updated_at from monthly_figures`)).rows[0] as { updated_at: Date };
+    await new Promise((r) => setTimeout(r, 15));
+    await as(ALICE, () => ok(`update monthly_figures set food = 1`));
+    const after = (await ok(`select updated_at from monthly_figures`)).rows[0] as { updated_at: Date };
+    expect(after.updated_at.getTime()).toBeGreaterThan(before.updated_at.getTime());
+  });
+});
+
 describe("anonymous visitors", () => {
-  it.each(["profiles", "consents", "accounts", "transactions", "goals", "tax_inputs", "net_worth_snapshots", "market_rates"])("cannot read %s", async (table) => {
+  it.each(["profiles", "consents", "accounts", "transactions", "goals", "tax_inputs", "net_worth_snapshots", "market_rates", "monthly_figures"])("cannot read %s", async (table) => {
     await addAccount(ALICE);
     await as(null, async () => {
       expect(await fails(`select * from ${table}`)).toMatch(/permission denied/);
@@ -252,17 +305,19 @@ describe("export and delete my data", () => {
     await ok(`insert into goals (user_id, name, target_amount, target_date) values ($1, 'Car', 500000, '2028-01-01')`, [ALICE]);
     await ok(`insert into consents (user_id, kind, version) values ($1, 'beta-trial', 'v1')`, [ALICE]);
     await ok(`insert into goals (user_id, name, target_amount, target_date) values ($1, 'Bob goal', 1000, '2028-01-01')`, [BOB]);
+    await ok(`insert into monthly_figures (user_id, month, income, rent) values ($1, '2026-10', 240000, 42600), ($2, '2026-10', 111, 1)`, [ALICE, BOB]);
   }
 
   it("export returns everything the person has, and nothing of anyone else's", async () => {
     await fill();
     const result = await as(ALICE, () => ok(`select export_my_data() as data`));
     const data = (result.rows[0] as { data: Record<string, unknown[] | Record<string, unknown>> }).data;
-    expect(Object.keys(data).sort()).toEqual(["accounts", "consents", "exported_at", "goals", "net_worth_snapshots", "profile", "tax_inputs", "transactions"]);
+    expect(Object.keys(data).sort()).toEqual(["accounts", "consents", "exported_at", "goals", "monthly_figures", "net_worth_snapshots", "profile", "tax_inputs", "transactions"]);
     expect((data.accounts as { name: string }[]).map((x) => x.name)).toEqual(["Alice's bank"]);
     expect((data.goals as { name: string }[]).map((x) => x.name)).toEqual(["Car"]);
     expect((data.transactions as { description: string }[]).map((x) => x.description)).toEqual(["Swiggy"]);
     expect((data.consents as { kind: string }[]).map((x) => x.kind)).toEqual(["beta-trial"]);
+    expect((data.monthly_figures as { income: number }[]).map((x) => Number(x.income))).toEqual([240_000]);
     expect((data.profile as { id: string }).id).toBe(ALICE);
     expect(JSON.stringify(data)).not.toContain("Bob");
   });
@@ -270,7 +325,7 @@ describe("export and delete my data", () => {
   it("delete removes the person and every row of theirs, and leaves everyone else alone", async () => {
     await fill();
     await as(ALICE, () => ok(`select delete_my_account()`));
-    for (const table of ["profiles", "accounts", "transactions", "goals", "consents"]) {
+    for (const table of ["profiles", "accounts", "transactions", "goals", "consents", "monthly_figures"]) {
       const col = table === "profiles" ? "id" : "user_id";
       expect((await ok(`select count(*)::int as n from ${table} where ${col} = $1`, [ALICE])).rows, table).toEqual([{ n: 0 }]);
     }
