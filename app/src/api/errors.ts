@@ -1,6 +1,7 @@
-export type ApiErrorCode = "unauthorized" | "not_found" | "unavailable";
+/** "no_data" is for something that cannot be worked out until the person has entered what it needs (a cash flow with no monthly figures). */
+export type ApiErrorCode = "unauthorized" | "not_found" | "no_data" | "unavailable";
 
-const STATUS: Record<ApiErrorCode, number> = { unauthorized: 401, not_found: 404, unavailable: 503 };
+const STATUS: Record<ApiErrorCode, number> = { unauthorized: 401, not_found: 404, no_data: 404, unavailable: 503 };
 
 /**
  * What every failed call rejects with, mock or real. `code` is what the UI branches on;

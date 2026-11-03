@@ -1,4 +1,4 @@
-import type { IsoDate, LoanType, MonthString, Profile, Rupees } from "../api";
+import type { IsoDate, LoanType, MonthString, Profile, Rupees, Transaction } from "../api";
 
 /**
  * What a member has told us, in the shapes the derivation works from. The database holds these as rows (see supabase/migrations);
@@ -91,6 +91,8 @@ export type MemberInput = {
   asOf: IsoDate;
   profile: Profile;
   accounts: MemberAccount[];
+  /** Transactions the person recorded, if any. */
+  transactions: Transaction[];
   /** Oldest first or any order; the latest month is the current one. */
   monthly: MonthlyFigures[];
   goals: MemberGoal[];

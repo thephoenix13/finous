@@ -398,6 +398,8 @@ export type MemberView = {
   profile: MemberInput["profile"];
   accounts: AccountsOverview;
   allAccounts: Account[];
+  /** Transactions the person recorded, as they were. */
+  transactions: MemberInput["transactions"];
   /** Assets with no screen of their own yet (property, gold, other): counted in net worth only. */
   otherAssets: Extract<MemberAccount, { kind: "other" }>[];
   netWorth: NetWorth;
@@ -421,6 +423,7 @@ export function deriveMember(input: MemberInput): MemberView {
     profile: input.profile,
     accounts: overview,
     allAccounts: all,
+    transactions: input.transactions,
     otherAssets: input.accounts.filter((a): a is Extract<MemberAccount, { kind: "other" }> => a.kind === "other"),
     netWorth,
     netWorthHistory: buildNetWorthHistory(netWorth, input.snapshots),

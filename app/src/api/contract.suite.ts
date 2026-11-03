@@ -60,7 +60,7 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
         for (const c of o.cards) {
           expect(c.outstanding).toBeGreaterThanOrEqual(0);
           expect(c.outstanding).toBeLessThanOrEqual(c.limit);
-          expect(c.minimumDue).toBeLessThanOrEqual(c.outstanding);
+          if (c.minimumDue !== undefined) expect(c.minimumDue).toBeLessThanOrEqual(c.outstanding);
         }
         for (const i of o.investments) expect(i.value).toBeGreaterThanOrEqual(0);
       });
@@ -141,7 +141,7 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
       it("has one point a month, oldest first, ending in the month of the net worth with its value", async () => {
         const api = makeApi();
         const [history, n] = await Promise.all([api.getNetWorthHistory(), api.getNetWorth()]);
-        expect(history.points.length).toBeGreaterThanOrEqual(2);
+        expect(history.points.length).toBeGreaterThanOrEqual(1); // a new member has only today
         const months = history.points.map((p) => p.month);
         expect(months).toEqual([...months].sort());
         expect(new Set(months).size).toBe(months.length);
@@ -248,11 +248,13 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
         }
       });
 
-      it("has the six components once each, and drags that are among them", async () => {
+      it("has each component at most once (at least three; all six when everything can be worked out), and drags that are among them", async () => {
         const h = await makeApi().getHealthScore();
         const ids = h.components.map((c) => c.id);
-        expect(ids).toHaveLength(6);
-        expect(new Set(ids).size).toBe(6);
+        expect(ids.length).toBeGreaterThanOrEqual(3);
+        expect(ids.length).toBeLessThanOrEqual(6);
+        expect(new Set(ids).size).toBe(ids.length);
+        for (const c of h.components) expect(c.score >= 0 && c.score <= 100).toBe(true);
         for (const drag of h.drags) expect(ids).toContain(drag);
       });
     });
