@@ -422,13 +422,13 @@ export const en = {
   welcome: {
     eyebrow: "Welcome",
     title: "Every account. One number.",
-    body: "Finous connects to your banks, loans, cards and mutual funds through RBI's Account Aggregator. Read-only. Revocable anytime.",
+    body: "Finous will bring your banks, loans, cards and mutual funds into one view through RBI's Account Aggregator. Read-only. Revocable anytime. This preview runs on sample data.",
     cta: "Get started",
     time: "Takes about a minute",
     step: "Step {{step}} of 2",
     consent: {
       title: "What you're sharing",
-      intro: "You're about to connect your financial accounts through RBI's Account Aggregator framework. Read-only. Revocable anytime.",
+      intro: "This is how connecting your accounts through RBI's Account Aggregator framework will work. Read-only. Revocable anytime.",
       balances: { title: "Balances and transactions", body: "From banks, cards, loans and mutual funds. We can view, not move." },
       valid: { title: "Valid for 12 months", body: "You can revoke consent at any time. Data is deleted within 24 hours." },
       control: { title: "You stay in control", body: "Every account is added by you. Every consent can be revoked by you." },
