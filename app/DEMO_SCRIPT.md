@@ -1,6 +1,6 @@
 # Finous demo script
 
-About ten minutes. Open https://finous-app.vercel.app on a phone, or install it first (Share, Add to Home Screen on iPhone; the install prompt or menu on Android).
+About ten minutes. Open https://finous-app.vercel.app/demo on a phone (that link goes straight to the demo; the plain address now shows sign-in first), or install it first (Share, Add to Home Screen on iPhone; the install prompt or menu on Android).
 
 **Everything you see belongs to one made-up person, Aarav Mehta, as of 29 September 2026.** There is no backend and no real bank connection yet. What is real is the product: the screens, the calculators and the numbers they work out.
 

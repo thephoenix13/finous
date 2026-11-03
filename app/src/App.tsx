@@ -1,5 +1,8 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
+import { AuthProvider } from "./auth/AuthProvider";
+import type { AuthClient } from "./auth/types";
+import AccessGate, { EnterDemo } from "./components/AccessGate";
 import Shell from "./components/Shell";
 import { firstRunDone } from "./lib/firstRun";
 import Advisor from "./pages/Advisor";
@@ -15,6 +18,7 @@ import Goals from "./pages/Goals";
 import Health from "./pages/Health";
 import HealthBreakdown from "./pages/HealthBreakdown";
 import Home from "./pages/Home";
+import Join from "./pages/Join";
 import LinkedAccounts from "./pages/LinkedAccounts";
 import NotFound from "./pages/NotFound";
 import Plans from "./pages/Plans";
@@ -23,6 +27,7 @@ import Notifications from "./pages/Notifications";
 import PrepayCalculator from "./pages/PrepayCalculator";
 import Profile from "./pages/Profile";
 import Recap from "./pages/Recap";
+import SignIn from "./pages/SignIn";
 import RecommendationDetail from "./pages/RecommendationDetail";
 import Recommendations from "./pages/Recommendations";
 import RefinanceCheck from "./pages/RefinanceCheck";
@@ -54,15 +59,21 @@ function FrontDoor() {
   return firstRunDone() ? <Home /> : <Navigate to="/welcome" replace />;
 }
 
-export default function App() {
+/** `authClient` is for tests: leave it out and the app uses Supabase when this build has its settings, and runs as the demo when it has not. */
+export default function App({ authClient }: { authClient?: AuthClient | null }) {
   return (
+    <AuthProvider client={authClient}>
     <BrowserRouter>
       <Routes>
         <Route element={<WelcomeLayout />}>
           <Route path="welcome" element={<Welcome />} />
           <Route path="welcome/consent" element={<WelcomeConsent />} />
           <Route path="welcome/sync" element={<WelcomeSync />} />
+          <Route path="signin" element={<SignIn />} />
+          <Route path="join" element={<Join />} />
         </Route>
+        <Route path="demo" element={<EnterDemo />} />
+        <Route element={<AccessGate />}>
         <Route element={<Shell />}>
           {/* Only the front door sends a first-time visitor to the welcome; a link to any other screen still opens it. */}
           <Route index element={<FrontDoor />} />
@@ -114,7 +125,9 @@ export default function App() {
           )}
           <Route path="*" element={<NotFound />} />
         </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
