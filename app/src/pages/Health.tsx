@@ -25,7 +25,8 @@ function Score({ health }: { health: HealthScore }) {
   const { t, i18n } = useTranslation();
 
   const change = health.changeThisMonth;
-  const changeText = change > 0 ? t("health.changeUp", { count: change }) : change < 0 ? t("health.changeDown", { count: -change }) : t("health.noChange");
+  const changeText =
+    change === undefined ? undefined : change > 0 ? t("health.changeUp", { count: change }) : change < 0 ? t("health.changeDown", { count: -change }) : t("health.noChange");
 
   const drags = health.drags.map((id) => t(`health.phrase.${id}`));
   const dragText =
@@ -38,12 +39,13 @@ function Score({ health }: { health: HealthScore }) {
       <div className="px-4 pb-6 pt-3">
         <HeroCard size="xl" align="center" eyebrow={t("health.eyebrow")} value={health.score}>
           <p className="mt-3 text-[12px] font-medium uppercase tracking-[0.06em] opacity-80">{t("health.outOf", { max: health.outOf })}</p>
-          <p className="mt-5 text-[13px] font-medium">{changeText}</p>
+          {changeText && <p className="mt-5 text-[13px] font-medium">{changeText}</p>}
         </HeroCard>
       </div>
 
       <p className="px-5 text-ink-2">
-        {t("health.standing", { percent: percent(health.topPercentForIncomeBand) })} {dragText}
+        {health.topPercentForIncomeBand !== undefined && `${t("health.standing", { percent: percent(health.topPercentForIncomeBand) })} `}
+        {dragText}
       </p>
 
       <div className="px-4 pb-8 pt-6">

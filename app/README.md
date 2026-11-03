@@ -304,3 +304,15 @@ Who sees what is decided in one place, `components/AccessGate.tsx`:
 
 Settings (see `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_PRIVACY_NOTICE_URL`. The emails come from the Supabase project's SMTP
 settings; the "Confirm sign up" and "Magic link or OTP" templates must show `{{ .Token }}` (the code), not a link.
+
+## Deriving a member's screens (`src/derive/`)
+
+`derive.ts` turns what a member has told us (accounts, monthly figures, goals, tax inputs, saved readings) and the market rates into the
+same shapes the screens already read (`AccountsOverview`, `NetWorth`, `CashFlow`, `Insight[]`, `HealthScore`, `Goal[]`, `TaxSummary`,
+`HomeSummary`). It is pure, so every rule is tested by hand-worked cases, and cross-checked against the sample customer wherever that customer's
+figures come from a formula (net worth, EMI, cash flow, the refinance saving, the emergency fund).
+
+Rules to know: a figure we cannot work out is left out, never invented (no repayment track, no income-band percentile, no refinance without a
+market rate, no change versus last month without last month's reading); the health score is 300 to 900 from the parts that can be worked out
+(formulas are in the tests) and is null with fewer than three; the deposit insight keeps three months of essentials in savings; the
+emergency-fund insight never asks for more a month than the person saves. The thresholds are named constants at the top of the file.

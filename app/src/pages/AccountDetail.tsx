@@ -78,7 +78,7 @@ function Body({ detail }: { detail: Detail }) {
         </div>
       );
     case "loan":
-      return <Plain eyebrow={t("accounts.eyebrow.loan")} amount={account.outstanding} />;
+      return <Plain eyebrow={t(`accounts.loanType.${account.loanType}`)} amount={account.outstanding} />;
     case "investment":
       return <Plain eyebrow={t(`accounts.eyebrow.${account.instrument}`)} amount={account.value} />;
   }
@@ -121,7 +121,7 @@ function CardBody({ card, asOf }: { card: CardAccount; asOf: string }) {
             subtitle={t("accounts.card.everyMonth", { day: ordinalDay(card.dueDay, lang) })}
             right={formatDayMonth(cycle.due, lang)}
           />
-          <Row title={t("accounts.card.minimumDue")} right={inr(card.minimumDue)} />
+          {card.minimumDue !== undefined && <Row title={t("accounts.card.minimumDue")} right={inr(card.minimumDue)} />}
           <Row title={t("accounts.card.autoPay")} right={card.autoPay ? t("accounts.card.autoPayOn") : t("accounts.card.autoPayOff")} />
         </RowGroup>
       </section>

@@ -73,10 +73,10 @@ function Groups({ overview }: { overview: AccountsOverview }) {
         {overview.loans.map((l) => (
           <Row
             key={l.id}
-            to="/plans/refinance"
+            to={l.loanType === "home" ? "/plans/refinance" : `/accounts/${l.id}`}
             icon={HOME}
             title={l.name}
-            subtitle={t("accounts.sub.loan", { end: month(l.endsOn), start: month(l.startedOn) })}
+            subtitle={l.startedOn ? t("accounts.sub.loan", { end: month(l.endsOn), start: month(l.startedOn) }) : t("accounts.sub.loanNoStart", { end: month(l.endsOn) })}
             right={inr(l.outstanding)}
           />
         ))}

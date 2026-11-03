@@ -57,7 +57,7 @@ export default function Recap() {
                 eyebrow={t("recap.saved")}
                 value={inr(flow.saved)}
                 size="lg"
-                caption={delta === 0 ? t("home.savedSame") : t(delta > 0 ? "home.savedMore" : "home.savedLess", { amount: inr(Math.abs(delta)) })}
+                caption={delta === undefined ? undefined : delta === 0 ? t("home.savedSame") : t(delta > 0 ? "home.savedMore" : "home.savedLess", { amount: inr(Math.abs(delta)) })}
               />
 
               <dl className="grid grid-cols-2 gap-4 px-5 pt-8">

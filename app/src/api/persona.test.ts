@@ -352,7 +352,7 @@ describe("persona: net worth history (illustrative)", () => {
     const api = createMockApi();
     const [h, n] = await Promise.all([api.getNetWorthHistory(), api.getNetWorth()]);
     expect(h.points[11].value).toBe(n.value);
-    expect(h.points[10].value).toBe(n.value - n.changeThisMonth);
+    expect(h.points[10].value).toBe(n.value - (n.changeThisMonth ?? 0));
   });
 
   it("only ever rises, by about a lakh a month", async () => {
