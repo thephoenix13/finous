@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type LoanAccount, type RequestOptions } from "../api";
-import { LoadError, LoadingCard } from "../components/DataState";
+import { LoadingCard } from "../components/DataState";
+import { LoadFailure, NeedsFigures } from "../components/NoData";
 import PageHeader from "../components/PageHeader";
 import { Card, HeroCard, Slider } from "../components/ui";
 import { addMonths, bufferMonths, emi, prepay } from "../lib/finance";
@@ -38,7 +39,7 @@ export default function PrepayCalculator() {
     <>
       <PageHeader title={t("prepay.title")} backTo="/plans" />
       {result.status === "loading" && <LoadingCard />}
-      {result.status === "error" && <LoadError onRetry={result.retry} />}
+      {result.status === "error" && <LoadFailure error={result.error} onRetry={result.retry} noData={<NeedsFigures reason="prepay" />} />}
       {result.status === "ready" &&
         (result.data ? (
           <PrepayForm inputs={result.data} />

@@ -1,14 +1,20 @@
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { useApiData, type Api, type RequestOptions } from "../api";
+import { isApiError, useApiData, type Api, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
 import { buttonClasses } from "../components/ui";
 import { reply, topicFor, type AdvisorData, type Reply, type Topic } from "../lib/advisor";
 import { askAi } from "../lib/advisorAi";
+import { ROUTES } from "../routes";
 
 const loadAdvisorData = async (api: Api, options: RequestOptions): Promise<AdvisorData> => {
-  const [cashFlow, accounts] = await Promise.all([api.getCashFlow(options), api.listAccounts(options)]);
+  // A member with no monthly figures yet still gets answers about their accounts; spending questions ask for the figures.
+  const noFigures = (error: unknown) => {
+    if (isApiError(error) && error.code === "no_data") return null;
+    throw error;
+  };
+  const [cashFlow, accounts] = await Promise.all([api.getCashFlow(options).catch(noFigures), api.listAccounts(options)]);
   return { cashFlow, accounts };
 };
 
@@ -41,6 +47,8 @@ export default function Advisor() {
     const rules = reply(topic, data, t, i18n.resolvedLanguage);
     let answer: Message;
     try {
+      // Nothing to work a spending answer from: say so and point at the figures rather than letting the model guess.
+      if (rules.link?.to === ROUTES.figures) throw new Error("needs figures");
       const ai = await askAi({ question, lang, data, history });
       answer = { id: 0, from: "advisor", via: "ai", text: ai.text, sources: ai.sources, link: rules.link };
     } catch {

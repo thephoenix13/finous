@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type RequestOptions } from "../api";
-import { LoadError, LoadingCard } from "../components/DataState";
+import { LoadingCard } from "../components/DataState";
+import { LoadFailure, NeedsFigures } from "../components/NoData";
 import PageHeader from "../components/PageHeader";
 import { Card, HeroCard, Row, RowGroup } from "../components/ui";
 import { carAffordability } from "../lib/finance";
@@ -24,7 +25,7 @@ export default function AffordabilityCheck() {
     <>
       <PageHeader title={t("afford.title")} backTo="/plans" />
       {result.status === "loading" && <LoadingCard />}
-      {result.status === "error" && <LoadError onRetry={result.retry} />}
+      {result.status === "error" && <LoadFailure error={result.error} onRetry={result.retry} noData={<NeedsFigures reason="afford" />} />}
       {result.status === "ready" && <Assessment headroom={result.data} />}
     </>
   );

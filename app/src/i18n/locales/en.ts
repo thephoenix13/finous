@@ -224,6 +224,7 @@ export const en = {
   },
   home: {
     greeting: { morning: "Good morning, {{name}}.", afternoon: "Good afternoon, {{name}}.", evening: "Good evening, {{name}}." },
+    greetingBare: { morning: "Good morning.", afternoon: "Good afternoon.", evening: "Good evening." },
     netWorth: "Net worth",
     changeUp: "↑ {{amount}} this month",
     changeDown: "↓ {{amount}} this month",
@@ -361,6 +362,7 @@ export const en = {
       prepayBuffer: " That covers about {{months}} months of essential expenses. Prepaying would draw that buffer down, so the prepay calculator shows both sides.",
       prepayNoLoan: "You have no home loan linked, so there is nothing to prepay.",
       afford: "Whether you can afford it depends on the EMI and on what you keep saving. You save {{saved}} a month today. The affordability check works it out with your numbers.",
+      noFigures: "I need your monthly figures to answer that. Add what you earn and spend in a month and ask again.",
       fallback: "I can answer questions about your biggest expense, your food spending, prepaying your home loan and affording a car. Try one of those.",
     },
   },
@@ -489,6 +491,24 @@ export const en = {
     demo: "Explore the demo",
     signOut: "Sign out",
   },
+  empty: {
+    figures: {
+      title: "Add your monthly figures",
+      cta: "Add monthly figures",
+      cashFlow: "Tell us what you earn and spend in a month, and your cash flow fills in.",
+      recap: "Tell us what you earn and spend in a month, and your recap fills in.",
+      health: "Add your income and spending, and a bank account, and we'll work out your score.",
+      afford: "We need your monthly figures to see what you could afford each month.",
+      prepay: "We need your monthly figures to see how prepaying would affect your safety net.",
+    },
+    accounts: {
+      title: "Add your first account",
+      body: "Add a bank account, a loan, a card or an investment and this fills in.",
+      cta: "Add an account",
+    },
+    goals: { title: "Set your first goal", cta: "Add a goal" },
+    home: { month: "Add what you earn and spend in a month to see what you save." },
+  },
   search: {
     title: "Search",
     field: "Search transactions",
@@ -499,6 +519,7 @@ export const en = {
     count_one: "{{count}} result",
     count_other: "{{count}} results",
     none: "No transactions match “{{query}}”.",
+    noneYet: "No transactions yet.",
   },
   cashFlow: {
     title: "This month",

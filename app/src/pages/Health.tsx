@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useApiData, type HealthScore } from "../api";
-import { LoadError, LoadingCard } from "../components/DataState";
+import { LoadingCard } from "../components/DataState";
+import { LoadFailure, NeedsFigures } from "../components/NoData";
 import PageHeader from "../components/PageHeader";
 import { ButtonLink, HeroCard } from "../components/ui";
 import { formatList, percent } from "../lib/format";
@@ -15,7 +16,7 @@ export default function Health() {
     <>
       <PageHeader title={t("health.title")} backTo="/plans" />
       {result.status === "loading" && <LoadingCard />}
-      {result.status === "error" && <LoadError onRetry={result.retry} />}
+      {result.status === "error" && <LoadFailure error={result.error} onRetry={result.retry} noData={<NeedsFigures reason="health" />} />}
       {result.status === "ready" && <Score health={result.data} />}
     </>
   );

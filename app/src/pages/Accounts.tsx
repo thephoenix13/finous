@@ -2,6 +2,8 @@ import { useId, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useApiData, type AccountsOverview, type Api, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import { NoData } from "../components/NoData";
+import { ROUTES } from "../routes";
 import PageHeader from "../components/PageHeader";
 import { Row, RowGroup } from "../components/ui";
 import { formatMonthYear, inr, parseMonth } from "../lib/format";
@@ -52,7 +54,12 @@ export default function Accounts() {
       <PageHeader title={t("accounts.title")} backTo="/" />
       {result.status === "loading" && <LoadingCard />}
       {result.status === "error" && <LoadError onRetry={result.retry} />}
-      {result.status === "ready" && <Groups overview={result.data} />}
+      {result.status === "ready" &&
+        (result.data.bank.length + result.data.loans.length + result.data.cards.length + result.data.investments.length === 0 ? (
+          <NoData title={t("empty.accounts.title")} body={t("empty.accounts.body")} to={ROUTES.newAccount} cta={t("empty.accounts.cta")} />
+        ) : (
+          <Groups overview={result.data} />
+        ))}
     </>
   );
 }
