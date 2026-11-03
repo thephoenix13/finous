@@ -5,6 +5,7 @@ export { default as Field } from "./Field";
 export { default as HeroCard } from "./HeroCard";
 export { default as Progress } from "./Progress";
 export { default as Row, RowGroup } from "./Row";
+export { default as Select } from "./Select";
 export { default as Slider } from "./Slider";
 export { default as Switch } from "./Switch";
 export { default as Tag } from "./Tag";

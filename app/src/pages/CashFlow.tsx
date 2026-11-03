@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type RequestOptions } from "../api";
 import { LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
+import { ROUTES } from "../routes";
 import { LoadFailure, NeedsFigures } from "../components/NoData";
 import PageHeader from "../components/PageHeader";
 import { Card, HeroCard, Row, RowGroup } from "../components/ui";
@@ -73,6 +75,7 @@ export default function CashFlow() {
           </div>
         );
       })()}
+      {result.status === "ready" && <MemberLink to={ROUTES.figures}>{t("forms.links.editFigures")}</MemberLink>}
     </>
   );
 }

@@ -299,8 +299,8 @@ Who sees what is decided in one place, `components/AccessGate.tsx`:
 - **Demo:** the sample customer (Aarav). Reached from "Try the demo" on the sign-in page, or a `/demo` link (the one to share with partners). Nothing
   is saved. A build with no Supabase settings is always the demo, which is what local work, the tests and CI use.
 - **Not signed in:** sent to `/signin`. **Signed in without consent:** sent to `/join`.
-- **Member:** a signed-in, consented person sees their own space and never the sample customer's figures. Until their own data screens exist this is a
-  short "you're in the beta" page with the demo and sign-out.
+- **Member:** a signed-in, consented person gets the real app, running on their own rows in Supabase (`api/memberEnv.ts`: the member `Api` plus
+  `MemberData`, the way to change those rows) and never the sample customer's figures. They skip the demo's welcome steps.
 
 Settings (see `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_PRIVACY_NOTICE_URL`. The emails come from the Supabase project's SMTP
 settings; the "Confirm sign up" and "Magic link or OTP" templates must show `{{ .Token }}` (the code), not a link.
@@ -316,3 +316,14 @@ Rules to know: a figure we cannot work out is left out, never invented (no repay
 market rate, no change versus last month without last month's reading); the health score is 300 to 900 from the parts that can be worked out
 (formulas are in the tests) and is null with fewer than three; the deposit insight keeps three months of essentials in savings; the
 emergency-fund insight never asks for more a month than the person saves. The thresholds are named constants at the top of the file.
+
+## Entering one's own details (members only)
+
+A new member has nothing, so every screen that needs something says what and links to where it goes (`components/NoData.tsx`, `routes.ts`).
+The forms are `pages/forms/`: monthly figures (`/you/figures`), accounts of five kinds (`/accounts/new`, `/accounts/:id/edit`), goals, tax details
+and name and city. They share `components/forms/FormPage.tsx`; what each asks, and how its answers become a saved row, is pure and tested in
+`lib/memberForms.ts` and `derive/serialize.ts` (saving then reading back gives the same thing). The checks are in `lib/formFields.ts`: a blank optional
+field is left out rather than saved as 0, an amount never has paise, every mistake is shown at once.
+
+Forms only exist for a member: they read `useMemberData()`, which is null in the demo (the routes send the demo to Home, and the "Add"/"Edit" links do not
+render). Tests run the whole app as a member over an in-memory stand-in (`test/fakeMember.ts`), so a save shows up on the other screens.

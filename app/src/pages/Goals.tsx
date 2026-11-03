@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { useApiData, type Api, type Goal, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
 import { NoData } from "../components/NoData";
 import PageHeader from "../components/PageHeader";
 import { Card, Progress } from "../components/ui";
@@ -24,6 +25,7 @@ export default function Goals() {
       {result.status === "loading" && <LoadingCard />}
       {result.status === "error" && <LoadError onRetry={result.retry} />}
       {result.status === "ready" && <GoalList goals={result.data} />}
+      {result.status === "ready" && result.data.length > 0 && <MemberLink to={ROUTES.newGoal}>{t("forms.links.addGoal")}</MemberLink>}
     </>
   );
 }

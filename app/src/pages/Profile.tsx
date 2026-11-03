@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
 import PageHeader from "../components/PageHeader";
 import { Row, RowGroup } from "../components/ui";
 
@@ -22,6 +23,11 @@ export default function Profile() {
           <Row title={t("you.profile.email")} subtitle={result.data.email} />
           <Row title={t("you.profile.city")} subtitle={result.data.city || "—"} />
         </RowGroup>
+      )}
+      {result.status === "ready" && (
+        <div className="pt-6">
+          <MemberLink to="/you/profile/edit">{t("forms.links.editProfile")}</MemberLink>
+        </div>
       )}
     </>
   );

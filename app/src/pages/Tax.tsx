@@ -2,10 +2,12 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useApiData, type Api, type RequestOptions, type TaxSummary } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
 import PageHeader from "../components/PageHeader";
 import { Card, HeroCard, Progress, Row, RowGroup } from "../components/ui";
 import { taxSaving } from "../lib/finance";
 import { formatDayMonth, inr, percent } from "../lib/format";
+import { ROUTES } from "../routes";
 
 const loadTax = (api: Api, options: RequestOptions): Promise<TaxSummary> => api.getTaxSummary(options);
 
@@ -22,6 +24,7 @@ export default function Tax() {
       {result.status === "loading" && <LoadingCard />}
       {result.status === "error" && <LoadError onRetry={result.retry} />}
       {result.status === "ready" && <Summary tax={result.data} />}
+      {result.status === "ready" && <MemberLink to={ROUTES.taxInputs}>{t("forms.links.editTax")}</MemberLink>}
     </>
   );
 }

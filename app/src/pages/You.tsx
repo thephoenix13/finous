@@ -20,6 +20,8 @@ export default function You() {
   const result = useApiData(loadYou);
   const auth = useAuth();
   const navigate = useNavigate();
+  // A member's accounts are the ones they typed in; the linked-account and consent screens are about Account Aggregator, which is not live.
+  const member = auth.access === "member";
 
   if (result.status === "loading") return <LoadingCard />;
   if (result.status === "error") return <LoadError onRetry={result.retry} />;
@@ -42,20 +44,29 @@ export default function You() {
       </section>
 
       <RowGroup className="mt-4">
-        <Row to="/you/linked" title={t("you.linked.title")} subtitle={t("you.linked.count", { count: connections })} />
-        <Row
-          to="/you/consents"
-          title={t("you.consents.title")}
-          subtitle={
-            active.length === 0
-              ? t("you.consents.noneActive")
-              : t("you.consents.summary", { count: active.length, date: formatMonthYear(parseMonth(nextExpiry.slice(0, 7)), i18n.resolvedLanguage) })
-          }
-        />
+        {member && <Row to="/you/figures" title={t("you.figures.title")} subtitle={t("you.figures.subtitle")} />}
+        {member ? (
+          <Row to="/accounts" title={t("you.accounts.title")} subtitle={t("you.linked.count", { count: connections })} />
+        ) : (
+          <>
+            <Row to="/you/linked" title={t("you.linked.title")} subtitle={t("you.linked.count", { count: connections })} />
+            <Row
+              to="/you/consents"
+              title={t("you.consents.title")}
+              subtitle={
+                active.length === 0
+                  ? t("you.consents.noneActive")
+                  : t("you.consents.summary", { count: active.length, date: formatMonthYear(parseMonth(nextExpiry.slice(0, 7)), i18n.resolvedLanguage) })
+              }
+            />
+          </>
+        )}
         <Row to="/you/privacy" title={t("you.privacy.title")} subtitle={t("you.privacy.subtitle")} />
         <Row to="/you/profile" title={t("you.profile.title")} subtitle={t("you.profile.subtitle")} />
-        <Row to="/welcome" title={t("you.replay.title")} subtitle={t("you.replay.subtitle")} />
-        {auth.canSignIn && (
+        {!member && <Row to="/welcome" title={t("you.replay.title")} subtitle={t("you.replay.subtitle")} />}
+        {member && <Row title={t("you.exploreDemo.title")} subtitle={t("you.exploreDemo.subtitle")} onClick={auth.enterDemo} />}
+        {member && <Row title={t("you.signOut.title")} subtitle={t("you.signOut.subtitle")} onClick={() => void auth.signOut()} />}
+        {auth.canSignIn && !member && (
           <Row
             title={t("you.leaveDemo.title")}
             subtitle={t("you.leaveDemo.subtitle")}

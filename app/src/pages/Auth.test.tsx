@@ -6,16 +6,21 @@ import { afterEach, describe, expect, it } from "vitest";
 import App from "../App";
 import { ApiProvider, createMockApi } from "../api";
 import type { AuthClient } from "../auth/types";
+import type { MemberEnvFactory } from "../components/AccessGate";
 import { createI18n, type Language } from "../i18n";
+import { createFakeMember } from "../test/fakeMember";
 import { ALICE, createFakeAuth } from "../test/fakeAuth";
 import { expectAccessible } from "../test/a11y";
 
-function open(route: string, client: AuthClient | null, lng: Language = "en") {
+/** What a brand-new member sees first: Home, greeting them by nothing yet, with the prompt to add an account. */
+const HOME = { level: 1, name: /^Good (morning|afternoon|evening)\.$/ } as const;
+
+function open(route: string, client: AuthClient | null, lng: Language = "en", memberEnv: MemberEnvFactory = () => createFakeMember()) {
   window.history.pushState({}, "", route);
   return render(
     <I18nextProvider i18n={createI18n(lng)}>
       <ApiProvider api={createMockApi()}>
-        <App authClient={client} />
+        <App authClient={client} memberEnv={memberEnv} />
       </ApiProvider>
     </I18nextProvider>,
   );
@@ -155,7 +160,7 @@ describe("joining the beta", () => {
     await userEvent.click(screen.getByRole("checkbox", { name: /I agree to take part in the Finous beta trial/ }));
     expect(join).toBeEnabled();
     await userEvent.click(join);
-    expect(await screen.findByRole("heading", { level: 1, name: "You're in the Finous beta" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", HOME)).toBeInTheDocument();
     expect(calls.consentsRecorded).toBe(1);
     expect(isConsented()).toBe(true);
   });
@@ -192,7 +197,7 @@ describe("joining the beta", () => {
     expect(isConsented()).toBe(false);
     expect(here()).toBe("/join");
     await userEvent.click(screen.getByRole("button", { name: "Join the beta" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "You're in the Finous beta" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", HOME)).toBeInTheDocument();
   });
 
   it("sends someone who is not signed in away from the beta screen", async () => {
@@ -206,22 +211,38 @@ describe("a beta member", () => {
   it("sees their own space on every screen, never the sample customer's figures", async () => {
     const { client } = createFakeAuth({ session: ALICE, consented: true });
     open("/accounts", client);
-    expect(await screen.findByRole("heading", { level: 1, name: "You're in the Finous beta" })).toBeInTheDocument();
-    expect(screen.getByText("alice@example.com")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Add your first account" })).toBeInTheDocument();
     expect(screen.queryByText(/Aarav/)).not.toBeInTheDocument();
     expect(screen.queryByText(/₹/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/HDFC/)).not.toBeInTheDocument();
+  });
+
+  it("goes straight to Home, not to the demo's welcome steps", async () => {
+    const { client } = createFakeAuth({ session: ALICE, consented: true });
+    localStorage.removeItem("finous.firstRunDone"); // a first visit: the demo would be sent to /welcome
+    open("/", client);
+    expect(await screen.findByRole("heading", HOME)).toBeInTheDocument();
+    expect(here()).toBe("/");
+  });
+
+  it("is sent to the welcome steps in the demo on a first visit, which a member never sees", async () => {
+    localStorage.setItem("finous.demo", "1");
+    localStorage.removeItem("finous.firstRunDone");
+    const { client } = createFakeAuth({ session: ALICE, consented: true });
+    open("/", client);
+    await waitFor(() => expect(here()).toBe("/welcome"));
   });
 
   it("can open the demo, and can sign out", async () => {
     const { client, calls } = createFakeAuth({ session: ALICE, consented: true });
-    const first = open("/", client);
-    await userEvent.click(await screen.findByRole("button", { name: "Explore the demo" }));
+    const first = open("/you", client);
+    await userEvent.click(await screen.findByRole("button", { name: /Explore the demo/ }));
     await waitFor(() => expect(localStorage.getItem("finous.demo")).toBe("1"));
-    expect(await screen.findByRole("link", { name: "All accounts" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /Leave the demo/ })).toBeInTheDocument();
     first.unmount();
     localStorage.removeItem("finous.demo");
-    open("/", client);
-    await userEvent.click(await screen.findByRole("button", { name: "Sign out" }));
+    open("/you", client);
+    await userEvent.click(await screen.findByRole("button", { name: /Sign out/ }));
     expect(await screen.findByRole("heading", { level: 1, name: "Sign in to Finous" })).toBeInTheDocument();
     expect(calls.signedOut).toBe(1);
   });
@@ -229,7 +250,7 @@ describe("a beta member", () => {
   it("is signed out everywhere when signing out in another tab", async () => {
     const fake = createFakeAuth({ session: ALICE, consented: true });
     open("/", fake.client);
-    await screen.findByRole("heading", { level: 1, name: "You're in the Finous beta" });
+    await screen.findByRole("heading", HOME);
     await fake.client.signOut();
     expect(await screen.findByRole("heading", { level: 1, name: "Sign in to Finous" })).toBeInTheDocument();
   });

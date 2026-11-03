@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import { isApiError, useApiData, type Api, type Goal, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import MemberLink from "../components/MemberLink";
 import PageHeader from "../components/PageHeader";
 import { Card, HeroCard, Progress, Row, RowGroup } from "../components/ui";
 import { addMonths, futureValue, monthlyContributionForGoal } from "../lib/finance";
@@ -32,6 +33,7 @@ export default function GoalDetail() {
           <LoadError onRetry={result.retry} />
         ))}
       {result.status === "ready" && <Detail goal={result.data} />}
+      {result.status === "ready" && <MemberLink to={`/plans/goals/${id}/edit`}>{t("forms.links.editGoal")}</MemberLink>}
     </>
   );
 }
