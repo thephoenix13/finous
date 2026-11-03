@@ -28,7 +28,7 @@ export default function LinkedAccounts() {
           const status = t(`you.status.${dashboard?.status ?? "revoked"}`);
           const rows = [
             ...accounts.bank.map((a) => ({ id: a.id, name: a.name, sub: t("accounts.sub.bank", { last4: a.last4 }) })),
-            ...accounts.loans.map((a) => ({ id: a.id, name: a.name, sub: t("accounts.eyebrow.loan") })),
+            ...accounts.loans.map((a) => ({ id: a.id, name: a.name, sub: t(`accounts.loanType.${a.loanType}`) })),
             ...accounts.cards.map((a) => ({ id: a.id, name: a.name, sub: t("accounts.sub.card", { limit: inr(a.limit) }) })),
             ...accounts.investments.map((a) => ({ id: a.id, name: a.name, sub: t(`accounts.eyebrow.${a.instrument}`) })),
           ];

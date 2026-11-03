@@ -38,19 +38,22 @@ export type BankAccount = {
   changeThisMonth?: Rupees;
 };
 
+export type LoanType = "home" | "car" | "personal" | "education" | "other";
+
 export type LoanAccount = {
   kind: "loan";
   id: string;
   name: string;
-  loanType: "home";
+  loanType: LoanType;
   outstanding: Rupees;
   ratePercent: number;
-  startedOn: MonthString;
+  /** Absent when the person has not said when it began. */
+  startedOn?: MonthString;
   endsOn: MonthString;
   monthsLeft: number;
   emi: Rupees;
-  /** 0 to 100. */
-  repaidPercent: number;
+  /** 0 to 100. Absent when the original amount is not known. */
+  repaidPercent?: number;
 };
 
 export type CardAccount = {
@@ -60,7 +63,8 @@ export type CardAccount = {
   last4: string;
   outstanding: Rupees;
   limit: Rupees;
-  minimumDue: Rupees;
+  /** Absent when the person has not entered it. */
+  minimumDue?: Rupees;
   /** Day of the month. */
   statementDay: number;
   dueDay: number;
@@ -129,7 +133,8 @@ export type AllocationCategory = "investments" | "savings" | "property-and-other
 export type NetWorth = {
   asOf: IsoDate;
   value: Rupees;
-  changeThisMonth: Rupees;
+  /** Absent until there is a reading from last month to compare with. */
+  changeThisMonth?: Rupees;
   assets: Rupees;
   liabilities: Rupees;
   allocation: { category: AllocationCategory; amount: Rupees; percent: number }[];
@@ -151,7 +156,8 @@ export type CashFlow = {
   income: Rupees;
   outflow: Rupees;
   saved: Rupees;
-  savedChangeVsLastMonth: Rupees;
+  /** Absent until last month's figures exist to compare with. */
+  savedChangeVsLastMonth?: Rupees;
   categories: { category: CashFlowCategory; amount: Rupees }[];
   insight?: { kind: "dining-above-average"; percentAboveAverage: number; baselineMonths: number };
 };
@@ -202,8 +208,9 @@ export type Insight = RefinanceInsight | DepositInsight | EmergencyFundInsight;
 /** GET /v1/home. Everything the Home screen needs in one call. */
 export type HomeSummary = {
   asOf: IsoDate;
-  netWorth: { value: Rupees; changeThisMonth: Rupees };
-  month: { month: MonthString; income: Rupees; outflow: Rupees; saved: Rupees; savedChangeVsLastMonth: Rupees };
+  netWorth: { value: Rupees; changeThisMonth?: Rupees };
+  /** Absent until the person has entered their monthly figures. */
+  month?: { month: MonthString; income: Rupees; outflow: Rupees; saved: Rupees; savedChangeVsLastMonth?: Rupees };
   /** The two things worth looking at. A subset of GET /v1/insights. */
   lookAt: Insight[];
 };
@@ -230,9 +237,10 @@ export type HealthComponent = {
 export type HealthScore = {
   score: number;
   outOf: number;
-  changeThisMonth: number;
-  /** "Top 22% for your income band" is 22. */
-  topPercentForIncomeBand: number;
+  /** Absent until there is a score from last month to compare with. */
+  changeThisMonth?: number;
+  /** "Top 22% for your income band" is 22. Absent when there is no benchmark to back it. */
+  topPercentForIncomeBand?: number;
   components: HealthComponent[];
   drags: HealthComponentId[];
 };
@@ -274,11 +282,11 @@ export type Goal = {
 export type Deduction80C = {
   id: string;
   kind: "ppf" | "elss" | "life-insurance";
-  /** Who holds it: a bank, a fund or an insurer. A proper noun, shown as it is. */
-  provider: string;
+  /** Who holds it: a bank, a fund or an insurer. A proper noun, shown as it is. Absent when the person has only stated a total. */
+  provider?: string;
   /** Contributed this financial year. */
   amount: Rupees;
-  schedule: "auto-debit" | "sip" | "annual";
+  schedule: "auto-debit" | "sip" | "annual" | "yearly-total";
   /** The monthly instalment, for a SIP. */
   monthlyAmount?: Rupees;
 };

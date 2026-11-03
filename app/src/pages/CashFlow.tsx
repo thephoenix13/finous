@@ -27,7 +27,7 @@ export default function CashFlow() {
               eyebrow={t("cashFlow.saved", { month: formatMonthYear(parseMonth(flow.month), i18n.resolvedLanguage) })}
               value={inr(flow.saved)}
               size="lg"
-              caption={delta === 0 ? t("home.savedSame") : t(delta > 0 ? "home.savedMore" : "home.savedLess", { amount: inr(Math.abs(delta)) })}
+              caption={delta === undefined ? undefined : delta === 0 ? t("home.savedSame") : t(delta > 0 ? "home.savedMore" : "home.savedLess", { amount: inr(Math.abs(delta)) })}
             />
 
             <section aria-labelledby="cf-totals" className="px-5 pt-8">

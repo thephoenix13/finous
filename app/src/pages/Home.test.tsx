@@ -130,7 +130,7 @@ describe("Home: greeting by time of day", () => {
 describe("Home: when the figures are different", () => {
   it("says 'less than last month' and a falling net worth with its own arrow", async () => {
     renderWithI18n(<Home now={MORNING} />, {
-      api: withHome((h) => ({ ...h, netWorth: { ...h.netWorth, changeThisMonth: -50_000 }, month: { ...h.month, savedChangeVsLastMonth: -3_200 } })),
+      api: withHome((h) => ({ ...h, netWorth: { ...h.netWorth, changeThisMonth: -50_000 }, month: { ...h.month!, savedChangeVsLastMonth: -3_200 } })),
     });
     await loaded();
     expect(screen.getByText("↓ ₹50,000 this month")).toBeInTheDocument();
@@ -138,7 +138,7 @@ describe("Home: when the figures are different", () => {
   });
 
   it("says the same when saving did not change", async () => {
-    renderWithI18n(<Home now={MORNING} />, { api: withHome((h) => ({ ...h, month: { ...h.month, savedChangeVsLastMonth: 0 } })) });
+    renderWithI18n(<Home now={MORNING} />, { api: withHome((h) => ({ ...h, month: { ...h.month!, savedChangeVsLastMonth: 0 } })) });
     await loaded();
     expect(screen.getByText("The same as last month")).toBeInTheDocument();
   });
@@ -216,7 +216,7 @@ describe("Home: accessibility", () => {
 
   it("has none with nothing to look at, or a falling month", async () => {
     const { container } = renderWithI18n(<Home now={MORNING} />, {
-      api: withHome((h) => ({ ...h, lookAt: [], netWorth: { ...h.netWorth, changeThisMonth: -1 }, month: { ...h.month, savedChangeVsLastMonth: -1 } })),
+      api: withHome((h) => ({ ...h, lookAt: [], netWorth: { ...h.netWorth, changeThisMonth: -1 }, month: { ...h.month!, savedChangeVsLastMonth: -1 } })),
     });
     await loaded();
     await expectAccessible(container);

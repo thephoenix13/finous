@@ -37,7 +37,7 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
   const lang = i18n.resolvedLanguage;
   const { home, profile, loans, history } = data;
   const { netWorth, month } = home;
-  const delta = month.savedChangeVsLastMonth;
+  const delta = month?.savedChangeVsLastMonth;
 
   return (
     <div className="pb-8">
@@ -50,11 +50,16 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
         className="mx-4 mt-4"
         eyebrow={t("home.netWorth")}
         value={inr(netWorth.value)}
-        caption={t(netWorth.changeThisMonth >= 0 ? "home.changeUp" : "home.changeDown", { amount: inr(Math.abs(netWorth.changeThisMonth)) })}
+        caption={
+          netWorth.changeThisMonth === undefined
+            ? undefined
+            : t(netWorth.changeThisMonth >= 0 ? "home.changeUp" : "home.changeDown", { amount: inr(Math.abs(netWorth.changeThisMonth)) })
+        }
       >
         <NetWorthChart history={history} className="mt-5" />
       </HeroCard>
 
+      {month && (
       <section aria-labelledby="home-month" className="px-5 pt-8">
         <h2 id="home-month" className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">
           {t("home.thisMonth")}
@@ -67,11 +72,14 @@ function HomeContent({ data, now }: { data: HomeData; now: Date }) {
           <dl>
             <Figure label={t("home.saved")} value={inr(month.saved)} />
           </dl>
-          <p className={`mt-2 text-[13px] ${delta >= 0 ? "text-positive" : "text-ink-2"}`}>
-            {delta === 0 ? t("home.savedSame") : t(delta > 0 ? "home.savedMore" : "home.savedLess", { amount: inr(Math.abs(delta)) })}
-          </p>
+          {delta !== undefined && (
+            <p className={`mt-2 text-[13px] ${delta >= 0 ? "text-positive" : "text-ink-2"}`}>
+              {delta === 0 ? t("home.savedSame") : t(delta > 0 ? "home.savedMore" : "home.savedLess", { amount: inr(Math.abs(delta)) })}
+            </p>
+          )}
         </div>
       </section>
+      )}
 
       <div className="flex flex-wrap gap-3 px-5 pt-8">
         <ButtonLink to="/cash-flow" variant="ghost" size="sm" fullWidth={false}>

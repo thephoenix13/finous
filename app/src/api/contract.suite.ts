@@ -50,10 +50,12 @@ export function describeApiContract(name: string, makeApi: () => Api): void {
         for (const a of o.bank) expect(Number.isInteger(a.balance) && a.balance >= 0).toBe(true);
         for (const l of o.loans) {
           expect(Number.isInteger(l.outstanding) && l.outstanding > 0).toBe(true);
-          expect(l.endsOn > l.startedOn).toBe(true);
+          if (l.startedOn) expect(l.endsOn > l.startedOn).toBe(true);
           expect(l.monthsLeft).toBeGreaterThan(0);
-          expect(l.repaidPercent).toBeGreaterThanOrEqual(0);
-          expect(l.repaidPercent).toBeLessThanOrEqual(100);
+          if (l.repaidPercent !== undefined) {
+            expect(l.repaidPercent).toBeGreaterThanOrEqual(0);
+            expect(l.repaidPercent).toBeLessThanOrEqual(100);
+          }
         }
         for (const c of o.cards) {
           expect(c.outstanding).toBeGreaterThanOrEqual(0);
