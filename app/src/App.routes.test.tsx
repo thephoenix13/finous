@@ -48,6 +48,7 @@ const ROUTES = [
   "/you/privacy",
   "/you/profile",
   "/you/figures",
+  "/you/data",
   "/you/profile/edit",
   "/accounts/new",
   "/accounts/hdfc/edit",

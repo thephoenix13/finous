@@ -7,11 +7,12 @@ import type { AccountDraft, GoalDraft } from "../derive/serialize";
 import type { MemberAccount, MemberGoal, MemberInput } from "../derive/types";
 
 /** An in-memory member: reading and writing the same state the member Api answers from, so a form's save shows up on the screens. */
-export function createFakeMember(initial: MemberInput = emptyMember()): MemberEnv & { state: MemberInput; saves: string[]; api: MemberApi; failNext(): void } {
+export function createFakeMember(initial: MemberInput = emptyMember()): MemberEnv & { state: MemberInput; saves: string[]; api: MemberApi; failNext(): void; deleted(): boolean } {
   const state: MemberInput = structuredClone(initial);
   const saves: string[] = [];
   let next = 1;
   let failing = false;
+  let gone = false;
   const api = createMemberApi({ load: async () => structuredClone(state) });
   const write = async (what: string, change: () => void) => {
     if (failing) {
@@ -51,10 +52,22 @@ export function createFakeMember(initial: MemberInput = emptyMember()): MemberEn
       write("tax", () => {
         state.tax = inputs;
       }),
+    exportMyData: async () => {
+      if (failing) {
+        failing = false;
+        throw new Error("export failed");
+      }
+      saves.push("export");
+      return { exported_at: "2026-09-29T00:00:00Z", profile: { id: state.profile.id }, accounts: structuredClone(state.accounts), goals: structuredClone(state.goals), monthly_figures: structuredClone(state.monthly) };
+    },
+    deleteMyAccount: () =>
+      write("delete-my-account", () => {
+        gone = true;
+      }),
     saveProfile: ({ fullName, city }) =>
       write("profile", () => {
         state.profile = { ...state.profile, name: fullName.trim() || state.profile.email, firstName: firstNameOf(fullName), city: city.trim() };
       }),
   };
-  return { api, data, state, saves, failNext: () => void (failing = true) };
+  return { api, data, state, saves, failNext: () => void (failing = true), deleted: () => gone };
 }

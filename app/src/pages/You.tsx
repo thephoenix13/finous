@@ -44,6 +44,7 @@ export default function You() {
       </section>
 
       <RowGroup className="mt-4">
+        {member && <Row to="/you/data" title={t("you.data.title")} subtitle={t("you.data.subtitle")} />}
         {member && <Row to="/you/figures" title={t("you.figures.title")} subtitle={t("you.figures.subtitle")} />}
         {member ? (
           <Row to="/accounts" title={t("you.accounts.title")} subtitle={t("you.linked.count", { count: connections })} />

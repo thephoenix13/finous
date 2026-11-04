@@ -8,10 +8,14 @@ const session: Session = { userId: "u1", email: "alice@example.com" };
 
 type Call = { table: string; op: string; payload?: unknown; options?: unknown; filter?: [string, unknown] };
 
-/** A stand-in for the query builder that records each write and answers with `error`. */
-function fakeSupabase(error: unknown = null) {
+/** A stand-in for the query builder that records each write and answers with `error`. `rpcData` is what a called function returns. */
+function fakeSupabase(error: unknown = null, rpcData: unknown = { exported_at: "now" }) {
   const calls: Call[] = [];
   const supabase = {
+    rpc(name: string) {
+      calls.push({ table: "rpc", op: name });
+      return Promise.resolve({ data: rpcData, error });
+    },
     from(table: string) {
       const call: Call = { table, op: "" };
       const done = () => {
@@ -46,8 +50,8 @@ function fakeSupabase(error: unknown = null) {
   return { supabase: supabase as unknown as SupabaseClient, calls };
 }
 
-const make = (error?: unknown) => {
-  const { supabase, calls } = fakeSupabase(error);
+const make = (error?: unknown, rpcData?: unknown) => {
+  const { supabase, calls } = fakeSupabase(error, rpcData);
   const changed = vi.fn();
   const data = createSupabaseMemberData(supabase, session, async () => emptyMember(), changed);
   return { data, calls, changed };
@@ -127,6 +131,35 @@ describe("the Supabase member writer", () => {
   it("says unauthorized when the sign-in has expired", async () => {
     const { data } = make({ status: 401 });
     await expect(data.deleteGoal("g")).rejects.toMatchObject({ code: "unauthorized" });
+  });
+});
+
+describe("export and delete", () => {
+  it("export asks the database for the person's own data and hands it back as it came", async () => {
+    const { data, calls } = make(null, { exported_at: "now", accounts: [{ name: "HDFC" }] });
+    await expect(data.exportMyData()).resolves.toEqual({ exported_at: "now", accounts: [{ name: "HDFC" }] });
+    expect(calls).toEqual([{ table: "rpc", op: "export_my_data" }]);
+  });
+
+  it("export that comes back empty is an expired sign-in, never an empty file", async () => {
+    await expect(make(null, null).data.exportMyData()).rejects.toMatchObject({ code: "unauthorized" });
+  });
+
+  it("export that fails says so", async () => {
+    await expect(make({ status: 500 }).data.exportMyData()).rejects.toMatchObject({ code: "unavailable" });
+  });
+
+  it("delete calls the account-deleting function once, and drops cached answers", async () => {
+    const { data, calls, changed } = make();
+    await data.deleteMyAccount();
+    expect(calls).toEqual([{ table: "rpc", op: "delete_my_account" }]);
+    expect(changed).toHaveBeenCalledTimes(1);
+  });
+
+  it("delete that fails says so and drops nothing", async () => {
+    const { data, changed } = make({ status: 500 });
+    await expect(data.deleteMyAccount()).rejects.toMatchObject({ code: "unavailable" });
+    expect(changed).not.toHaveBeenCalled();
   });
 });
 

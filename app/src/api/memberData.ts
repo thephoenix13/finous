@@ -18,6 +18,10 @@ export type MemberData = {
   deleteGoal(id: string): Promise<void>;
   saveTax(financialYear: string, inputs: TaxInputs): Promise<void>;
   saveProfile(profile: { fullName: string; city: string }): Promise<void>;
+  /** Everything held about this person, as one JSON document: theirs to keep. */
+  exportMyData(): Promise<unknown>;
+  /** Deletes the account and every row of theirs. Cannot be undone. The caller signs them out after. */
+  deleteMyAccount(): Promise<void>;
 };
 
 /** The first word of a name, for greeting people by. */
@@ -58,6 +62,16 @@ export function createSupabaseMemberData(supabase: SupabaseClient, session: Sess
     deleteGoal: (id) => run(supabase.from("goals").delete().eq("id", id)),
 
     saveTax: (financialYear, inputs) => run(supabase.from("tax_inputs").upsert({ user_id: userId, financial_year: financialYear, inputs: taxInputsJson(inputs) }, { onConflict: "user_id,financial_year" })),
+
+    async exportMyData() {
+      const { data, error } = await supabase.rpc("export_my_data");
+      if (error) throw toApiError(error);
+      // The function returns nothing for someone who is not signed in: that is an expired sign-in, not an empty export.
+      if (data === null || data === undefined) throw toApiError({ status: 401 });
+      return data;
+    },
+
+    deleteMyAccount: () => run(supabase.rpc("delete_my_account")),
 
     saveProfile: ({ fullName, city }) =>
       run(supabase.from("profiles").update({ full_name: fullName.trim() || null, first_name: firstNameOf(fullName) || null, city: city.trim() || null }).eq("id", userId)),

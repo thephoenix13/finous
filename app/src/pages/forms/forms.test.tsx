@@ -2,7 +2,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "../../App";
 import { ApiProvider, createMockApi } from "../../api";
 import { ToastProvider } from "../../components/ui";
@@ -318,6 +318,111 @@ describe("tax details and profile", () => {
   });
 });
 
+describe("your data: download and delete", () => {
+  const readBlob = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(blob);
+    });
+  let files: { name: string; blob: Blob }[];
+
+  beforeEach(() => {
+    files = [];
+    URL.createObjectURL = (blob: Blob | MediaSource) => {
+      files.push({ name: "", blob: blob as Blob });
+      return "blob:x";
+    };
+    URL.revokeObjectURL = () => {};
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+      files[files.length - 1].name = this.download;
+    });
+  });
+
+  const openData = (member = createFakeMember(aaravInput()), auth = createFakeAuth({ session: ALICE, consented: true })) => {
+    window.history.pushState({}, "", "/you/data");
+    const view = render(
+      <I18nextProvider i18n={createI18n("en")}>
+        <ApiProvider api={createMockApi()}>
+          <ToastProvider>
+            <App authClient={auth.client} memberEnv={() => member} />
+          </ToastProvider>
+        </ApiProvider>
+      </I18nextProvider>,
+    );
+    return { member, auth, view };
+  };
+
+  it("is reached from the You tab", async () => {
+    openMember("/you", createFakeMember(aaravInput()));
+    expect(await screen.findByRole("link", { name: /Your data/ })).toHaveAttribute("href", "/you/data");
+  });
+
+  it("downloads everything held as a dated JSON file, and says so", async () => {
+    const { member } = openData();
+    await userEvent.click(await screen.findByRole("button", { name: "Download my data" }));
+    expect(await screen.findByText("Your file has been downloaded.")).toBeInTheDocument();
+    expect(files).toHaveLength(1);
+    expect(files[0].name).toMatch(/^finous-data-\d{4}-\d{2}-\d{2}\.json$/);
+    const data = JSON.parse(await readBlob(files[0].blob));
+    expect(data.accounts).toHaveLength(8);
+    expect(data.monthly_figures).toHaveLength(1);
+    expect(member.saves).toContain("export");
+  });
+
+  it("says so, and gives no file, when the export fails", async () => {
+    const { member } = openData();
+    member.failNext();
+    await userEvent.click(await screen.findByRole("button", { name: "Download my data" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("We couldn't prepare your file");
+    expect(files).toEqual([]);
+    expect(screen.queryByText("Your file has been downloaded.")).not.toBeInTheDocument();
+  });
+
+  it("deletes only after a second confirmation, and 'Keep my account' backs out", async () => {
+    const { member, auth } = openData();
+    await userEvent.click(await screen.findByRole("button", { name: "Delete my account" }));
+    expect(screen.getByText("Delete your account and everything in it? This can't be undone.")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Keep my account" }));
+    expect(member.deleted()).toBe(false);
+    expect(auth.calls.signedOut).toBe(0);
+    expect(screen.getByRole("button", { name: "Delete my account" })).toBeInTheDocument();
+  });
+
+  it("deletes the account, then signs out and lands on the sign-in page", async () => {
+    const { member, auth } = openData();
+    await userEvent.click(await screen.findByRole("button", { name: "Delete my account" }));
+    await userEvent.click(screen.getByRole("button", { name: "Yes, delete everything" }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Sign in to Finous" })).toBeInTheDocument();
+    expect(member.deleted()).toBe(true);
+    expect(auth.calls.signedOut).toBe(1);
+    expect(here()).toBe("/signin");
+  });
+
+  it("stays signed in, and says nothing was deleted, when deleting fails", async () => {
+    const { member, auth } = openData();
+    member.failNext();
+    await userEvent.click(await screen.findByRole("button", { name: "Delete my account" }));
+    await userEvent.click(screen.getByRole("button", { name: "Yes, delete everything" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Nothing was deleted");
+    expect(member.deleted()).toBe(false);
+    expect(auth.calls.signedOut).toBe(0);
+    expect(here()).toBe("/you/data");
+  });
+
+  it("is translated, and accessible in both languages", async () => {
+    for (const lng of ["en", "hi"] as const) {
+      const { view } = openMember("/you/data", createFakeMember(aaravInput()), lng);
+      await screen.findByRole("heading", { level: 1 });
+      await expectAccessible(view.container);
+      view.unmount();
+    }
+    openMember("/you/data", createFakeMember(), "hi");
+    expect(await screen.findByRole("button", { name: "मेरा डेटा डाउनलोड करें" })).toBeInTheDocument();
+  });
+});
+
 describe("the You tab for a member", () => {
   it("is about their own accounts and figures, with no demo-only rows", async () => {
     openMember("/you", createFakeMember(aaravInput()));
@@ -345,7 +450,7 @@ describe("the demo", () => {
   };
   afterEach(() => localStorage.removeItem("finous.demo"));
 
-  it.each(["/accounts/new", "/accounts/hdfc/edit", "/you/figures", "/plans/goals/new", "/plans/tax/edit", "/you/profile/edit"])("sends %s to Home: there is nothing of its own to change", async (route) => {
+  it.each(["/accounts/new", "/accounts/hdfc/edit", "/you/figures", "/you/data", "/plans/goals/new", "/plans/tax/edit", "/you/profile/edit"])("sends %s to Home: there is nothing of its own to change", async (route) => {
     demo(route);
     await screen.findByRole("heading", { level: 1, name: /Aarav/ });
     expect(here()).toBe("/");
