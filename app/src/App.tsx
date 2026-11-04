@@ -44,6 +44,7 @@ import GoalForm from "./pages/forms/GoalForm";
 import MemberOnly from "./pages/forms/MemberOnly";
 import ProfileForm from "./pages/forms/ProfileForm";
 import TaxForm from "./pages/forms/TaxForm";
+import YourData from "./pages/forms/YourData";
 import You from "./pages/You";
 
 // Dev-only token preview. Tree-shaken out of production builds.
@@ -114,6 +115,7 @@ export default function App({ authClient, memberEnv }: { authClient?: AuthClient
           {/* Changing one's own details: a member only. In the demo these send you home. */}
           <Route element={<MemberOnly />}>
             <Route path="you/figures" element={<FiguresForm />} />
+            <Route path="you/data" element={<YourData />} />
             <Route path="you/profile/edit" element={<ProfileForm />} />
             <Route path="accounts/new" element={<AccountForm />} />
             <Route path="accounts/:id/edit" element={<AccountForm />} />
