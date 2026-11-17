@@ -1,0 +1,38 @@
+/*
+ * Finous Daylight tokens, the same values as the consumer app so the two products read as one family.
+ * A bank's own colours apply to the customer app, never to this console.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --page: #f3f7ff;
+  --surface: #ffffff;
+  --tint: #e6eeff;
+  --line: #dce5f5;
+
+  /* Text */
+  --ink: #0b1b3f;
+  --ink-2: #4a5a7e;
+  --ink-3: #5e6d91; /* 4.8:1 on --page, AA for small text */
+
+  /* Brand */
+  --brand: #1e5eff;
+  --brand-strong: #0b3fd1;
+  --on-brand: #ffffff;
+
+  /* Status */
+  --positive: #0e7f57;
+  --warning: #9a5b00;
+  --negative: #c62a25;
+  --negative-bg: #ffe6e0;
+
+  /* Shape and depth */
+  --r-card: 14px;
+  --r-btn: 10px;
+  --sh-card: 0 6px 22px rgb(11 27 63 / 0.08);
+
+  /* Type: system fonts only */
+  --f-display: Georgia, "Times New Roman", serif;
+  --f-text: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
