@@ -1,0 +1,63 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+/* Tokens -> Tailwind utilities (bg-page, text-ink, border-line, ...) */
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-tint: var(--tint);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-on-brand: var(--on-brand);
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-negative: var(--negative);
+  --color-negative-bg: var(--negative-bg);
+
+  --radius-card: var(--r-card);
+  --radius-btn: var(--r-btn);
+
+  --shadow-card: var(--sh-card);
+
+  --font-display: var(--f-display);
+  --font-sans: var(--f-text);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--f-text);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
