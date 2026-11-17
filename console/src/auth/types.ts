@@ -1,6 +1,14 @@
 import type { Role } from "../lib/access";
 
-export type Session = { staffId: string; email: string; name: string; role: Role; bank: string };
+export type Session = {
+  staffId: string;
+  email: string;
+  name: string;
+  role: Role;
+  bank: string;
+  /** The one branch this person works at, or null if they work across all of them. */
+  branch: string | null;
+};
 
 export type AuthErrorCode = "invalid_credentials" | "invalid_code" | "unavailable";
 

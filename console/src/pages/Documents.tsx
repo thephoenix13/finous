@@ -4,6 +4,7 @@ import { useApiData } from "../api/useApiData";
 import { formatDate } from "../lib/format";
 import { Card, PageHeader, Tag } from "../ui";
 import { Async } from "../ui/States";
+import { ComplianceTabs } from "./SettingsTabs";
 
 const load = (api: ReturnType<typeof useApi>, options: { signal?: AbortSignal }) => api.documents(options);
 
@@ -40,6 +41,7 @@ export default function Documents() {
   return (
     <>
       <PageHeader title="Compliance documents" description="What your compliance officer needs to review before customers use the app." />
+      <ComplianceTabs />
       <Async result={result} blocks={2}>
         {(docs) => (
           <Card as="section">

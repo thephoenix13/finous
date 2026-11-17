@@ -32,8 +32,16 @@ describe("Overview (I2.1)", () => {
     expect(screen.getByText("Sharing with the bank").closest("dl")).toHaveTextContent("38%");
   });
 
-  it("says the feed is not connected and links to its setup", async () => {
+  it("shows the feed as healthy for the demo bank, with the day it last ran", async () => {
     renderConsole();
+    await screen.findByText("1,240");
+    expect(screen.getByText("Healthy")).toBeInTheDocument();
+    expect(screen.getByText("Last ran on 17 Nov 2026.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "See the feed" })).toHaveAttribute("href", "/settings/integration");
+  });
+
+  it("says the feed is not connected and links to its setup", async () => {
+    renderConsole({ feed: "not_connected" });
     await screen.findByText("1,240");
     expect(screen.getByText(/Customers see only what they enter themselves/)).toBeInTheDocument();
     expect(screen.getByText("Not connected")).toBeInTheDocument();

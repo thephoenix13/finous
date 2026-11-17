@@ -43,6 +43,14 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /*
+   * A scrolling table wrapper must be positioned, or the screen-reader-only text inside its cells (absolutely
+   * positioned) is not clipped by it and stretches the whole page sideways on a narrow screen.
+   */
+  .overflow-x-auto {
+    position: relative;
+  }
+
   :focus {
     outline: none;
   }

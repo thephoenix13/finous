@@ -1,15 +1,15 @@
 import type { Role } from "../lib/access";
 import { AuthError, type AuthClient, type AuthErrorCode, type Session } from "./types";
 
-type Person = { email: string; name: string; role: Role; label: string };
+type Person = { email: string; name: string; role: Role; label: string; branch: string | null };
 
 /** The people you can try the console as. One per role, so every "no access" screen can be reached. */
 const PEOPLE: Person[] = [
-  { email: "admin@demobank.example", name: "Meera Joshi", role: "admin", label: "Admin" },
-  { email: "compliance@demobank.example", name: "Imran Shaikh", role: "compliance", label: "Compliance" },
-  { email: "marketing@demobank.example", name: "Neha Patil", role: "marketing", label: "Marketing" },
-  { email: "branch@demobank.example", name: "Suresh Pawar", role: "branch", label: "Branch" },
-  { email: "readonly@demobank.example", name: "Kavita Rao", role: "readonly", label: "Read-only" },
+  { email: "admin@demobank.example", name: "Meera Joshi", role: "admin", branch: null, label: "Admin" },
+  { email: "compliance@demobank.example", name: "Imran Shaikh", role: "compliance", branch: null, label: "Compliance" },
+  { email: "marketing@demobank.example", name: "Neha Patil", role: "marketing", branch: null, label: "Marketing" },
+  { email: "branch@demobank.example", name: "Suresh Pawar", role: "branch", branch: "Main branch", label: "Branch" },
+  { email: "readonly@demobank.example", name: "Kavita Rao", role: "readonly", branch: null, label: "Read-only" },
 ];
 
 const DEMO_CODE = "123456";
@@ -23,7 +23,7 @@ type Options = {
   failNext?: Partial<Record<"startSignIn" | "verifySecondFactor" | "resendCode" | "signOut", AuthErrorCode>>;
 };
 
-const toSession = (p: Person): Session => ({ staffId: p.email, email: p.email, name: p.name, role: p.role, bank: "Demo Co-operative Bank" });
+const toSession = (p: Person): Session => ({ staffId: p.email, email: p.email, name: p.name, role: p.role, bank: "Demo Co-operative Bank", branch: p.branch });
 
 /** The demo person with this role, already signed in. For tests and for starting the console as someone. */
 export const demoSession = (role: Role): Session => toSession(PEOPLE.find((p) => p.role === role)!);
