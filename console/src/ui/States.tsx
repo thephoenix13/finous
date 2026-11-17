@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
+import { isApiError } from "../api/errors";
 import type { ApiData } from "../api/useApiData";
 import { cx } from "../lib/cx";
 import { Button, ButtonLink } from "./index";
@@ -65,9 +66,15 @@ export function Notice({ tone = "neutral", children }: { tone?: "neutral" | "war
   return <p className={cx("mb-6 rounded-btn px-4 py-2.5 text-[13.5px]", tone === "warning" ? "bg-warning/10 text-warning" : "bg-tint text-ink-2")}>{children}</p>;
 }
 
-/** Shows the loading blocks, the error, or the screen, from one `useApiData` result. */
-export function Async<T>({ result, blocks, children }: { result: ApiData<T> & { retry: () => void }; blocks?: number; children: (data: T) => ReactNode }) {
+/**
+ * Shows the loading blocks, the error, or the screen, from one `useApiData` result.
+ * A screen about one thing (a product, a customer) can pass `notFound` for when that thing doesn't exist.
+ */
+export function Async<T>({ result, blocks, notFound, children }: { result: ApiData<T> & { retry: () => void }; blocks?: number; notFound?: ReactNode; children: (data: T) => ReactNode }) {
   if (result.status === "loading") return <LoadingBlocks blocks={blocks} />;
-  if (result.status === "error") return <ErrorState onRetry={result.retry} />;
+  if (result.status === "error") {
+    if (notFound && isApiError(result.error) && result.error.code === "not_found") return <>{notFound}</>;
+    return <ErrorState onRetry={result.retry} />;
+  }
   return <>{children(result.data)}</>;
 }

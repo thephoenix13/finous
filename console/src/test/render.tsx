@@ -17,7 +17,7 @@ type Options = MockOptions & {
  * Renders the whole console at `route` with a fresh mock API and a demo sign-in (so tests never share data),
  * signed in as `as`. Pass `api` or `auth` to use your own, for example one told to fail its next call.
  */
-export function renderConsole({ route = "/", as = "admin", bank, api = createMockConsoleApi({ bank }), auth }: Options = {}) {
+export function renderConsole({ route = "/", as = "admin", bank, feed, api = createMockConsoleApi({ bank, feed }), auth }: Options = {}) {
   const client = auth ?? createDemoAuth({ session: as ? demoSession(as) : null });
   const utils = render(
     <MemoryRouter initialEntries={[route]}>

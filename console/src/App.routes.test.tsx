@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { ROUTES } from "./routes";
+import { editProductRoute, followUpRoute, opportunityRoute, ROUTES } from "./routes";
 import { expectAccessible } from "./test/a11y";
 import { renderConsole } from "./test/render";
 
@@ -15,9 +15,18 @@ const SCREENS: [string, string][] = [
   [ROUTES.address, "Branding and app"],
   [ROUTES.languages, "Branding and app"],
   [ROUTES.integration, "Integration"],
+  [ROUTES.mapping, "Integration"],
+  [ROUTES.access, "Integration"],
   [ROUTES.team, "Team"],
   [ROUTES.invite, "Invite staff"],
   [ROUTES.compliance, "Compliance documents"],
+  [ROUTES.consents, "Consent ledger"],
+  [ROUTES.accessLog, "Staff access log"],
+  [ROUTES.requests, "Customer requests"],
+  [ROUTES.newProduct, "Add a product"],
+  [editProductRoute("p1"), "Edit product"],
+  [opportunityRoute("o1"), "Rohit K."],
+  [followUpRoute("o1"), "Follow-up: Rohit K."],
   [ROUTES.billing, "Billing"],
   [ROUTES.help, "Help"],
 ];

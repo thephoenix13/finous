@@ -90,3 +90,30 @@ export function validateInvite(input: InviteInput, existingEmails: readonly stri
   if (!input.branch) errors.branch = "Choose a branch, or All branches.";
   return errors;
 }
+
+export type SsoInput = { enabled: boolean; provider: string; entityId: string; signInUrl: string };
+export type SsoErrors = Partial<Record<"provider" | "entityId" | "signInUrl", string>>;
+
+/** Single sign-on settings. Nothing is checked while it is off, so a bank can keep its half-finished entries. */
+export function validateSso(input: SsoInput): SsoErrors {
+  if (!input.enabled) return {};
+  const errors: SsoErrors = {};
+  if (input.provider.trim().length < 2) errors.provider = "Say which service people sign in with, for example Microsoft Entra.";
+  if (input.entityId.trim().length < 3) errors.entityId = "Enter the identifier your sign-in service gave you.";
+  let url: URL | null = null;
+  try {
+    url = new URL(input.signInUrl.trim());
+  } catch {
+    url = null;
+  }
+  if (!url || url.protocol !== "https:") errors.signInUrl = "Enter the sign-in address, starting with https://.";
+  return errors;
+}
+
+/** The name of an API key, so the bank can tell its keys apart later. */
+export function validateKeyName(value: string): string | null {
+  const s = value.trim();
+  if (s.length < 2) return "Name the key after what will use it, at least 2 characters.";
+  if (s.length > 40) return "Use 40 characters or fewer.";
+  return null;
+}

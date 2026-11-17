@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkLogo, LOGO_MAX_BYTES, validateBranding, validateInstallName, validateInvite, validateSubdomain } from "./validate";
+import { checkLogo, LOGO_MAX_BYTES, validateBranding, validateInstallName, validateInvite, validateKeyName, validateSso, validateSubdomain } from "./validate";
 
 describe("validateSubdomain", () => {
   it("accepts letters, digits and inner hyphens", () => {
@@ -111,5 +111,47 @@ describe("validateInvite", () => {
 
   it("refuses an email that already has access, ignoring case and spaces", () => {
     expect(validateInvite({ ...ok, email: "  OLD@Bank.example " }, ["old@bank.example"]).email).toMatch(/already/);
+  });
+});
+
+describe("validateSso", () => {
+  const on = { enabled: true, provider: "Okta", entityId: "urn:demo", signInUrl: "https://login.example/demo" };
+
+  it("asks for nothing while single sign-on is off, so half-finished entries can be kept", () => {
+    expect(validateSso({ enabled: false, provider: "", entityId: "", signInUrl: "not a url" })).toEqual({});
+  });
+
+  it("accepts a complete set", () => {
+    expect(validateSso(on)).toEqual({});
+    expect(validateSso({ ...on, provider: "  Okta ", signInUrl: " https://login.example/demo " })).toEqual({});
+  });
+
+  it("asks for each of the three when it is on", () => {
+    const errors = validateSso({ enabled: true, provider: "", entityId: "", signInUrl: "" });
+    expect(Object.keys(errors).sort()).toEqual(["entityId", "provider", "signInUrl"]);
+  });
+
+  it("checks the two text fields at their minimum lengths", () => {
+    expect(validateSso({ ...on, provider: "O" }).provider).toBeDefined();
+    expect(validateSso({ ...on, provider: "Ok" }).provider).toBeUndefined();
+    expect(validateSso({ ...on, entityId: "ab" }).entityId).toBeDefined();
+    expect(validateSso({ ...on, entityId: "abc" }).entityId).toBeUndefined();
+  });
+
+  it("accepts only an https address", () => {
+    for (const bad of ["http://login.example", "login.example", "ftp://login.example", "javascript:alert(1)", "https://", "  "]) {
+      expect(validateSso({ ...on, signInUrl: bad }).signInUrl, bad).toBeDefined();
+    }
+    expect(validateSso({ ...on, signInUrl: "https://login.example/a?b=1" }).signInUrl).toBeUndefined();
+  });
+});
+
+describe("validateKeyName", () => {
+  it("needs 2 to 40 characters once trimmed", () => {
+    expect(validateKeyName("")).not.toBeNull();
+    expect(validateKeyName(" a ")).not.toBeNull();
+    expect(validateKeyName("ab")).toBeNull();
+    expect(validateKeyName("x".repeat(40))).toBeNull();
+    expect(validateKeyName("x".repeat(41))).not.toBeNull();
   });
 });
