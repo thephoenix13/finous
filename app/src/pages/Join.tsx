@@ -49,7 +49,7 @@ export default function Join() {
       </ul>
 
       {PRIVACY_NOTICE_URL && (
-        <a href={PRIVACY_NOTICE_URL} target="_blank" rel="noopener noreferrer" className="mt-5 text-[15px] font-medium text-brand underline underline-offset-4">
+        <a href={PRIVACY_NOTICE_URL} target="_blank" rel="noopener noreferrer" className="mt-5 text-[15px] font-medium text-brand-text underline underline-offset-4">
           {t("join.privacy")}
         </a>
       )}

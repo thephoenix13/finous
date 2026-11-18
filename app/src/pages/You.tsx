@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../auth/AuthProvider";
 import { useApiData, type Api, type Consent, type Profile, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
+import { useAllowedLanguages } from "../bank/BankProvider";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { Row, RowGroup } from "../components/ui";
 import { formatMonthYear, parseMonth } from "../lib/format";
@@ -19,6 +20,7 @@ export default function You() {
   const { t, i18n } = useTranslation();
   const result = useApiData(loadYou);
   const auth = useAuth();
+  const languages = useAllowedLanguages();
   const navigate = useNavigate();
   // A member's accounts are the ones they typed in; the linked-account and consent screens are about Account Aggregator, which is not live.
   const member = auth.access === "member";
@@ -79,10 +81,13 @@ export default function You() {
         )}
       </RowGroup>
 
-      <section className="mx-4 mt-8">
-        <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">{t("language.label")}</h2>
-        <LanguageSwitcher />
-      </section>
+      {/* A bank that offers one language has nothing to switch between. */}
+      {languages.length > 1 && (
+        <section className="mx-4 mt-8">
+          <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">{t("language.label")}</h2>
+          <LanguageSwitcher />
+        </section>
+      )}
     </div>
   );
 }

@@ -327,3 +327,26 @@ field is left out rather than saved as 0, an amount never has paise, every mista
 
 Forms only exist for a member: they read `useMemberData()`, which is null in the demo (the routes send the demo to Home, and the "Add"/"Edit" links do not
 render). Tests run the whole app as a member over an in-memory stand-in (`test/fakeMember.ts`), so a save shows up on the other screens.
+
+## Banks' addresses and branding (`src/bank/`)
+
+A bank called `seva` opens the app at `seva.app.finous.site` (set `VITE_APP_DOMAIN` to change the part after the first dot). On that address the app looks the
+bank up with `bank_public()` (the one thing a visitor who isn't signed in can read about a bank), shows nothing until it knows, then becomes that bank's app.
+On any other address, including `app.finous.site`, nothing changes and no lookup is made.
+
+- **Colours.** A bank's pair is used only if the text on its brand colour reads (4.5:1) and the brand colour stands out against the page (3:1); otherwise the app
+  stays Finous blue. The words-on-the-page colour (`--brand-text`) and the tinted card colours are derived and darkened until they read too (`brandTokens`).
+- **What shows.** The bank's name and logo in a bar, its disclaimer and "Powered by Finous" at the foot of every screen (the second always stays), its name as the
+  page title. A logo is only ever an `<img>`, never placed into the page.
+- **Languages and advisor.** A bank that has switched Hindi or English off is never shown in it, and has no language switcher if only one is left. Advisor
+  `off` removes the tab and sends `/advisor` home; `rules` answers from the fixed rules and sends nothing to the AI, and says so; `ai` is as on Finous's address.
+- **Installed app.** `api/manifest.ts` and `api/bank-icon.ts` answer for the bank at the address the request came to (the page points its `<link rel="manifest">`
+  and icons at them): the name under the home-screen icon, the theme colour, the logo or the bank's first letter on its colour. They read with the public Supabase
+  key, never the service role key. iOS needs a PNG for its home-screen icon, so a bank with an SVG logo (or none) keeps Finous's icon there.
+- **Each address is its own site to the browser,** so someone who uses two banks signs in once on each, and an installed app is per bank.
+
+To try it with no database: `npm run dev`, then open `http://seva.localhost:5173` (green, both languages, rules advisor, a logo), `http://kosh.localhost:5173`
+(Hindi only, no advisor) or `http://pale.localhost:5173` (a colour pair that fails the check, so it stays blue). These sample banks (`devBanks.ts`) are removed from
+production builds. For a real bank on a real address, add the wildcard domain `*.app.finous.site` to the Vercel project: two NS records for `_acme-challenge.app`
+to `ns1.vercel-dns.com` and `ns2.vercel-dns.com`, and a CNAME for `*.app` to `cname.vercel-dns-0.com` (Vercel shows the exact values when the domain is added).
+A bank row is added by Finous with the service role (`supabase/README.md`); until it is `live` its address shows "This address isn't available".

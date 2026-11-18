@@ -5,6 +5,12 @@ export const PRIVACY_NOTICE_VERSION = "2026-11-1";
 /** Where the Privacy Notice lives. Set VITE_PRIVACY_NOTICE_URL in Vercel; without it the consent screen shows no link. */
 export const PRIVACY_NOTICE_URL: string | undefined = import.meta.env.VITE_PRIVACY_NOTICE_URL || undefined;
 
+/**
+ * Where banks' apps live: a bank called "seva" opens at seva.<this>. Needs a wildcard domain on the Vercel project (see README).
+ * VITE_APP_DOMAIN can override it, for a staging domain.
+ */
+export const APP_DOMAIN: string = import.meta.env.VITE_APP_DOMAIN || "app.finous.site";
+
 export const SUPABASE_URL: string | undefined = import.meta.env.VITE_SUPABASE_URL || undefined;
 /** The publishable (anon) key. It is meant to be public: the database rules, not secrecy, protect the data. */
 export const SUPABASE_ANON_KEY: string | undefined = import.meta.env.VITE_SUPABASE_ANON_KEY || undefined;

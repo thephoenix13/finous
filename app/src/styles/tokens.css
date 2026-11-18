@@ -23,6 +23,7 @@
   /* Brand */
   --brand: #1e5eff;
   --brand-strong: #0b3fd1;
+  --brand-text: #1e5eff; /* brand-coloured words on the page; a bank's version is darkened until it reads at 4.5:1 */
   --on-brand: #ffffff;
 
   /* Status */
