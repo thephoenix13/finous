@@ -1,6 +1,9 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
 import { AuthProvider } from "./auth/AuthProvider";
+import { BankBar, BankFooter } from "./bank/BankChrome";
+import { BankProvider, useAdvisorMode, useBank } from "./bank/BankProvider";
+import type { BankLookup } from "./bank/lookup";
 import type { AuthClient } from "./auth/types";
 import AccessGate, { EnterDemo, type MemberEnvFactory } from "./components/AccessGate";
 import { useMemberData } from "./api/memberContext";
@@ -53,13 +56,21 @@ const DevComponents = import.meta.env.DEV ? lazy(() => import("./pages/DevCompon
 
 /** The welcome steps have no tab bar: nothing to go to until the accounts are connected. */
 function WelcomeLayout() {
+  const bank = useBank();
   return (
     <div className="mx-auto flex h-full max-w-[480px] flex-col bg-page">
-      <main className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)]">
+      <BankBar />
+      <main className={`flex-1 overflow-y-auto ${bank ? "" : "pt-[env(safe-area-inset-top)]"}`}>
         <Outlet />
+        <BankFooter />
       </main>
     </div>
   );
+}
+
+/** A bank that has switched the advisor off has no advisor: the address goes home rather than to a page with nothing on it. */
+function AdvisorRoute() {
+  return useAdvisorMode() === "off" ? <Navigate to="/" replace /> : <Advisor />;
 }
 
 /** Evaluated each time the front door is opened, so finishing the welcome lets the next visit through. A member skips it: it shows the demo connecting sample accounts. */
@@ -68,9 +79,13 @@ function FrontDoor() {
   return member || firstRunDone() ? <Home /> : <Navigate to="/welcome" replace />;
 }
 
-/** `authClient` and `memberEnv` are for tests: leave them out and the app uses Supabase when this build has its settings, and runs as the demo when it has not. */
-export default function App({ authClient, memberEnv }: { authClient?: AuthClient | null; memberEnv?: MemberEnvFactory }) {
+/**
+ * `authClient`, `memberEnv`, `host` and `bankLookup` are for tests: leave them out and the app uses Supabase when this build has its
+ * settings, and runs as the demo when it has not. On a bank's address (seva.app.finous.site) it looks that bank up and becomes its app.
+ */
+export default function App({ authClient, memberEnv, host, bankLookup }: { authClient?: AuthClient | null; memberEnv?: MemberEnvFactory; host?: string; bankLookup?: BankLookup | null }) {
   return (
+    <BankProvider host={host} lookup={bankLookup}>
     <AuthProvider client={authClient}>
     <BrowserRouter>
       <Routes>
@@ -86,7 +101,7 @@ export default function App({ authClient, memberEnv }: { authClient?: AuthClient
         <Route element={<Shell />}>
           {/* Only the front door sends a first-time visitor to the welcome; a link to any other screen still opens it. */}
           <Route index element={<FrontDoor />} />
-          <Route path="advisor" element={<Advisor />} />
+          <Route path="advisor" element={<AdvisorRoute />} />
           <Route path="accounts" element={<Accounts />} />
           <Route path="accounts/:id" element={<AccountDetail />} />
           <Route path="notifications" element={<Notifications />} />
@@ -149,5 +164,6 @@ export default function App({ authClient, memberEnv }: { authClient?: AuthClient
       </Routes>
     </BrowserRouter>
     </AuthProvider>
+    </BankProvider>
   );
 }

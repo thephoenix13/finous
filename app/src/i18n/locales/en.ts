@@ -348,6 +348,7 @@ export const en = {
     send: "Send",
     basedOn: "Based on {{sources}}",
     aiNote: "Answers are written by an AI model from your figures. It can be wrong, so check anything important.",
+    rulesNote: "Answers are worked out from your figures by fixed rules. No AI writes them.",
     viaRules: "The AI could not answer, so this was worked out from your figures by fixed rules.",
     thinking: "Thinking…",
     notice: "Finous describes what your data shows and the general options. It is not investment advice. Speak to a SEBI-registered adviser before you act.",
@@ -670,6 +671,14 @@ export const en = {
       title: "Build your emergency fund",
       body: "You hold {{held}} of a {{target}} target. {{monthly}} a month gets you there by {{date}}.",
     },
+  },
+  bank: {
+    poweredBy: "Powered by Finous",
+    unavailable: {
+      title: "This address isn't available",
+      body: "We couldn't find a bank app here. Check the link you were given, or ask your bank.",
+    },
+    error: { title: "We couldn't open this app" },
   },
   notFound: {
     title: "We couldn't find that page.",

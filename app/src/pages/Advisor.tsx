@@ -2,6 +2,7 @@ import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { isApiError, useApiData, type Api, type RequestOptions } from "../api";
+import { useAdvisorMode } from "../bank/BankProvider";
 import { LoadError, LoadingCard } from "../components/DataState";
 import { buttonClasses } from "../components/ui";
 import { reply, topicFor, type AdvisorData, type Reply, type Topic } from "../lib/advisor";
@@ -18,7 +19,7 @@ const loadAdvisorData = async (api: Api, options: RequestOptions): Promise<Advis
   return { cashFlow, accounts };
 };
 
-type Message = { id: number; from: "user"; text: string } | ({ id: number; from: "advisor"; via: "ai" | "rules" } & Reply);
+type Message = { id: number; from: "user"; text: string } | ({ id: number; from: "advisor"; via: "ai" | "rules" | "fixed" } & Reply);
 
 const SUGGESTIONS: Topic[] = ["biggest", "prepay", "food", "afford"];
 
@@ -30,6 +31,8 @@ const SUGGESTIONS: Topic[] = ["biggest", "prepay", "food", "afford"];
 export default function Advisor() {
   const { t, i18n } = useTranslation();
   const result = useApiData(loadAdvisorData);
+  // A bank can set the advisor to fixed rules only: nothing is then sent to the AI, and the screen says so.
+  const mode = useAdvisorMode();
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
   const fieldId = useId();
@@ -46,6 +49,12 @@ export default function Advisor() {
     // The rules know which tool fits a topic, so their link is kept even when the AI wrote the words.
     const rules = reply(topic, data, t, i18n.resolvedLanguage);
     let answer: Message;
+    if (mode === "rules") {
+      answer = { id: 0, from: "advisor", via: "fixed", ...rules };
+      setMessages((prev) => [...prev, { ...answer, id: prev.length }]);
+      setPending(false);
+      return;
+    }
     try {
       // Nothing to work a spending answer from: say so and point at the figures rather than letting the model guess.
       if (rules.link?.to === ROUTES.figures) throw new Error("needs figures");
@@ -130,7 +139,7 @@ export default function Advisor() {
       )}
 
       <div className="sticky bottom-0 mt-auto bg-page px-4 pb-3 pt-2">
-        <p className="px-1 pb-2 text-[12px] leading-relaxed text-ink-3">{t("advisor.aiNote")}</p>
+        <p className="px-1 pb-2 text-[12px] leading-relaxed text-ink-3">{mode === "rules" ? t("advisor.rulesNote") : t("advisor.aiNote")}</p>
         <form onSubmit={submit} className="flex items-center gap-2">
           <label htmlFor={fieldId} className="sr-only">
             {t("advisor.field")}

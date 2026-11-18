@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router";
+import { useAdvisorMode } from "../bank/BankProvider";
 
 const icon = (d: ReactNode) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -17,9 +18,11 @@ const TABS: { to: string; id: "home" | "advisor" | "plans" | "you"; end?: boolea
 
 export default function TabBar() {
   const { t } = useTranslation();
+  // A bank that has switched the advisor off has no Advisor tab.
+  const tabs = useAdvisorMode() === "off" ? TABS.filter((tab) => tab.id !== "advisor") : TABS;
   return (
-    <nav aria-label={t("nav.label")} className="grid shrink-0 grid-cols-4 border-t border-line bg-page px-2 pb-[max(12px,env(safe-area-inset-bottom))] pt-2">
-      {TABS.map((tab) => (
+    <nav aria-label={t("nav.label")} className={`grid shrink-0 ${tabs.length === 3 ? "grid-cols-3" : "grid-cols-4"} border-t border-line bg-page px-2 pb-[max(12px,env(safe-area-inset-bottom))] pt-2`}>
+      {tabs.map((tab) => (
         <NavLink
           key={tab.to}
           to={tab.to}
