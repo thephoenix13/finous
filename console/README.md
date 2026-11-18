@@ -114,8 +114,10 @@ src/
 
 ## Things to decide or check before this goes to a bank
 
-- **The customer app's address.** `APP_DOMAIN` in `src/lib/validate.ts` is `finous.site`, so a bank would be
-  `<name>.finous.site`. That is an assumption. Change it if banks will live somewhere else.
+- **The customer app's address.** `APP_DOMAIN` in `src/lib/validate.ts` is `app.finous.site`, so a bank is
+  `<name>.app.finous.site`, which is where the customer app looks for it. Today each new bank also needs its address
+  added to the `finous-app` Vercel project and a CNAME for it at the DNS provider (see `app/README.md`, "Adding a bank's address"):
+  a wildcard needs DNS that can delegate `_acme-challenge`, which finous.site's current DNS cannot.
 - **Deploying.** `vercel.json` is ready, but there is no Vercel project for the console yet, and no domain.
 - **Documents.** The data processing agreement and security summary are listed as "Not shared yet". Real files and
   download links arrive with the backend.

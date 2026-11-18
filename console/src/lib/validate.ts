@@ -1,7 +1,7 @@
 import { contrastRatio, MIN_TEXT_CONTRAST, MIN_UI_CONTRAST, normaliseHex, PAGE_BACKGROUND } from "./contrast";
 
 /** The domain every bank's customer app lives under. Staff pick only the first part. */
-export const APP_DOMAIN = "finous.site";
+export const APP_DOMAIN = "app.finous.site";
 
 /** Names that would confuse people or collide with Finous's own addresses. */
 const RESERVED = new Set(["www", "app", "api", "admin", "console", "business", "mail", "support", "help", "status", "finous", "demo", "staging", "test"]);
