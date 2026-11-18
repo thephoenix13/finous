@@ -23,7 +23,7 @@ The service worker is off in `npm run dev`. Test install and offline behaviour a
 - Service worker precaches the app shell only (HTML, JS, CSS, icons). **No runtime caching.** Financial data is never cached.
 - Offline shows the "You're offline" screen. Nothing cached is displayed.
 - Updates are prompted ("A new version of Finous is ready"), never silent.
-- System fonts only, so the shell works offline with no web-font requests.
+- Roboto everywhere, one variable file for English and one for the rupee sign, bundled with the app (`src/styles/fonts.css`, from `@fontsource-variable/roboto`). Nothing is fetched from Google, and the offline shell has the same type. Hindi has no glyphs in Roboto, so it uses the device's own Devanagari font.
 
 ## CI and deploys
 
