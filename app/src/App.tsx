@@ -7,9 +7,11 @@ import type { BankLookup } from "./bank/lookup";
 import type { AuthClient } from "./auth/types";
 import AccessGate, { EnterDemo, type MemberEnvFactory } from "./components/AccessGate";
 import { useMemberData } from "./api/memberContext";
+import BankAsk from "./bank/BankAsk";
 import Shell from "./components/Shell";
 import { firstRunDone } from "./lib/firstRun";
 import Advisor from "./pages/Advisor";
+import BankSharing from "./pages/BankSharing";
 import AccountDetail from "./pages/AccountDetail";
 import Accounts from "./pages/Accounts";
 import AffordabilityCheck from "./pages/AffordabilityCheck";
@@ -76,7 +78,16 @@ function AdvisorRoute() {
 /** Evaluated each time the front door is opened, so finishing the welcome lets the next visit through. A member skips it: it shows the demo connecting sample accounts. */
 function FrontDoor() {
   const member = useMemberData();
-  return member || firstRunDone() ? <Home /> : <Navigate to="/welcome" replace />;
+  const bank = useBank();
+  if (!member && !firstRunDone()) return <Navigate to="/welcome" replace />;
+  // On a bank's address, a member is asked once whether the bank may see the accounts it supplied, before anything is shared.
+  return member && bank ? (
+    <BankAsk>
+      <Home />
+    </BankAsk>
+  ) : (
+    <Home />
+  );
 }
 
 /**
@@ -123,6 +134,7 @@ export default function App({ authClient, memberEnv, host, bankLookup }: { authC
           <Route path="plans/goal-calc" element={<GoalCalculator />} />
           <Route path="plans/emi" element={<EmiCalculator />} />
           <Route path="you" element={<You />} />
+          <Route path="you/bank" element={<BankSharing />} />
           <Route path="you/linked" element={<LinkedAccounts />} />
           <Route path="you/consents" element={<Consents />} />
           <Route path="you/privacy" element={<Privacy />} />

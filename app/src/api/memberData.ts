@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Session } from "../auth/types";
 import { accountRow, goalRow, monthlyRow, taxInputsJson, type AccountDraft, type GoalDraft } from "../derive/serialize";
 import type { MemberInput, MonthlyFigures, TaxInputs } from "../derive/types";
+import { createSupabaseBankSharing, type BankSharing } from "./bankSharing";
 import { toApiError } from "./memberSource";
 
 /**
@@ -22,6 +23,8 @@ export type MemberData = {
   exportMyData(): Promise<unknown>;
   /** Deletes the account and every row of theirs. Cannot be undone. The caller signs them out after. */
   deleteMyAccount(): Promise<void>;
+  /** Their choice about letting a bank see the accounts it supplied. */
+  bankSharing: BankSharing;
 };
 
 /** The first word of a name, for greeting people by. */
@@ -72,6 +75,8 @@ export function createSupabaseMemberData(supabase: SupabaseClient, session: Sess
     },
 
     deleteMyAccount: () => run(supabase.rpc("delete_my_account")),
+
+    bankSharing: createSupabaseBankSharing(supabase),
 
     saveProfile: ({ fullName, city }) =>
       run(supabase.from("profiles").update({ full_name: fullName.trim() || null, first_name: firstNameOf(fullName) || null, city: city.trim() || null }).eq("id", userId)),

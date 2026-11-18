@@ -43,6 +43,7 @@ const ROUTES = [
   "/plans/goal-calc",
   "/plans/emi",
   "/you",
+  "/you/bank",
   "/you/linked",
   "/you/consents",
   "/you/privacy",
