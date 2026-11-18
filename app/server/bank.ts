@@ -90,7 +90,7 @@ export function letterIcon(bank: BankBranding): string {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">` +
     `<rect width="512" height="512" fill="${bank.brandColour}"/>` +
-    `<text x="256" y="350" font-family="Georgia, serif" font-size="300" text-anchor="middle" fill="${bank.onBrandColour}">${letter}</text></svg>`
+    `<text x="256" y="350" font-family="Roboto, Arial, Helvetica, sans-serif" font-size="300" text-anchor="middle" fill="${bank.onBrandColour}">${letter}</text></svg>`
   );
 }
 

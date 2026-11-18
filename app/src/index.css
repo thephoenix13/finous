@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
+@import "./styles/fonts.css";
 
 /* Tokens -> Tailwind utilities (bg-page, text-ink, border-line, bg-domain-tint, ...) */
 @theme inline {
@@ -34,6 +35,8 @@
 
   --font-display: var(--f-display);
   --font-sans: var(--f-text);
+  /* The step numbers use font-mono; they are Roboto too, not a second typeface. */
+  --font-mono: var(--f-text);
 }
 
 /* Range input: a 44px tall touch target drawing a 2px track in the domain colour. */
