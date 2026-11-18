@@ -1,42 +1,14 @@
 import { PGlite } from "@electric-sql/pglite";
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { ALICE, BOB, bootDb } from "./testDb";
 
 /**
  * These tests run the real migrations in Postgres (PGlite, in memory) as different signed-in people, and try to break the rules:
  * reading or changing someone else's rows, writing as someone else, rewriting consent history, going in as anonymous.
- * The shim below stands in for the parts Supabase provides: the roles, auth.users and auth.uid().
+ * The shared setup in testDb.ts stands in for the parts Supabase provides: the roles, auth.users and auth.uid().
  */
 
-const MIGRATIONS = join(__dirname, "migrations");
-
-const SHIM = `
-  create role anon nologin;
-  create role authenticated nologin;
-  create role service_role nologin bypassrls;
-  create schema auth;
-  create table auth.users (id uuid primary key default gen_random_uuid(), email text);
-  create function auth.uid() returns uuid language sql stable as $$
-    select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
-  $$;
-  grant usage on schema public, auth to anon, authenticated, service_role;
-  grant execute on function auth.uid() to anon, authenticated, service_role;
-  alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
-  alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
-`;
-
-const ALICE = "11111111-1111-1111-1111-111111111111";
-const BOB = "22222222-2222-2222-2222-222222222222";
-
 let db: PGlite;
-
-async function boot() {
-  const fresh = new PGlite();
-  await fresh.exec(SHIM);
-  for (const file of readdirSync(MIGRATIONS).sort()) await fresh.exec(readFileSync(join(MIGRATIONS, file), "utf8"));
-  return fresh;
-}
 
 /** Empties every table and signs up Alice and Bob again, so each test starts from the same two people. */
 async function reset() {
@@ -67,14 +39,14 @@ const addAccount = (user: string, name = "HDFC Bank", kind = "bank") =>
   ok(`insert into accounts (user_id, kind, name, details) values ($1, $2, $3, '{"balance": 284000}') returning id`, [user, kind, name]).then((r) => (r.rows[0] as { id: string }).id);
 
 beforeAll(async () => {
-  db = await boot();
+  db = await bootDb();
 }, 60_000);
 beforeEach(reset);
 
 describe("the schema", () => {
   it("applies cleanly and every table in public has row level security on", async () => {
     const { rows } = await ok(`select relname, relrowsecurity from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r' order by relname`);
-    expect((rows as { relname: string }[]).map((r) => r.relname)).toEqual(["accounts", "consents", "goals", "market_rates", "monthly_figures", "net_worth_snapshots", "profiles", "tax_inputs", "transactions"]);
+    expect((rows as { relname: string }[]).map((r) => r.relname)).toEqual(["accounts", "bank_access_log", "bank_members", "bank_sharing_events", "bank_staff", "banks", "consents", "goals", "market_rates", "monthly_figures", "net_worth_snapshots", "profiles", "tax_inputs", "transactions"]);
     expect((rows as { relrowsecurity: boolean }[]).every((r) => r.relrowsecurity)).toBe(true);
   });
 
@@ -216,7 +188,7 @@ describe("monthly figures", () => {
 });
 
 describe("anonymous visitors", () => {
-  it.each(["profiles", "consents", "accounts", "transactions", "goals", "tax_inputs", "net_worth_snapshots", "market_rates", "monthly_figures"])("cannot read %s", async (table) => {
+  it.each(["profiles", "consents", "accounts", "transactions", "goals", "tax_inputs", "net_worth_snapshots", "market_rates", "monthly_figures", "banks", "bank_members", "bank_sharing_events", "bank_staff", "bank_access_log"])("cannot read %s", async (table) => {
     await addAccount(ALICE);
     await as(null, async () => {
       expect(await fails(`select * from ${table}`)).toMatch(/permission denied/);
@@ -312,7 +284,7 @@ describe("export and delete my data", () => {
     await fill();
     const result = await as(ALICE, () => ok(`select export_my_data() as data`));
     const data = (result.rows[0] as { data: Record<string, unknown[] | Record<string, unknown>> }).data;
-    expect(Object.keys(data).sort()).toEqual(["accounts", "consents", "exported_at", "goals", "monthly_figures", "net_worth_snapshots", "profile", "tax_inputs", "transactions"]);
+    expect(Object.keys(data).sort()).toEqual(["accounts", "bank_access", "bank_memberships", "bank_sharing", "consents", "exported_at", "goals", "monthly_figures", "net_worth_snapshots", "profile", "tax_inputs", "transactions"]);
     expect((data.accounts as { name: string }[]).map((x) => x.name)).toEqual(["Alice's bank"]);
     expect((data.goals as { name: string }[]).map((x) => x.name)).toEqual(["Car"]);
     expect((data.transactions as { description: string }[]).map((x) => x.description)).toEqual(["Swiggy"]);
