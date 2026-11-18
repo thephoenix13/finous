@@ -102,6 +102,7 @@ function member(reads: Array<Promise<SharingState>>) {
         reading.push(bankId);
         return reads[n++] ?? Promise.resolve(unanswered);
       },
+      join: fake.data.bankSharing.join,
       set: fake.data.bankSharing.set,
     },
   };

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../auth/AuthProvider";
 import { AuthError } from "../auth/types";
+import { useBank } from "../bank/BankProvider";
 import { Button, Field } from "../components/ui";
 import BrandSplash from "../components/BrandSplash";
+import { returnFrom } from "../lib/returnTo";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,6 +21,8 @@ const ERRORS = {
 export default function SignIn() {
   const { t } = useTranslation();
   const auth = useAuth();
+  const bank = useBank();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"email" | "code">("email");
@@ -31,8 +35,10 @@ export default function SignIn() {
     if (step === "code") codeField.current?.focus();
   }, [step]);
 
-  if (!auth.canSignIn || auth.access === "demo" || auth.access === "member") return <Navigate to="/" replace />;
-  if (auth.access === "needs-consent") return <Navigate to="/join" replace />;
+  // Signed in: on to where the link they followed was going, if it was going somewhere.
+  if (auth.access === "member") return <Navigate to={returnFrom(location.state)} replace />;
+  if (!auth.canSignIn || auth.access === "demo") return <Navigate to="/" replace />;
+  if (auth.access === "needs-consent") return <Navigate to="/join" replace state={location.state} />;
   if (auth.access === "loading") return <BrandSplash />;
 
   const say = (e: unknown) => {
@@ -78,6 +84,13 @@ export default function SignIn() {
       <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-3">Finous</p>
       <h1 className="mt-3 font-display text-[28px] leading-[1.15] tracking-tight">{step === "email" ? t("signIn.title") : t("signIn.codeTitle")}</h1>
       <p className="mt-4 max-w-[34ch] text-[15px] text-ink-2">{step === "email" ? t("signIn.intro") : t("signIn.codeIntro", { email })}</p>
+      {/* On a bank's address: someone who already uses Finous is told it is the same account, and that this address asks once of its own. */}
+      {bank && step === "email" && (
+        <div className="mt-4 max-w-[34ch] space-y-2 text-[13px] text-ink-3">
+          <p>{t("signIn.bank.same")}</p>
+          <p>{t("signIn.bank.again")}</p>
+        </div>
+      )}
 
       {step === "email" ? (
         <form onSubmit={send} className="mt-8 space-y-4" noValidate>
@@ -129,12 +142,15 @@ export default function SignIn() {
         </form>
       )}
 
-      <div className="mt-auto pt-12">
-        <p className="text-[13px] text-ink-3">{t("signIn.demoNote")}</p>
-        <Button variant="ghost" className="mt-3" onClick={auth.enterDemo}>
-          {t("signIn.demo")}
-        </Button>
-      </div>
+      {/* A bank's customers are not offered the made-up customer: it would look like the bank's own app showing someone's accounts. */}
+      {!bank && (
+        <div className="mt-auto pt-12">
+          <p className="text-[13px] text-ink-3">{t("signIn.demoNote")}</p>
+          <Button variant="ghost" className="mt-3" onClick={auth.enterDemo}>
+            {t("signIn.demo")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

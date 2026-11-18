@@ -1,10 +1,11 @@
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../auth/AuthProvider";
 import BrandSplash from "../components/BrandSplash";
 import { Button } from "../components/ui";
 import { PRIVACY_NOTICE_URL } from "../config";
+import { returnFrom } from "../lib/returnTo";
 
 const POINTS = ["point1", "point2", "point3"] as const;
 
@@ -16,9 +17,12 @@ export default function Join() {
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const boxId = useId();
+  const location = useLocation();
 
   if (auth.access === "needs-signin") return <Navigate to="/signin" replace />;
-  if (auth.access === "member" || auth.access === "demo") return <Navigate to="/" replace />;
+  // Joined: on to where the link they followed was going, if it was going somewhere.
+  if (auth.access === "member") return <Navigate to={returnFrom(location.state)} replace />;
+  if (auth.access === "demo") return <Navigate to="/" replace />;
   if (auth.access === "loading") return <BrandSplash />;
 
   const join = async () => {

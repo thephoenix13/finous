@@ -21,6 +21,13 @@ export function createFakeMember(
   const joined = new Set<string>();
   let tick = 0;
   const bankSharing: BankSharing = {
+    join: async (bankId) => {
+      if (failing) {
+        failing = false;
+        throw new Error("join failed");
+      }
+      joined.add(bankId);
+    },
     read: async (bankId) => {
       if (failing) {
         failing = false;
