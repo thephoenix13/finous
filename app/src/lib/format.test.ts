@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addMonths } from "./finance";
-import { formatClock, formatDayMonth, formatList, formatMonthYear, formatWeekdayDate, formatWhen, ordinalDay, parseMonth, percent, roundSig, signedInr, toLakhs } from "./format";
+import { formatClock, formatDateTime, formatDayMonth, formatList, formatMonthYear, formatWeekdayDate, formatWhen, ordinalDay, parseMonth, percent, roundSig, signedInr, toLakhs } from "./format";
 
 describe("parseMonth", () => {
   it("reads a month string into a year and a month", () => {
@@ -274,5 +274,36 @@ describe("signedInr", () => {
     expect(signedInr(240_000)).toBe("+₹2,40,000");
     expect(signedInr(-842)).toBe("−₹842");
     expect(signedInr(0)).toBe("₹0");
+  });
+});
+
+describe("formatDateTime", () => {
+  it("writes English by hand, in Indian time: 9:01 UTC is 2:31 PM", () => {
+    expect(formatDateTime("2026-11-18T09:01:00.000Z")).toBe("18 November 2026, 2:31 PM");
+    expect(formatDateTime("2026-11-18T09:01:00Z", "en-IN")).toBe("18 November 2026, 2:31 PM");
+  });
+
+  it("moves to the next day when Indian time is past midnight, and to the next year", () => {
+    expect(formatDateTime("2026-12-31T19:00:00Z")).toBe("1 January 2027, 12:30 AM");
+  });
+
+  it("uses a 12-hour clock with noon as 12 PM and midnight as 12 AM", () => {
+    expect(formatDateTime("2026-11-18T06:30:00Z")).toBe("18 November 2026, 12:00 PM");
+    expect(formatDateTime("2026-11-17T18:30:00Z")).toBe("18 November 2026, 12:00 AM");
+  });
+
+  it("pads the minutes", () => {
+    expect(formatDateTime("2026-11-18T04:35:00Z")).toBe("18 November 2026, 10:05 AM");
+  });
+
+  it("writes Hindi with Devanagari month names, still in Indian time", () => {
+    const text = formatDateTime("2026-11-18T09:01:00Z", "hi");
+    expect(text).toContain("18 नवंबर 2026");
+    expect(text).toMatch(/2:31/);
+  });
+
+  it("is empty for something that is not a date", () => {
+    expect(formatDateTime("not a date")).toBe("");
+    expect(formatDateTime("")).toBe("");
   });
 });

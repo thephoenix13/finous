@@ -139,3 +139,20 @@ export function ordinalDay(day: number, locale?: string): string {
 export function signedInr(amount: number): string {
   return amount > 0 ? `+${inr(amount)}` : inr(amount);
 }
+
+/**
+ * "12 November 2026, 3:04 PM" from a moment in time, always in Indian time: when a bank could see something is the same
+ * for everyone, wherever their phone thinks it is. English is built by hand from fixed tables; another language uses Intl.
+ * Not a date at all gives "".
+ */
+export function formatDateTime(iso: string, locale?: string): string {
+  const moment = new Date(iso);
+  if (Number.isNaN(moment.getTime())) return "";
+  if (locale && !locale.toLowerCase().startsWith("en")) {
+    return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Kolkata" }).format(moment);
+  }
+  // India has no daylight saving: always five and a half hours ahead of UTC.
+  const ist = new Date(moment.getTime() + 330 * 60_000);
+  const hour = ist.getUTCHours();
+  return `${ist.getUTCDate()} ${MONTHS_LONG[ist.getUTCMonth()]} ${ist.getUTCFullYear()}, ${hour % 12 === 0 ? 12 : hour % 12}:${String(ist.getUTCMinutes()).padStart(2, "0")} ${hour < 12 ? "AM" : "PM"}`;
+}

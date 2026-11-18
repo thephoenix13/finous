@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../auth/AuthProvider";
 import { useApiData, type Api, type Consent, type Profile, type RequestOptions } from "../api";
 import { LoadError, LoadingCard } from "../components/DataState";
-import { useAllowedLanguages } from "../bank/BankProvider";
+import { useAllowedLanguages, useBank } from "../bank/BankProvider";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { Row, RowGroup } from "../components/ui";
 import { formatMonthYear, parseMonth } from "../lib/format";
@@ -21,6 +21,7 @@ export default function You() {
   const result = useApiData(loadYou);
   const auth = useAuth();
   const languages = useAllowedLanguages();
+  const bank = useBank();
   const navigate = useNavigate();
   // A member's accounts are the ones they typed in; the linked-account and consent screens are about Account Aggregator, which is not live.
   const member = auth.access === "member";
@@ -46,6 +47,7 @@ export default function You() {
       </section>
 
       <RowGroup className="mt-4">
+        {member && bank && <Row to="/you/bank" title={t("you.bank.title", { bank: bank.name })} subtitle={t("you.bank.subtitle", { bank: bank.name })} />}
         {member && <Row to="/you/data" title={t("you.data.title")} subtitle={t("you.data.subtitle")} />}
         {member && <Row to="/you/figures" title={t("you.figures.title")} subtitle={t("you.figures.subtitle")} />}
         {member ? (
