@@ -18,10 +18,10 @@ describe("Web address and install (I7.2)", () => {
   it("shows the address and install name the bank has, with the home-screen preview", async () => {
     const { container } = await open();
     expect(screen.getByLabelText("Web address")).toHaveValue("demo-coop");
-    expect(screen.getByText(".finous.site")).toBeInTheDocument();
+    expect(screen.getByText(".app.finous.site")).toBeInTheDocument();
     expect(screen.getByLabelText("Name shown under the icon")).toHaveValue("Demo Bank");
     expect(phone().getByText("Demo Bank")).toBeInTheDocument();
-    expect(screen.getByText(/Customers open https:\/\/demo-coop\.finous\.site/)).toBeInTheDocument();
+    expect(screen.getByText(/Customers open https:\/\/demo-coop\.app\.finous\.site/)).toBeInTheDocument();
     await expectAccessible(container);
   });
 
@@ -39,7 +39,7 @@ describe("Web address and install (I7.2)", () => {
     const address = screen.getByLabelText("Web address");
     await user.clear(address);
     await user.type(address, "seva-bank");
-    expect(screen.getByText(/Customers open https:\/\/seva-bank\.finous\.site/)).toBeInTheDocument();
+    expect(screen.getByText(/Customers open https:\/\/seva-bank\.app\.finous\.site/)).toBeInTheDocument();
   });
 
   it("warns, without blocking, when the name is longer than a phone shows", async () => {
@@ -124,7 +124,7 @@ describe("Web address and install (I7.2)", () => {
     await open({ bank: "new" });
     expect(screen.getByLabelText("Web address")).toHaveValue("");
     expect(phone().getByText("Your app")).toBeInTheDocument();
-    expect(screen.getByText(/Customers open https:\/\/your-bank\.finous\.site/)).toBeInTheDocument();
+    expect(screen.getByText(/Customers open https:\/\/your-bank\.app\.finous\.site/)).toBeInTheDocument();
   });
 
   it("says it could not load, and loads when they try again", async () => {

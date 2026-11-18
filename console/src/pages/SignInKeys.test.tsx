@@ -27,7 +27,7 @@ const keyRow = (name: string) => within(screen.getByRole("row", { name: new RegE
 describe("Sign-in and API keys (I7.6)", () => {
   it("shows the link for the app, single sign-on and the keys, and is accessible", async () => {
     const { container } = await open();
-    expect(screen.getByText("https://demo-coop.finous.site/?from=bank")).toBeInTheDocument();
+    expect(screen.getByText("https://demo-coop.app.finous.site/?from=bank")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Single sign-on" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "API keys" })).toBeInTheDocument();
     await expectAccessible(container);
@@ -39,7 +39,7 @@ describe("Sign-in and API keys (I7.6)", () => {
       stubClipboard(() => Promise.resolve());
       await user.click(screen.getByRole("button", { name: "Copy the link" }));
       expect(await screen.findByText("Copied.")).toBeInTheDocument();
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith("https://demo-coop.finous.site/?from=bank");
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith("https://demo-coop.app.finous.site/?from=bank");
     });
 
     it("says so, rather than pretending, when the browser won't copy", async () => {

@@ -116,11 +116,11 @@ describe("feed mapping and dry run", () => {
 
 describe("sign-in settings and keys", () => {
   it("builds the link for the app from the bank's web address, and has none before there is one", async () => {
-    expect((await createMockConsoleApi().signInSettings()).handoffUrl).toBe("https://demo-coop.finous.site/?from=bank");
+    expect((await createMockConsoleApi().signInSettings()).handoffUrl).toBe("https://demo-coop.app.finous.site/?from=bank");
     const fresh = createMockConsoleApi({ bank: "new" });
     expect((await fresh.signInSettings()).handoffUrl).toBeNull();
     await fresh.saveAddress({ subdomain: "seva", installName: "Seva" });
-    expect((await fresh.signInSettings()).handoffUrl).toBe("https://seva.finous.site/?from=bank");
+    expect((await fresh.signInSettings()).handoffUrl).toBe("https://seva.app.finous.site/?from=bank");
   });
 
   it("starts with single sign-on off, and remembers what is saved", async () => {

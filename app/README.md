@@ -347,9 +347,22 @@ On any other address, including `app.finous.site`, nothing changes and no lookup
 
 To try it with no database: `npm run dev`, then open `http://seva.localhost:5173` (green, both languages, rules advisor, a logo), `http://kosh.localhost:5173`
 (Hindi only, no advisor) or `http://pale.localhost:5173` (a colour pair that fails the check, so it stays blue). These sample banks (`devBanks.ts`) are removed from
-production builds. For a real bank on a real address, add the wildcard domain `*.app.finous.site` to the Vercel project: two NS records for `_acme-challenge.app`
-to `ns1.vercel-dns.com` and `ns2.vercel-dns.com`, and a CNAME for `*.app` to `cname.vercel-dns-0.com` (Vercel shows the exact values when the domain is added).
-A bank row is added by Finous with the service role (`supabase/README.md`); until it is `live` its address shows "This address isn't available".
+production builds. For a real bank on a real address, see "Adding a bank's address" below.
+
+### Adding a bank's address
+
+finous.site's DNS is at Hostinger (the nameservers are `*.dns-parking.com`), whose zone editor cannot create the NS records a wildcard certificate needs, so a
+`*.app.finous.site` wildcard cannot be turned on there. Until the DNS moves somewhere that can (Vercel DNS, Cloudflare), each bank is added by hand, four steps:
+
+1. In Vercel, project `finous-app`, Settings, Domains, Add: `<name>.app.finous.site`. Vercel then shows a CNAME target of the form `<hash>.vercel-dns-017.com`.
+2. At Hostinger (hPanel, Domains, DNS Zone Editor, finous.site), add a CNAME named `<name>.app` pointing to that target. Change nothing else in the zone (mail, DKIM and
+   SPF records live there too). Check with `nslookup <name>.app.finous.site`, then Refresh the domain in Vercel until it says Valid Configuration.
+3. Add the bank row with the service role, or in the Supabase SQL editor (`insert into public.banks (subdomain, name, install_name, brand_colour, on_brand_colour, disclaimer, advisor, status) values (...)`),
+   with `status = 'live'` only when it should show. The subdomain must be 3 to 30 lower-case letters, digits or hyphens and not a reserved word.
+4. Open `https://<name>.app.finous.site`: the bank's name and colours, then the sign-in screen. `/api/manifest` and `/api/bank-icon` answer for that bank too.
+
+`testbank.app.finous.site` is a live, fictitious bank ("Finous Test Bank") added on 19 Nov 2026 to check all of this on the real database. Remove it with
+`update public.banks set status = 'draft' where subdomain = 'testbank'` (its address then shows "This address isn't available"), or delete the row and its Vercel domain and CNAME.
 
 ## Sharing with a bank (`src/pages/BankSharing.tsx`, `src/bank/BankAsk.tsx`, `src/api/bankSharing.ts`)
 
