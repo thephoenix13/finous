@@ -488,6 +488,10 @@ export const en = {
     otherEmail: "Use a different email",
     resend: "Send a new code",
     resent: "A new code is on its way.",
+    bank: {
+      same: "Already use Finous? Sign in with the same email and it is the same account. Nothing new is created.",
+      again: "Each bank's app has an address of its own, so you sign in once on each. You may be asked here even if you are signed in somewhere else.",
+    },
     demo: "Try the demo with sample data",
     demoNote: "The demo shows a made-up customer, Aarav. Nothing you do there is saved.",
     errors: {

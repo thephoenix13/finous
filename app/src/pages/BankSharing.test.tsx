@@ -79,7 +79,8 @@ describe("the question, put once at the bank's front door", () => {
     expect(await theSwitch()).toHaveAttribute("aria-checked", "false");
     expect(status()).toHaveTextContent("Sharing is off. Seva Co-operative Bank cannot see anything from your Finous.");
     expect(member.sharing.size).toBe(0);
-    expect(member.joined.size).toBe(0);
+    // They arrived through the bank's address, which is all that has been recorded: nothing is shared
+    await waitFor(() => expect(member.joined.has("b1")).toBe(true));
   });
 
   it("says what the bank would see, what it never sees, that looks are recorded, and that stopping is immediate", async () => {
@@ -100,7 +101,6 @@ describe("the question, put once at the bank's front door", () => {
     await arrivedAtApp();
     expect(here()).toBe("/");
     expect(member.sharing.size).toBe(0);
-    expect(member.joined.size).toBe(0);
     view.unmount();
     forgetSettled();
     open("/", { member });
@@ -246,7 +246,7 @@ describe("under You: change your mind at any time", () => {
     const member = sharing();
     const real = member.data.bankSharing;
     let finish!: () => void;
-    member.data.bankSharing = { read: real.read, set: (id, on) => new Promise<void>((done) => void (finish = () => void real.set(id, on).then(done))) };
+    member.data.bankSharing = { join: real.join, read: real.read, set: (id, on) => new Promise<void>((done) => void (finish = () => void real.set(id, on).then(done))) };
     open("/you/bank", { member });
     await userEvent.click(await theSwitch());
     await waitFor(() => expect(screen.getByRole("switch")).toBeDisabled());
@@ -261,6 +261,7 @@ describe("under You: change your mind at any time", () => {
     const real = member.data.bankSharing;
     let failRead = false;
     member.data.bankSharing = {
+      join: real.join,
       set: real.set,
       read: async (id) => {
         if (failRead) {

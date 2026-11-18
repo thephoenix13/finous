@@ -353,13 +353,29 @@ A bank row is added by Finous with the service role (`supabase/README.md`); unti
 
 ## Sharing with a bank (`src/pages/BankSharing.tsx`, `src/bank/BankAsk.tsx`, `src/api/bankSharing.ts`)
 
-A person decides whether the bank can see the accounts it supplied. It is **off until they turn it on**, and nothing is recorded or joined until then.
+A person decides whether the bank can see the accounts it supplied. It is **off until they turn it on**, and no choice is recorded until they make one. (Arriving through the bank's address does record that they are one of its customers, below, but the bank can see nothing of a customer who is not sharing.)
 
 - **The question.** A signed-in member at a bank's address who has never answered, and has not said "Not now" on this device, is sent from the front door to
   `/you/bank`, which says what the bank would see (first name and last initial, the accounts the bank supplied), what it never sees, and that each look is recorded.
   Only the front door asks: a link to any other screen opens it. If the answer cannot be found out they are let in, and nothing is shared.
-- **Turning it on** calls `join_bank` then `set_bank_sharing(true)`; **turning it off** calls `set_bank_sharing(false)` and takes effect at once. Every real change is a new
+- **Turning it on** calls `join_bank` (again: it is safe to repeat) then `set_bank_sharing(true)`; **turning it off** calls `set_bank_sharing(false)` and takes effect at once. Every real change is a new
   row in `bank_sharing_events`, shown newest first as the person's history. The screen never shows a guess: after a failed save it asks the database again.
 - **Under You** the same screen is the "Sharing with <bank>" row, on a bank's address only. **Your data** (`export_my_data`) already lists the banks joined, every choice,
   and each time bank staff looked at the person.
 - **Wording.** The text on this screen (`bank.share.*` in `i18n/locales`) is draft consent wording. It needs a lawyer's review, and a native Hindi reader's, before a real bank goes live.
+
+## Arriving from a bank's app (`src/bank/BankArrival.tsx`, `src/lib/returnTo.ts`)
+
+A link in the bank's app is just the bank's address (`https://seva.app.finous.site`), or a screen on it (`https://seva.app.finous.site/accounts`). Put nothing personal in the link:
+the person signs in on the page with the emailed code, as they always do.
+
+- **A new customer** is sent from any screen to sign-in, then the beta terms, then to the screen the link pointed at. **A returning customer** (same email, terms already
+  accepted) goes straight there after the code. The email is trimmed and lower-cased before it is sent, so spelling it differently never makes a second account;
+  it is one Finous account per email, whichever address it is used from.
+- **Where the link was going** travels in the router's state (`rememberReturn`) and is believed only if it is a path on this address (`returnPath`): another site,
+  `//host`, a backslash, control characters and the sign-in, terms, welcome and demo screens all go Home instead.
+- **The sign-in screen on a bank's address** says it is the same account for someone who already uses Finous, and that each bank's address asks once of its own (a
+  browser keeps a separate sign-in per address). It does not offer the made-up demo customer under a bank's name.
+- **Arrival is recorded** (`BankArrival`, once per visit): a signed-in member at a bank's address is joined to that bank with `join_bank`. That is all it does; a bank sees a
+  customer only if they have turned sharing on. A failure is silent and tried again at the next visit; turning sharing on joins as well.
+- Only the front door asks the sharing question, so a link to any other screen opens that screen.

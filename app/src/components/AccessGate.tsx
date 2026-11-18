@@ -1,11 +1,13 @@
 import { useEffect, useMemo } from "react";
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 import { ApiProvider } from "../api";
 import { MemberDataProvider } from "../api/memberContext";
 import { createMemberEnv, type MemberEnv } from "../api/memberEnv";
 import { useAuth } from "../auth/AuthProvider";
+import BankArrival from "../bank/BankArrival";
 import { sharedSupabase } from "../auth/supabaseClient";
 import type { Session } from "../auth/types";
+import { rememberReturn } from "../lib/returnTo";
 import BrandSplash from "./BrandSplash";
 
 /** How a member's screens get their data. Tests pass their own; the app builds it over Supabase. */
@@ -20,13 +22,16 @@ const overSupabase: MemberEnvFactory = (session) => {
 /** Sends people to the right place: sign in, consent, their own space, or the demo. Wraps every screen of the app proper. */
 export default function AccessGate({ memberEnv = overSupabase }: { memberEnv?: MemberEnvFactory }) {
   const { access, session } = useAuth();
+  const location = useLocation();
+  // A link to a screen survives signing in: sign-in and the beta terms send the person on to where it pointed.
+  const state = rememberReturn(location);
   switch (access) {
     case "loading":
       return <BrandSplash />;
     case "needs-signin":
-      return <Navigate to="/signin" replace />;
+      return <Navigate to="/signin" replace state={state} />;
     case "needs-consent":
-      return <Navigate to="/join" replace />;
+      return <Navigate to="/join" replace state={state} />;
     case "member":
       return session ? <MemberSpace session={session} make={memberEnv} /> : <BrandSplash />;
     case "demo":
@@ -43,6 +48,7 @@ function MemberSpace({ session, make }: { session: Session; make: MemberEnvFacto
   return (
     <ApiProvider api={env.api}>
       <MemberDataProvider data={env.data}>
+        <BankArrival />
         <Outlet />
       </MemberDataProvider>
     </ApiProvider>
