@@ -22,6 +22,9 @@ Add `feed=not_connected` or `feed=failing` (for example `?feed=failing`) to see 
 
 ## The demo
 
+A copy of the demo is live at https://finous-console.vercel.app (Vercel project `finous-console`, root directory
+`console`, rebuilt only when `console/` changes on `main`). It is for showing the screens, not for real bank data.
+
 There is no backend yet, so the console runs on a **demo bank with sample figures** and a **demo sign-in**:
 
 - Any password works. The code on the second step is `123456`.
